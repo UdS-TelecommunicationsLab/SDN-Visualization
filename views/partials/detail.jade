@@ -1,0 +1,18 @@
+div.row
+	div.col-md-1
+		a.btn.btn-primary.btn-sm(ng-click="back()") 
+			i.fa.fa-chevron-left
+			|  Back
+		| <br/><br/>
+	div.col-md-11(ng-show="notFound")
+		div.alert.alert-danger
+			strong Item not found. 
+			span Return by clicking on back.
+	div.col-md-11(ng-show="!notFound")
+		div.panel.panel-default
+			div.panel-heading
+				a.pull-right.btn.btn-default.btn-sm(ng-click="load()")
+					i.fa.fa-refresh 
+				block header
+			div.panel-body
+				block body

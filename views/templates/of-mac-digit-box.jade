@@ -1,0 +1,10 @@
+﻿div(ng-switch='',on="devicePattern.status")
+	div(ng-switch-when="blank")
+		input.macDigitBox.input-sm.form-control(type="text",disabled='')
+	div(ng-switch-default)
+		input.macDigitBox.input-sm.form-control(type="text",
+			ng-pattern="/[0-9a-f\?\#]{2}/",
+			ng-required="true",
+			ng-model="devicePattern.sub[index]",
+			ng-minlength="2",
+			ng-maxlength="2")

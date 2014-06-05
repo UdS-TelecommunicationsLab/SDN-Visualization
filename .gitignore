@@ -1,0 +1,4 @@
+node_modules/
+ofvizConfiguration.json
+public/js/dist.js
+public/js/dist.min.js

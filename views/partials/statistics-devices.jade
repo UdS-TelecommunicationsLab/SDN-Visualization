@@ -1,0 +1,17 @@
+div
+	div.row
+		div.col-lg-12
+			| Show: 
+			button.btn.btn-default.btn-sm(type="button", ng-model="isClientVisible", btn-checkbox, btn-checkbox-true="true", btn-checkbox-false="false")
+				i.fa.fa-hdd-o
+				|  Clients
+			| 
+			button.btn.btn-default.btn-sm(type="button", ng-model="isNodeVisible", btn-checkbox, btn-checkbox-true="true", btn-checkbox-false="false")
+				i.fa.fa-mobile-phone
+				|  Nodes
+	hr
+	div.row
+		div.col-lg-3.col-md-6(ng-repeat="device in data.ofvm.devices | isDeviceType:{'node':isNodeVisible,'client':isClientVisible} | hasIdOrName:deviceFilter | orderBy:'name'")
+			div(of-device, device="device", rename="rename(device)")
+	div.alert.alert-info(ng-show="data.ofvm.devices.length == 0")
+		strong There are no devices at the moment.

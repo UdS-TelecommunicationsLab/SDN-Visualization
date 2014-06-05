@@ -1,0 +1,54 @@
+﻿extend detail
+block header
+	span(class="device Flow")
+		i.fa.fa-random
+	span Flow: 
+	code.dp
+		| {{ item.id }}
+
+block body
+	div.row
+		div.col-md-4
+			h2 Data Link Layer
+			table.table.table-bordered.table-condensed.table-striped
+				tbody
+					tr
+						th Source:
+						td
+							a(href="{{ '/detail/device/' +  item.dl.src }}")
+								code.dp {{ item.dl.src }}
+					tr
+						th Destination:
+						td
+							a(href="{{ '/detail/device/' +  item.dl.dst }}")
+								code.dp {{ item.dl.dst }}
+					tr
+						th Type:
+						td {{ item.dl.type | ethernetFrameType }}
+					tr
+						th VLAN:
+						td {{ item.dl.vlan }} / {{ item.dl.vlanPriority }}
+		div.col-md-4
+			h2 Network Layer 
+				span.label.label-success {{ item.nw.protocol | networkProtocol }}
+			table.table.table-bordered.table-condensed.table-striped
+				tbody
+					tr
+						th Source:
+						td {{ item.nw.src }}
+					tr
+						th Destination:
+						td {{ item.nw.dst }}
+					tr
+						th Type of Service:
+						td {{ item.nw.typeOfService }}
+		div.col-md-4
+			h2 Transport Layer
+			table.table.table-bordered.table-condensed.table-striped
+				tbody
+					tr
+						th Source:
+						td {{ item.tp.src }}
+					tr
+						th Destination:
+						td {{ item.tp.dst }}

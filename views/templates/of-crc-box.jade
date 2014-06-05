@@ -1,0 +1,4 @@
+﻿small
+	code.visible-lg {{ crc }}
+	code.visible-md(tooltip="{{ crc | breakCRC }}",tooltip-placement="top") {{ crc | cropCRC:20 }}
+	code.hidden-md.hidden-lg(tooltip="{{ crc | breakCRC }}",tooltip-placement="top") {{ crc | cropCRC:20 }}
