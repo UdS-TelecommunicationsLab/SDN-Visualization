@@ -28,8 +28,10 @@
 (function (controllerAPI) {
     "use strict";
 
-    var tcp = require("./tcp/client");
+    // TODO: apply proper API selection mechanism
 
-    controllerAPI.getAllData = tcp.getAllData;
+    var client = require("./http/client");
+
+    controllerAPI.getAllData = client.getAllData;
 
 })(exports);
