@@ -21,19 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  * 
- * This license applies to all parts of the OpenFlow Visualization Application that are not externally
+ * This license applies to all parts of the SDN-Visualization Application that are not externally
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
 (function(storage) {
     "use strict";
     var crypt = require("../public/shared/crypt"),
-        ofvm = require("../public/shared/OFVM");
+        nvm = require("../public/shared/NVM");
 
-    var model = new ofvm.OFVM();
+    var model = new nvm.NVM();
     var checksum = crypt.hashCode(model);
 
-    storage.getOFVM = function() {
+    storage.getNVM = function() {
         return model;
     };
 
@@ -41,7 +41,7 @@
         return checksum;
     };
 
-    storage.setOFVM = function(lclModel) {
+    storage.setNVM = function(lclModel) {
         model = lclModel;
         checksum = crypt.hashCode(lclModel);
     };

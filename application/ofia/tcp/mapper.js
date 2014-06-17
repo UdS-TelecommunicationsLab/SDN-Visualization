@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  * 
- * This license applies to all parts of the OpenFlow Visualization Application that are not externally
+ * This license applies to all parts of the SDN-Visualization Application that are not externally
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
@@ -32,14 +32,14 @@
         config = require("../../config"),
         crypt = require("../../../public/shared/crypt"),
         network = require("../../../public/shared/network"),
-        ofvm = require("../../../public/shared/OFVM");
+        nvm = require("../../../public/shared/NVM");
 
     // Mapping Controller
     var controller = {
         map: function(obj) {
             var configuration = config.getConfiguration();
 
-            var ctrl = new ofvm.Controller(obj && obj.controllerType);
+            var ctrl = new nvm.Controller(obj && obj.controllerType);
             ctrl.name = (configuration && configuration.controller && configuration.controller.name) || "unknown";
             ctrl.contact = (configuration && configuration.controller && configuration.controller.contact) || "unknown";
             ctrl.isStandalone = !(configuration && configuration.controller && !configuration.controller.isStandalone);
@@ -69,7 +69,7 @@
                 url = "";
             }
 
-            return new ofvm.Client(d.id, name || d.id, d.gw, d.ip, d.port, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color);
+            return new nvm.Client(d.id, name || d.id, d.gw, d.ip, d.port, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color);
         },
         mapAll: function(rawData, sw) {
             var lclClients = [];
@@ -81,7 +81,7 @@
                     lclClients.push(client);
                     var dst = _.find(sw, function(lclSwitch) { return rawClient.gw === lclSwitch.id; });
                     if (dst) {
-                        lclLinks.push(new ofvm.Link(client, 0, dst, 0, "Ethernet"));
+                        lclLinks.push(new nvm.Link(client, 0, dst, 0, "Ethernet"));
                     }
                 });
 
@@ -104,7 +104,7 @@
             } else {
                 url = "";
             }
-            return new ofvm.Switch(obj, name || obj, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color);
+            return new nvm.Switch(obj, name || obj, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color);
         },
         mapAll: function(obj) {
             var res = [];
@@ -148,7 +148,7 @@
                     var dstHost = _.find(devices, function(d) { return d.id === lnk.dst; });
 
                     if (srcHost && dstHost) {
-                        var link = new ofvm.Link(srcHost, lnk.srcPort, dstHost, lnk.dstPort, "OpenFlow");
+                        var link = new nvm.Link(srcHost, lnk.srcPort, dstHost, lnk.dstPort, "OpenFlow");
                         link.delay = parseFloat(lnk.delay);
                         link.plr = parseFloat(lnk.plr);
                         link.drTx = parseFloat(lnk.drTx);
@@ -172,7 +172,7 @@
     // Mapping Flows
     var flows = {
         map: function(obj) {
-            var flow = new ofvm.Flow();
+            var flow = new nvm.Flow();
 
             flow.dl.src = network.num2mac(parseInt(obj.dlSrc, 10));
             flow.dl.dst = network.num2mac(parseInt(obj.dlDst, 10));

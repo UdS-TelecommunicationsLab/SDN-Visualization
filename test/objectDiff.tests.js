@@ -3,15 +3,15 @@
 describe("objectDiff", function() {
     it("should consider newly created models as equal", function() {
         var d = new Date();
-        var model1 = new ofviz.OFVM(d);
-        var model2 = new ofviz.OFVM(d);
+        var model1 = new ofviz.NVM(d);
+        var model2 = new ofviz.NVM(d);
         var res = objectDiff.diff(model1, model2);
         expect(res[objectDiff.token.changed]).toBe(objectDiff.token.equal);
     });
 
     it("should detect date changes", function() {
-        var model1 = new ofviz.OFVM();
-        var model2 = new ofviz.OFVM();
+        var model1 = new ofviz.NVM();
+        var model2 = new ofviz.NVM();
         model2.latestUpdate = new Date((new Date()).getTime() + 1000);
         var res = objectDiff.diff(model1, model2);
         expect(res[objectDiff.token.value].latestUpdate[objectDiff.token.changed]).toBe(objectDiff.token.primitive);
@@ -21,10 +21,10 @@ describe("objectDiff", function() {
         var deviceA = new ofviz.Device(1, "A");
         var deviceB = new ofviz.Device(2, "B");
 
-        var model1 = new ofviz.OFVM();
+        var model1 = new ofviz.NVM();
         var link1 = new ofviz.Link(deviceA, 1, deviceB, 2, "Ethernet");
         model1.links.push(link1);
-        var model2 = new ofviz.OFVM();
+        var model2 = new ofviz.NVM();
         var link2 = new ofviz.Link(deviceA, 1, deviceB, 2, "Ethernet");
         link2.drTx = 1.0;
         model2.links.push(link2);
@@ -38,8 +38,8 @@ describe("objectDiff", function() {
         var deviceB = new ofviz.Device(2, "B");
 
         var date = new Date();
-        var model1 = new ofviz.OFVM(date);
-        var model2 = new ofviz.OFVM(date);
+        var model1 = new ofviz.NVM(date);
+        var model2 = new ofviz.NVM(date);
         var link1 = new ofviz.Link(deviceA, 1, deviceB, 2, "Ethernet");
         model2.links.push(link1);
 
@@ -60,10 +60,10 @@ describe("objectDiff", function() {
 
         var date = new Date();
 
-        var model1 = new ofviz.OFVM(date);
+        var model1 = new ofviz.NVM(date);
         var link1 = new ofviz.Link(deviceA, 1, deviceB, 2, "Ethernet");
         model1.links.push(link1);
-        var model2 = new ofviz.OFVM(date);
+        var model2 = new ofviz.NVM(date);
         var link21 = new ofviz.Link(deviceA, 1, deviceC, 2, "Ethernet");
         var link22 = new ofviz.Link(deviceA, 1, deviceB, 2, "Ethernet");
         link22.drTx = targetRate;

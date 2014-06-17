@@ -10,12 +10,12 @@ div#of-topology
 				span.label.label-default 
 					i.fa.fa-hdd-o
 					|  
-					span Switches: {{ data.ofvm.devices | countSwitches }}
+					span Switches: {{ data.nvm.devices | countSwitches }}
 				|  
 				span.label.label-default
 					i.fa.fa-mobile-phone
 					|  
-					span Clients: {{ data.ofvm.devices | countClients }}
+					span Clients: {{ data.nvm.devices | countClients }}
 
 			h2 Usage
 			ul.list-group
@@ -41,7 +41,7 @@ div#of-topology
 					span.icon-label Hover over flow to display it.
 
 			h2 Flows
-			div(ng-repeat="flow in data.ofvm.flows", ng-mouseenter="highlightFlow(flow)",ng-mouseleave="unhighlightFlow(flow)")
+			div(ng-repeat="flow in data.nvm.flows", ng-mouseenter="highlightFlow(flow)",ng-mouseleave="unhighlightFlow(flow)")
 					span(of-flow-thumbnail, flow="flow")
-			div.alert.alert-info(ng-show="data.ofvm.flows.length == 0")
+			div.alert.alert-info(ng-show="data.nvm.flows.length == 0")
 				p No flows at the moment.

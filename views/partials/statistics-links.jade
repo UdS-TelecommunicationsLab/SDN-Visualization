@@ -1,5 +1,5 @@
 div
-	div.panel.panel-default(ng-show="data.ofvm.links.length > 0")
+	div.panel.panel-default(ng-show="data.nvm.links.length > 0")
 		table.table.table-striped
 			thead
 				tr
@@ -11,7 +11,7 @@ div
 					th.linkParameter Loss
 					th.linkParameter Delay
 			tbody
-				tr(ng-repeat="link in data.ofvm.links | srcOrDstId:deviceFilter")
+				tr(ng-repeat="link in data.nvm.links | srcOrDstId:deviceFilter")
 					td
 						a.btn.btn-default.btn-sm(href="{{ '/detail/link/' + link.id }}") Details
 					td 
@@ -29,10 +29,10 @@ div
 					td.linkParameter.loss(ng-class="{ nonZero: link.plr != 0 && link.plr != null }") {{ link.plr | packetLossRate }}
 					td.linkParameter(ng-class="{ nonZero: link.delay != 0 && link.delay != null }") {{ link.delay | delay }}
 
-	div.panel.panel-default(ng-show="data.ofvm.links.length > 0")
+	div.panel.panel-default(ng-show="data.nvm.links.length > 0")
 		div.panel-body
 			small All links are symmetric, so the inverse direction is also connected.
 
 
-	div.alert.alert-info(ng-show="data.ofvm.links.length == 0")
+	div.alert.alert-info(ng-show="data.nvm.links.length == 0")
 		strong There are no links at the moment.

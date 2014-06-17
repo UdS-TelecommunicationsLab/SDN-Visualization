@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  * 
- * This license applies to all parts of the OpenFlow Visualization Application that are not externally
+ * This license applies to all parts of the SDN-Visualization Application that are not externally
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
@@ -30,10 +30,10 @@
     var controllerAPI = require("../application/ofia/controllerAPI"),
         config = require("./config"),
         objectDiff = require("../public/js/lib/objectDiff"),
-        ofvm = require("../public/shared/OFVM");
+        nvm = require("../public/shared/NVM");
 
     var pollingDelay = 1500; // in milliseconds
-    var model = new ofvm.OFVM();
+    var model = new nvm.NVM();
     var oldModel = model;
 
     var finish = function (errorRaised) {
@@ -53,7 +53,7 @@
         process.send({ model: model, changes: changes });
 
         oldModel = model;
-        model = new ofvm.OFVM(oldModel.started);
+        model = new nvm.NVM(oldModel.started);
         model.latestInteraction = oldModel.latestInteraction;
         setTimeout(loadingProcess, pollingDelay);
     };

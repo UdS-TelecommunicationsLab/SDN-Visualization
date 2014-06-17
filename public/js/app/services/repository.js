@@ -21,24 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  * 
- * This license applies to all parts of the OpenFlow Visualization Application that are not externally
+ * This license applies to all parts of the SDN-Visualization Application that are not externally
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
 (function(ofvizApp) {
     "use strict";
     ofvizApp.factory("repository", function($rootScope, $http, toastr, websockets, messenger) {
-        var data = { ofvm: null, logs: [] };
+        var data = { nvm: null, logs: [] };
 
         // Data Context Functions
         var getDeviceById = function(id) {
-            var device = _.find(data.ofvm.devices, function(e) {
+            var device = _.find(data.nvm.devices, function(e) {
                 return e.id == id;
             });
 
             var connectedDevices = [];
             if (device) {
-                var links = _.filter(data.ofvm.links, function(d) {
+                var links = _.filter(data.nvm.links, function(d) {
                     return d.srcHost.id == device.id || d.dstHost.id == device.id;
                 });
                 connectedDevices = _.map(links, function(d) {
@@ -49,23 +49,23 @@
                     }
                 });
             }
-            return { item: device, connectedDevices: connectedDevices, latestInteraction: data.ofvm.latestInteraction };
+            return { item: device, connectedDevices: connectedDevices, latestInteraction: data.nvm.latestInteraction };
         };
 
         var getLinkById = function(id) {
-            var link = _.find(data.ofvm.links, function(e) {
+            var link = _.find(data.nvm.links, function(e) {
                 return e.id == id;
             });
 
-            return { item: link, latestInteraction: data.ofvm.latestInteraction };
+            return { item: link, latestInteraction: data.nvm.latestInteraction };
         };
 
         var getFlowById = function(id) {
-            var flow = _.find(data.ofvm.flows, function(e) {
+            var flow = _.find(data.nvm.flows, function(e) {
                 return e.id == id;
             });
 
-            return { item: flow, latestInteraction: data.ofvm.latestInteraction };
+            return { item: flow, latestInteraction: data.nvm.latestInteraction };
         };
 
         // Change Management
@@ -150,8 +150,8 @@
             $http.get("/api/model?d=" + new Date()).
                 success(function(compressedData, status, headers, config) {
                     var originalData = msgpack.unpack(compressedData.data);
-                    data.ofvm = originalData.ofvm;
-                    update(originalData, originalData.ofvm);
+                    data.nvm = originalData.nvm;
+                    update(originalData, originalData.nvm);
 
                     messenger.publish("modelUpdate", originalData);
 
@@ -166,8 +166,8 @@
         var registerUpdate = function() {
             if (!loaded) {
                 websockets.subscribeModelUpdate(function(message) {
-                    objectDiff.applyChanges(data.ofvm, message.changes);
-                    var success = update(message, copyCleanModel(data.ofvm));
+                    objectDiff.applyChanges(data.nvm, message.changes);
+                    var success = update(message, copyCleanModel(data.nvm));
                     if (success) {
                         messenger.publish("modelUpdateDiff", message);
                     }

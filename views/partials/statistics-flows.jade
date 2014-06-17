@@ -1,5 +1,5 @@
 div
-	div.panel.panel-default(ng-show="data.ofvm.flows.length > 0")
+	div.panel.panel-default(ng-show="data.nvm.flows.length > 0")
 		table.table.table-striped
 			thead
 				tr
@@ -8,7 +8,7 @@ div
 					th Network
 					th Transport
 			tbody
-				tr(ng-repeat="flow in data.ofvm.flows")
+				tr(ng-repeat="flow in data.nvm.flows")
 					td
 						a.btn.btn-default.btn-sm(href="{{ '/detail/flow/' + flow.id }}") Details
 					td
@@ -54,5 +54,5 @@ div
 									th Destination:
 									td {{ flow.tp.dst }}
 
-	div.alert.alert-info(ng-show="data.ofvm.flows.length == 0")
+	div.alert.alert-info(ng-show="data.nvm.flows.length == 0")
 		strong There are no flows at the moment.

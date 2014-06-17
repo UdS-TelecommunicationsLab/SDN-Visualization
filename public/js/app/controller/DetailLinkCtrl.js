@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  * 
- * This license applies to all parts of the OpenFlow Visualization Application that are not externally
+ * This license applies to all parts of the SDN-Visualization Application that are not externally
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
@@ -42,7 +42,7 @@
 
         $scope.modifyLoss = function(loss) {
             websockets.publish("/interact/setLinkSpec", {
-                latestInteraction: repository.data.ofvm.latestInteraction,
+                latestInteraction: repository.data.nvm.latestInteraction,
                 loss: loss,
                 user: $scope.item.srcHost.userName,
                 srcNode: $scope.item.srcHost.url,
@@ -63,7 +63,7 @@
 
         $scope.modifyDelay = function(delay) {
             websockets.publish("/interact/setLinkSpec", {
-                latestInteraction: repository.data.ofvm.latestInteraction,
+                latestInteraction: repository.data.nvm.latestInteraction,
                 delay: delay,
                 user: $scope.item.srcHost.userName,
                 srcNode: $scope.item.srcHost.url,

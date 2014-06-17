@@ -5,7 +5,7 @@ module.exports = function(config) {
     basePath: './',
     frameworks: ['jasmine'],
     files: [
-      './public/shared/OFVM.js',
+      './public/shared/NVM.js',
       './public/js/lib/objectDiff.js',
       'test/**/*.js'
     ],

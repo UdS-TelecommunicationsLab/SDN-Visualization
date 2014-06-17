@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  * 
- * This license applies to all parts of the OpenFlow Visualization Application that are not externally
+ * This license applies to all parts of the SDN-Visualization Application that are not externally
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
@@ -41,9 +41,9 @@ var __extends = this.__extends || function(d, b) {
 (function(exports) {
     "use strict";
     /**
-     * The OFVM type assembles all the other entites together in one extensive model.
+     * The NVM type assembles all the other entites together in one extensive model.
      */
-    exports.OFVM = function(startDate) {
+    exports.NVM = function(startDate) {
         this.started = startDate || (new Date());
         this.latestInteraction = new Date();
         this.latestUpdate = new Date();

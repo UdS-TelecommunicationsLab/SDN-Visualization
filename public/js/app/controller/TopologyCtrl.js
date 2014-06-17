@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  * 
- * This license applies to all parts of the OpenFlow Visualization Application that are not externally
+ * This license applies to all parts of the SDN-Visualization Application that are not externally
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
@@ -293,7 +293,7 @@
                         unhighlightAll();
                     }
 
-                    setMaxStrength($scope.data.ofvm && $scope.data.ofvm._internals.drMax);
+                    setMaxStrength($scope.data.nvm && $scope.data.nvm._internals.drMax);
 
                     var nodeManipul = { add: [], remove: [] };
 
@@ -406,18 +406,18 @@
             if (!initialized) {
                 $scope.data = repository.data;
 
-                var ofvm = repository.data.ofvm;
-                if (ofvm) {
-                    setMaxStrength((ofvm && ofvm._internals && ofvm._internals.drMax) || 1);
+                var nvm = repository.data.nvm;
+                if (nvm) {
+                    setMaxStrength((nvm && nvm._internals && nvm._internals.drMax) || 1);
 
                     var devices = {};
-                    ofvm.devices.forEach(function(d) {
+                    nvm.devices.forEach(function(d) {
                         var device = { id: d.id, name: d.name, device: d, x: w / 2, y: h / 2 };
                         nodes.push(device);
                         devices[d.id] = device;
                     });
 
-                    ofvm.links.forEach(function(d) {
+                    nvm.links.forEach(function(d) {
                         links.push({ id: d.id, source: devices[d.srcHost.id], target: devices[d.dstHost.id], type: d.type, link: d, dr: (d.drTx + d.drRx) });
                     });
                 }

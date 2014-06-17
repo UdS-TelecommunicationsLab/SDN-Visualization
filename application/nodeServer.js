@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  * 
- * This license applies to all parts of the OpenFlow Visualization Application that are not externally
+ * This license applies to all parts of the SDN-Visualization Application that are not externally
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
@@ -55,7 +55,7 @@
         });
 
         worker.on("message", function(response) {
-            storage.setOFVM(response.model);
+            storage.setNVM(response.model);
             nodeSockets.publishModelUpdate(response.changes, storage.getChecksum());
         });
 

@@ -8,7 +8,7 @@ div#of-status
 					tr
 						td Name
 						td(colspan=2) 
-							strong {{ data.ofvm.controller.name }}
+							strong {{ data.nvm.controller.name }}
 					tr
 						td Contact
 						td(colspan=2) 
@@ -16,20 +16,20 @@ div#of-status
 							span(ng-show="!contactInformation") {{ contactInformation }}
 					tr
 						td Type
-						td(colspan=2) {{ data.ofvm.controller.type }}
+						td(colspan=2) {{ data.nvm.controller.type }}
 					tr
 						td Started
-						td(colspan=2) {{ data.ofvm.controller.started | formatSince }}
+						td(colspan=2) {{ data.nvm.controller.started | formatSince }}
 					tr
 						td Last Update
-						td(colspan=2) {{ data.ofvm.latestUpdate | formatDate }}
+						td(colspan=2) {{ data.nvm.latestUpdate | formatDate }}
 					tr
 						td Last Modification
-						td(colspan=2) {{ data.ofvm.latestInteraction | formatDate }}
+						td(colspan=2) {{ data.nvm.latestInteraction | formatDate }}
 					tr
 						td Monitored Networks
 						td(colspan=2) 
-							p(ng-repeat="network in data.ofvm.controller.monitoredNetworks")
+							p(ng-repeat="network in data.nvm.controller.monitoredNetworks")
 								{{ network }}
 					tr
 						td Local CRC
