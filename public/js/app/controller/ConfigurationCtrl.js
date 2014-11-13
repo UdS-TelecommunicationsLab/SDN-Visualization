@@ -125,7 +125,7 @@
         };
 
         $scope.addPattern = function() {
-            $scope.configuration.deviceInformation.splice(0, 0, createPattern({ pattern: "??:??:??:??:??:??", name: "New Pattern", type: "Unknown" }));
+            $scope.configuration.deviceInformation.splice(0, 0, createPattern({ pattern: "??:??:??:??:??:??:??:??", name: "New Pattern", type: "Unknown" }));
         };
 
         $("form[name='configForm']").submit(function(e) {

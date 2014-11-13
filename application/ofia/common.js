@@ -31,7 +31,7 @@
     var config = require("../config");
 
     common.evaluatePattern = function (pattern, input) {
-        var patternLength = 17;
+        var patternLength = 23;
 
         if (pattern.length !== patternLength && input.length !== patternLength) {
             throw new Error("Pattern and input need to have " + patternLength + " characters");
