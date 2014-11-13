@@ -52,30 +52,27 @@
         callback();
     };
 
-    var processFlows = function (data) {
-        if (data == null) {
-            console.error("processInfosFlows called without data");
+    var processInfos = function (data) {
+        if (data === null || data == undefined || data === {}) {
+            console.error("processInfos called without data");
         } else {
-            model.flows = mapper.flows.mapAll(data, model.devices);
+            model.controller = {};
+            model.controller.started = started;
+
+            getResource(client.commands.get.links, processLinks);
         }
 
         callback();
     };
 
-    var processInfos = function (data) {
+    var processSwitches = function (data) {
         if (data === null || data == undefined || data === {}) {
-            console.error("processInfos called without data");
+            console.error("processSwitches called without data");
         } else {
-            model.controller = mapper.controller.map(data.status);
-            model.controller.started = started;
-            model.devices = model.devices.concat(mapper.switches.mapAll(data.switches));
-
-            var clientData = mapper.clients.mapAll(data.clients, model.devices);
-            model.devices = model.devices.concat(clientData.clients);
-            model.links = model.links.concat(clientData.links);
-
-            getResource(client.commands.get.links, processLinks);
+            model.devices = model.devices.concat(mapper.switches.mapAll(data));
         }
+
+        getResource(client.commands.get.devices, processDevices);
 
         callback();
     };
@@ -92,6 +89,18 @@
         callback();
     };
 
+    var processDevices = function (data) {
+        if (data == null) {
+            console.error("processDevices called without data");
+        } else {
+            var clientData = mapper.clients.mapAll(data, model.devices);
+            model.devices = model.devices.concat(clientData.clients);
+            model.links = model.links.concat(clientData.links);
+        }
+
+        callback();
+    };
+
     var getResource = function (cmd, cb) {
         resourceCount++;
         intf.getInformation(cmd, cb, handleError);
@@ -103,14 +112,15 @@
         errorRaised = false;
 
         getResource(client.commands.get.general, processInfos);
-        getResource(client.commands.get.flows, processFlows);
+        getResource(client.commands.get.switches, processSwitches);
     }
 
     client.commands = {
         get: {
-            general: "infos",
-            links: "links",
-            flows: "flows"
+            general: "core/controller/summary/json",
+            switches: "core/controller/switches/json",
+            devices: "device/",
+            links: "topology/links/json",
         }
     };
 })(exports);

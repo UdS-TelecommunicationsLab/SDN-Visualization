@@ -31,36 +31,6 @@
     var http = require('http');
     var config = require("../../config");
 
-    // Primitive for sending arbitrary messages to the server, by a given communication protocol.
-    var sendMessage = function (onSuccess, onError, message) {
-        var configuration = config.getConfiguration();
-        var api = configuration.controller && configuration.controller.address;
-        if (api) {
-            var buffer = new Buffer(0, "binary");
-            var socket = new net.Socket({ type: "tcp4", allowHalfOpen: true });
-
-            if (onError) {
-                socket.on("error", onError);
-            }
-
-            socket.connect(api.port, api.host, function () {
-                socket.write(JSON.stringify(message));
-
-                socket.on("data", function (chunk) {
-                    buffer = Buffer.concat([buffer, new Buffer(chunk, "binary")]);
-                });
-
-                socket.on("end", function () {
-                    if (onSuccess) {
-                        onSuccess(buffer.toString("utf-8"));
-                    }
-                });
-
-                socket.end();
-            });
-        }
-    };
-
     exports.getInformation = function (command, onSuccess, onError) {
         var successCallback = function (response) {
             var res = "";
@@ -85,7 +55,7 @@
         var options = {
             host: api.host,
             port: api.port,
-            path: "/wm/datastore/json/legacy/" + command
+            path: "/wm/" + command
         }
 
         http.request(options, successCallback).end();

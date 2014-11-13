@@ -57,7 +57,8 @@
     // Mapping Clients
     var clients = {
         map: function(d) {
-            var device = common.getDeviceEntry(d.id);
+            var id = "00:00:" + d.mac[0];
+            var device = common.getDeviceEntry(id);
             var node = device.node;
             var url = (node && node.url) || "";
             var name = common.getName(device);
@@ -67,17 +68,19 @@
                 url = "";
             }
 
-            return new ofvm.Client(d.id, name || d.id, d.gw, d.ip, d.port, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color);
+            return new ofvm.Client(id, name || id, d.attachmentPoint[0].switchDPID, d.ip, d.port, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color);
         },
         mapAll: function(rawData, sw) {
             var lclClients = [];
             var lclLinks = [];
 
             if (rawData) {
-                rawData.forEach(function(rawClient) {
+                rawData.forEach(function (rawClient) {
                     var client = clients.map(rawClient);
                     lclClients.push(client);
-                    var dst = _.find(sw, function(lclSwitch) { return rawClient.gw === lclSwitch.id; });
+                    var dst = _.find(sw, function(lclSwitch) {
+                        return rawClient.attachmentPoint[0].switchDPID === lclSwitch.id;
+                    });
                     if (dst) {
                         lclLinks.push(new ofvm.Link(client, 0, dst, 0, "Ethernet"));
                     }
@@ -93,7 +96,7 @@
     // Mapping Switches
     var switches = {
         map: function(obj) {
-            var device = common.getDeviceEntry(obj);
+            var device = common.getDeviceEntry(obj.dpid);
             var node = device.node;
             var url = (node && node.url) || "";
             var name = common.getName(device);
@@ -102,13 +105,13 @@
             } else {
                 url = "";
             }
-            return new ofvm.Switch(obj, name || obj, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color);
+            return new ofvm.Switch(obj.dpid, name || obj.dpid, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color);
         },
         mapAll: function(obj) {
             var res = [];
 
             if (obj) {
-                obj.forEach(function(d) {
+                obj.forEach(function (d) {
                     res.push(switches.map(d));
                 });
             }
@@ -128,33 +131,36 @@
 
             if (obj && Array.isArray(obj)) {
                 obj.forEach(function(lnk) {
-                    if (lnk.src > lnk.dst) {
+                    var src = lnk["src-switch"];
+                    var dst = lnk["dst-switch"];
+
+                    if (src > dst) {
                         return;
                     }
 
-                    if (alreadyConnected[lnk.src] === undefined) {
-                        alreadyConnected[lnk.src] = {};
+                    if (alreadyConnected[src] === undefined) {
+                        alreadyConnected[src] = {};
                     }
-                    if (alreadyConnected[lnk.dst] === undefined) {
-                        alreadyConnected[lnk.dst] = {};
+                    if (alreadyConnected[dst] === undefined) {
+                        alreadyConnected[dst] = {};
                     }
-                    if (alreadyConnected[lnk.dst] && alreadyConnected[lnk.dst][lnk.src]) {
+                    if (alreadyConnected[dst] && alreadyConnected[dst][src]) {
                         return;
                     }
 
-                    var srcHost = _.find(devices, function(d) { return d.id === lnk.src; });
-                    var dstHost = _.find(devices, function(d) { return d.id === lnk.dst; });
+                    var srcHost = _.find(devices, function(d) { return d.id === src; });
+                    var dstHost = _.find(devices, function(d) { return d.id === dst; });
 
                     if (srcHost && dstHost) {
-                        var link = new ofvm.Link(srcHost, lnk.srcPort, dstHost, lnk.dstPort, "OpenFlow");
-                        link.delay = parseFloat(lnk.delay);
-                        link.plr = parseFloat(lnk.plr);
-                        link.drTx = parseFloat(lnk.drTx);
-                        link.drRx = parseFloat(lnk.drRx);
+                        var link = new ofvm.Link(srcHost, lnk["src-port"], dstHost, lnk["dst-port"], "OpenFlow");
+                        //link.delay = parseFloat(lnk.delay);
+                        //link.plr = parseFloat(lnk.plr);
+                        //link.drTx = parseFloat(lnk.drTx);
+                        //link.drRx = parseFloat(lnk.drRx);
 
-                        drMax = Math.max(drMax, Math.max(lnk.bw_tx, lnk.bw_rx));
+                        //drMax = Math.max(drMax, Math.max(lnk.bw_tx, lnk.bw_rx));
 
-                        alreadyConnected[lnk.src][lnk.dst] = true;
+                        alreadyConnected[src][dst] = true;
 
                         res.push(link);
                     }
