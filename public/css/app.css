@@ -1,5 +1,5 @@
 body{position:relative;padding-top:70px;background-color:#f9f9f9}
-@media (min-width:1200px){.container{max-width:98%}}h1{font-size:24px}
+@media (min-width:1200px){.container{width:auto;max-width:98%}}h1{font-size:24px}
 h1 small{font-size:18px}
 h2{font-size:18px}
 h2 small{font-size:14px}

@@ -40,7 +40,7 @@
 
             var sub = [];
             var pattern = d.pattern.replace(/:/g, '');
-            for (var i = 0; i < 6; i++) {
+            for (var i = 0; i < 8; i++) {
                 sub[i] = pattern.substr(i * 2, 2);
             }
             _.extend(d, { sub: sub });

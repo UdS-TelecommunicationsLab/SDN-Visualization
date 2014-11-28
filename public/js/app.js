@@ -26,7 +26,7 @@
  */
 
 "use strict";
-var ofvizApp = angular.module("of-viz", ["ui.bootstrap", "colorpicker.module"]);
+var ofvizApp = angular.module("of-viz", ["ngRoute","ui.bootstrap", "colorpicker.module"]);
 
 ofvizApp.config(function($routeProvider, $locationProvider) {
     // Main Views
