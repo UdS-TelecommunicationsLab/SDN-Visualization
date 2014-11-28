@@ -27,7 +27,7 @@
 
 (function() {
     "use strict";
-    var controllerAPI = require("../application/ofia/controllerAPI"),
+    var dataSource = require("../application/dataSources/source"),
         config = require("./config"),
         objectDiff = require("../public/js/lib/objectDiff"),
         nvm = require("../public/shared/NVM");
@@ -67,7 +67,7 @@
         console.log("Worker run started.");
         try {
             if (isAvailable()) {
-                controllerAPI.getAllData(model, finish);
+                dataSource.getAllData(model, finish);
             } else {
                 setTimeout(loadingProcess, pollingDelay);
             }
@@ -79,6 +79,9 @@
     process.on("message", function(m) {
         // starting the worker
         if (m && m.start) {
+            var configuration = config.getConfiguration();
+            dataSource.init(configuration.dataSource);
+
             loadingProcess();
         }
 

@@ -31,6 +31,15 @@
         $scope.latestInteraction = new Date(-8640000000000000);
         $scope.clipboard = { value: "" };
 
+        $scope.dataSources = [
+        {
+            type: "floodlight",
+            title: "Floodlight (HTTP)"
+        }, {
+            type: "nox",
+            title: "NOX (TCP)"
+        }];
+
         var createNewEntry = ($routeParams.id) ? true : false;
         var defaultColor = "#444444";
 
@@ -47,7 +56,7 @@
             return d;
         };
 
-        $scope.configuration = { deviceInformation: [] };
+        $scope.configuration = { deviceInformation: [], dataSource: { type: "none" , connectionString: "" } };
 
         var onConfigLoaded = function(data) {
             $scope.configuration = data.configuration || {};

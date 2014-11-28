@@ -25,13 +25,20 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function (controllerAPI) {
+(function (source) {
     "use strict";
 
-    // TODO: apply proper API selection mechanism
-
-    var client = require("./http/client");
-
-    controllerAPI.getAllData = client.getAllData;
-
+    var unconfigured = function() {
+        console.log("No proper data source is configured.");
+    };
+    source.init = function (dataSource) {
+        var sourceIdentifier = dataSource.type;
+        if (sourceIdentifier == "floodlight" || sourceIdentifier == "nox") {
+            var client = require("./" + sourceIdentifier + "/client");
+            source.getAllData = client.getAllData;
+        } else {
+            source.getAllData = unconfigured;
+        }
+    }
+    source.getAllData = unconfigured;
 })(exports);

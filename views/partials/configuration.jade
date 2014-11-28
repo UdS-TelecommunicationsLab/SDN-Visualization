@@ -23,28 +23,24 @@ div#of-configuration
 				div.panel-body
 					div.form-group
 						label.col-sm-1.control-label Name:
-						div.col-sm-3
+						div.col-sm-4
 							input.form-control(type="text",ng-model="configuration.controller.name",ng-required="true")
 
 						label.col-sm-2.control-label Contact Mail:
-						div.col-sm-6
+						div.col-sm-5
 							input.form-control(type="text",ng-model="configuration.controller.contact")
 
 					div.form-group
-						label.col-sm-1.control-label IP:
-						div.col-sm-3
-							input.form-control(type="text",ng-model="configuration.controller.address.host",ng-required="true")
+						label.col-sm-1.control-label Type:
+						div.col-sm-4
+							select.form-control(ng-model="configuration.dataSource.type",
+								ng-options="item.type as item.title for item in dataSources",
+								ng-required="true")
 
-						label.col-sm-2.control-label Port:
-						div.col-sm-2
-							input.form-control(type="text",ng-model="configuration.controller.address.port",ng-required="true")
+						label.col-sm-2.control-label Connection:
+						div.col-sm-5
+							input.form-control(type="text",ng-model="configuration.dataSource.connectionString",ng-required="true")
 	
-						label.col-sm-2.control-label Machine Info:
-							span.helpTooltip(tooltip="Visualization and Controller run on different machines?",tooltip-placement="right") [?]
-						div.col-sm-2
-							label
-								input(type="checkbox",ng-model="configuration.controller.isStandalone")
-								|  is standalone?
 					hr
 					div.form-group
 						div.col-sm-2.col-sm-offset-0

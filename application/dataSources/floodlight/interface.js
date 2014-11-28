@@ -27,7 +27,6 @@
 
 (function(exports) {
     "use strict";
-    var net = require("net");
     var http = require('http');
     var config = require("../../config");
 
@@ -49,12 +48,13 @@
         };
 
         var configuration = config.getConfiguration();
-        var api = configuration.controller && configuration.controller.address;
+        var connectionString = configuration.dataSource && configuration.dataSource.connectionString;
 
-        // TODO: replace with proper configurable path
+        var address = connectionString.split(":");
+
         var options = {
-            host: api.host,
-            port: api.port,
+            host: address[0],
+            port: address[1],
             path: "/wm/" + command
         }
 

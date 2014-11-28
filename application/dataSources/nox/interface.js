@@ -33,8 +33,8 @@
     // Primitive for sending arbitrary messages to the server, by a given communication protocol.
     var sendMessage = function (onSuccess, onError, message) {
         var configuration = config.getConfiguration();
-        var api = configuration.controller && configuration.controller.address;
-        if (api) {
+        var connectionString = configuration.dataSource && configuration.dataSource.connectionString;
+        if (connectionString) {
             var buffer = new Buffer(0, "binary");
             var socket = new net.Socket({ type: "tcp4", allowHalfOpen: true });
 
@@ -42,7 +42,8 @@
                 socket.on("error", onError);
             }
 
-            socket.connect(api.port, api.host, function () {
+            var address = connectionString.split(":");
+            socket.connect(address[1], address[0], function () {
                 socket.write(JSON.stringify(message));
 
                 socket.on("data", function (chunk) {
