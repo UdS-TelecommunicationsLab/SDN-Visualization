@@ -56,6 +56,7 @@
 
     exports.networkProtocols = {
         1: "ICMP",
+        6: "IP",
         17: "UDP",
     };
 
