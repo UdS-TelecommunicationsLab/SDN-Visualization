@@ -8,7 +8,7 @@ Providing a web-based interactive visualization solution for *Software-Defined N
 
 **Institution:** [Telecommuncations Chair](http://www.nt.uni-saarland.de/) - [Saarland University](http://www.uni-saarland.de/)
 
-**Version:** 0.1.0 - May 2014
+**Version:** 2014.1.1
 
 ## Installation Guide
 
