@@ -56,7 +56,7 @@
         if (data === null || data == undefined || data === {}) {
             console.error("processInfos called without data");
         } else {
-            model.controller = {};
+            model.controller = mapper.controller.map(data);
             model.controller.started = started;
 
             getResource(client.commands.get.links, processLinks);

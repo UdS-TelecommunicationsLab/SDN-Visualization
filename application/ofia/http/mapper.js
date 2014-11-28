@@ -39,15 +39,13 @@
         map: function(obj) {
             var configuration = config.getConfiguration();
 
-            var ctrl = new nvm.Controller(obj && obj.controllerType);
+            var ctrl = new nvm.Controller("Floodlight");
             ctrl.name = (configuration && configuration.controller && configuration.controller.name) || "unknown";
             ctrl.contact = (configuration && configuration.controller && configuration.controller.contact) || "unknown";
             ctrl.isStandalone = !(configuration && configuration.controller && !configuration.controller.isStandalone);
             ctrl.monitoredNetworks = [];
 
-            if (obj) {
-                ctrl.monitoredNetworks.push(obj.monitoredNetworks);
-            }
+            // TODO: add monitoredNetworks
 
             return ctrl;
         }
