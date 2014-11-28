@@ -103,7 +103,7 @@
             } else {
                 url = "";
             }
-            return new nvm.Switch(obj.dpid, name || obj.dpid, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color);
+            return new nvm.Switch(obj.dpid, name || obj.dpid, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color, obj.connectedSince);
         },
         mapAll: function(obj) {
             var res = [];

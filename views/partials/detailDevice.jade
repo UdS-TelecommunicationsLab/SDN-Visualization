@@ -10,6 +10,7 @@ block body
 				| ID: 
 				code {{ item.id }}
 			p(ng-show="item.userName") User Name: {{ item.userName }}
+			p(ng-show="item") Connected since: {{ item.connectedSince | formatDate }}
 			p(ng-show="item.url")
 				| Link: 
 				a(href="{{ 'http://' + item.url }}",target="_blank") {{ item.url | lowercase }}
