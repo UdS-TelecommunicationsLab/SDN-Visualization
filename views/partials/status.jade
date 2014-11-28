@@ -3,8 +3,9 @@ div#of-status
 		div.col-sm-7.col-md-4
 			div.panel.panel-default
 				div.panel-heading
-					h2 Status
-				table.table.table-striped
+					i.fa.fa-check-square
+					|  Status
+				table.table.table-striped.table-condensed
 					tr
 						td Name
 						td(colspan=2) 
@@ -43,8 +44,9 @@ div#of-status
 		div.col-sm-5.col-md-8
 			div.panel.panel-default
 				div.panel-heading
-					h2 Log
-				table.table.table-striped
+					i.fa.fa-bars
+					|  Log
+				table.table.table-striped.table-condensed
 					tbody
 						tr(ng-repeat="log in data.logs", ng-class="{ success: log.status == 'success', danger: log.status == 'error'}")
 							th.hidden-sm(style="width:180px") {{ log.date | formatDateShort }}
