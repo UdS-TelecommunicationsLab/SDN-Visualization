@@ -60,7 +60,7 @@
 
     var isAvailable = function () {
         var configuration = config.getConfiguration();
-        return (configuration && configuration.controller && configuration.controller.address) ? true : false;
+        return (configuration && configuration.dataSource && configuration.dataSource.type && configuration.dataSource.connectionString) ? true : false;
     };
 
     var loadingProcess = function() {
