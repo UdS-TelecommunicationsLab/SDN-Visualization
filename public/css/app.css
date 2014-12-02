@@ -18,7 +18,7 @@ h6{font-size:12px;font-style:italic}
 code{color:#005278;background-color:#eaf0f3}
 code.dp{background-color:transparent;vertical-align:middle}
 span.middle{vertical-align:middle}
-a.thumbnail{overflow:hidden;word-wrap:break-word;text-decoration:none}a.thumbnail code{white-space:normal}
+a.thumbnail{overflow:hidden;word-wrap:break-word;text-decoration:none;margin-bottom:0px}a.thumbnail code{white-space:normal}
 .nav-pills li:hover{cursor:pointer}
 .form-group{margin-left:5px;margin-right:5px}
 #of-docs h1{margin-top:5px}

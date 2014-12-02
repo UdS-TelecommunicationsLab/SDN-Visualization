@@ -54,9 +54,11 @@
         Unknown: "Unknown"
     };
 
+    // http://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml
     exports.networkProtocols = {
         1: "ICMP",
-        6: "IP",
+        2: "IGMP",
+        6: "TCP",
         17: "UDP",
     };
 
