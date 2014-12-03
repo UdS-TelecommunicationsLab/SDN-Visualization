@@ -58,8 +58,6 @@
         } else {
             model.controller = mapper.controller.map(data);
             model.controller.started = started;
-
-            getResource(client.commands.get.links, processLinks);
         }
 
         callback();
@@ -74,6 +72,7 @@
 
         getResource(client.commands.get.devices, processDevices);
         getResource(client.commands.get.flows, processFlows);
+        getResource(client.commands.get.links, processLinks);
 
         callback();
     };
