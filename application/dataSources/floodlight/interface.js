@@ -57,8 +57,12 @@
             port: address[1],
             path: "/wm/" + command
         }
-
-        http.request(options, successCallback).end();
+        var req = http.request(options, successCallback);
+        req.on("error", function(err) {
+            console.log(err);
+            onSuccess(null);
+        });
+        req.end();
     };
 
 })(exports);
