@@ -66,16 +66,18 @@
                 url = "";
             }
             var gateway = undefined;
+            var port = undefined;
 
             var attachmentPoints = d.attachmentPoint;
             if (attachmentPoints.length > 0) {
                 gateway = attachmentPoints[0].switchDPID;
+                port = attachmentPoints[0].port;
             }
             var ip = undefined;
             if (d.ipv4 && d.ipv4.length > 0) {
                 ip = d.ipv4[0];
             }
-            return new nvm.Client(id, name || id, gateway, ip, d.port, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color);
+            return new nvm.Client(id, name || id, gateway, ip, port, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color);
         },
         mapAll: function(rawData, sw) {
             var lclClients = [];
@@ -85,11 +87,11 @@
                 rawData.forEach(function (rawClient) {
                     var dst = _.find(sw, function (lclSwitch) {
                         if (rawClient && rawClient.attachmentPoint.length > 0) {
-                            return rawClient.attachmentPoint[0].switchDPID === lclSwitch.id;
+                            return rawClient.attachmentPoint[0].switchDPID === lclSwitch.id && rawClient.attachmentPoint[0].port >= 0; // port >= 0 to make sure switch interfaces do not get displayed
                         }
                         return false;
                     });
-                    if (dst) {
+                    if (dst) { 
                         var client = clients.map(rawClient);
                         lclClients.push(client);
                         lclLinks.push(new nvm.Link(client, 0, dst, 0, "Ethernet"));
