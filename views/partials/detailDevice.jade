@@ -1,6 +1,6 @@
 extend detail
 block header
-	span(of-device-type-icon, device="item")
+	span(sdn-device-type-icon, device="item")
 	span Device:
 	code.dp {{ item.name }}
 block body
@@ -40,4 +40,4 @@ block body
 			h2 Connections
 			div.row
 				div.col-sm-4.col-md-4(ng-repeat="device in connectedDevices | orderBy:'name' ")
-					span(of-device-thumbnail,device="device")
+					span(sdn-device-thumbnail,device="device")

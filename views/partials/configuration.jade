@@ -1,4 +1,4 @@
-div#of-configuration
+div#sdn-configuration
 	form.form(name="importForm",action="/api/importVizConfiguration",method="post",enctype="multipart/form-data")
 			div.row
 				div.col-md-12
@@ -80,16 +80,16 @@ div#of-configuration
 								code.dp {{ deviceEntry.name }}
 							td 
 								code.dp {{ deviceEntry.userName }}
-								div(of-copy-paste-string, clipboard="clipboard", device="deviceEntry", field="userName")
+								div(sdn-copy-paste-string, clipboard="clipboard", device="deviceEntry", field="userName")
 							td
 								code.dp {{ deviceEntry.url }}
-								div(of-copy-paste-string, clipboard="clipboard", device="deviceEntry", field="url")
+								div(sdn-copy-paste-string, clipboard="clipboard", device="deviceEntry", field="url")
 							td
 								| {{ deviceEntry.location }} 
-								div(of-copy-paste-string, clipboard="clipboard", device="deviceEntry", field="location")
+								div(sdn-copy-paste-string, clipboard="clipboard", device="deviceEntry", field="location")
 							td
 								| {{ deviceEntry.purpose }} 
-								div(of-copy-paste-string, clipboard="clipboard", device="deviceEntry", field="purpose")
+								div(sdn-copy-paste-string, clipboard="clipboard", device="deviceEntry", field="purpose")
 							td
 								div.btn-group
 									button.btn.btn-default.btn-xs(ng-click="edit(deviceEntry)")

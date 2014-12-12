@@ -25,11 +25,11 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function(ofvizApp) {
+(function(sdnViz) {
     "use strict";
-    ofvizApp.filter("countSwitches", function(countTypesFilter) {
+    sdnViz.filter("countSwitches", function(countTypesFilter) {
         return function(input) {
-            return countTypesFilter(input, ofviz.Switch.type);
+            return countTypesFilter(input, sdn.Switch.type);
         };
     });
-})(window.ofvizApp);
+})(window.sdnViz);

@@ -25,16 +25,19 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function(ofvizApp) {
+(function(sdnViz) {
     "use strict";
-    ofvizApp.directive("ofDeviceTypeIcon", function() {
+
+    sdnViz.directive("sdnStatisticsDevices", function() {
         return {
-            restrict: "A",
+            restrict: "E",
             replace: true,
-            templateUrl: "/tmpl/of-device-type-icon",
-            scope: {
-                device: "="
+            templateUrl: "/partials/statistics-devices",
+            scope: true,
+            controller: function() {
+                
             }
         };
     });
-})(window.ofvizApp);
+
+})(window.sdnViz);

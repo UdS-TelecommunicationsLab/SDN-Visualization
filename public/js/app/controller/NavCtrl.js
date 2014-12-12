@@ -25,12 +25,12 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function(ofvizApp) {
+(function(sdnViz) {
     "use strict";
-    ofvizApp.controller("NavCtrl", function($scope, $window) {
+    sdnViz.controller("NavCtrl", function($scope, $window) {
         $scope.logout = function() {
             $window.location = "/logout";
         };
 
     });
-})(window.ofvizApp);
+})(window.sdnViz);

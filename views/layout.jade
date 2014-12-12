@@ -1,5 +1,5 @@
 !!!
-html(ng-app="of-viz",xlink="http://www.w3.org/1999/xlink")
+html(ng-app="sdn-visualization",xlink="http://www.w3.org/1999/xlink")
 	head
 		meta(charset="utf8")
 		meta(name="viewport", content="width=device-width, initial-scale=1.0")
@@ -13,7 +13,7 @@ html(ng-app="of-viz",xlink="http://www.w3.org/1999/xlink")
 	body
 		a(class="sr-only",href="#content")
 			Skip navigation
-		header#of-nav.navbar.navbar-inverse.navbar-fixed-top(role="banner")
+		header#sdn-nav.navbar.navbar-inverse.navbar-fixed-top(role="banner")
 			div.container
 				div.navbar-header
 					a.navbar-brand(href="/") SDN-Viz
@@ -48,7 +48,7 @@ html(ng-app="of-viz",xlink="http://www.w3.org/1999/xlink")
 							| . </br>
 							span(ng-cloak)
 								|  Version: v
-								span(of-app-version) 
+								span(sdn-app-version)
 								| .
 
 		block scripts

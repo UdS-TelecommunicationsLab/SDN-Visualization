@@ -25,9 +25,9 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function(ofvizApp) {
+(function(sdnViz) {
     "use strict";
-    ofvizApp.controller("ConfigurationCtrl", function($scope, $http, websockets, $window, toastr, $routeParams, $modal) {
+    sdnViz.controller("ConfigurationCtrl", function($scope, $http, websockets, $window, toastr, $routeParams, $modal) {
         $scope.latestInteraction = new Date(-8640000000000000);
         $scope.clipboard = { value: "" };
 
@@ -144,7 +144,7 @@
 
         $scope.edit = function(device) {
             var modalInstance = $modal.open({
-                templateUrl: "/tmpl/of-edit-device",
+                templateUrl: "/tmpl/sdn-edit-device",
                 controller: "EditDeviceCtrl",
                 resolve: {
                     item: function() {
@@ -159,4 +159,4 @@
         };
     });
 
-})(window.ofvizApp);
+})(window.sdnViz);

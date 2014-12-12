@@ -25,13 +25,13 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function(ofvizApp) {
+(function(sdnViz) {
     "use strict";
-    ofvizApp.controller("DocumentationCtrl", function(messenger) {
+    sdnViz.controller("DocumentationCtrl", function(messenger) {
         var updateAffixState = function() {
-            var affix = $("#of-docs .affix");
+            var affix = $("#sdn-docs .affix");
             if ($("body").width() > 992) {
-                affix.css("position", "fixed").css("width", $("#of-docs-side").width());
+                affix.css("position", "fixed").css("width", $("#sdn-docs-side").width());
             } else {
                 affix.css("position", "static").css("width", "100%");
             }
@@ -41,14 +41,14 @@
             var headings = {};
 
             // Generate First-Order Heading
-            $("#of-docs-content h1").each(function(idx, element) {
+            $("#sdn-docs-content h1").each(function(idx, element) {
                 var localElement = $("<li><a href='/documentation/#" + element.id + "'>" + element.innerHTML + "</a><ul class='nav'></ul></li>");
-                $("#of-docs-nav").append(localElement);
+                $("#sdn-docs-nav").append(localElement);
                 headings[element.id] = localElement;
             });
 
             // Generate Second-Order Headings and associate with their parents
-            $("#of-docs-content h2").each(function(idx, element) {
+            $("#sdn-docs-content h2").each(function(idx, element) {
                 var prev = $(element).prevAll("h1");
                 var localElement = "<li><a href='/documentation/#" + element.id + "'>" + element.innerHTML + "</a></li>";
                 $(headings[prev[0].id]).children("ul").append(localElement);
@@ -68,4 +68,4 @@
 
         init();
     });
-})(window.ofvizApp);
+})(window.sdnViz);

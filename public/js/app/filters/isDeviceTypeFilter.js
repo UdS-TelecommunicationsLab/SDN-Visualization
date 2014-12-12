@@ -25,20 +25,20 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function(ofvizApp) {
+(function(sdnViz) {
     "use strict";
-    ofvizApp.filter("isDeviceType", function() {
+    sdnViz.filter("isDeviceType", function() {
         return function(input, filter) {
             if (!input)
                 return input;
 
             var out = [];
             for (var i = 0; i < input.length; i++) {
-                if ((filter.node && input[i].type === ofviz.Switch.type) || (filter.client && input[i].type === ofviz.Client.type)) {
+                if ((filter.node && input[i].type === sdn.Switch.type) || (filter.client && input[i].type === sdn.Client.type)) {
                     out.push(input[i]);
                 }
             }
             return out;
         };
     });
-})(window.ofvizApp);
+})(window.sdnViz);

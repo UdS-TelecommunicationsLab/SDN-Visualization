@@ -25,9 +25,9 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function(ofvizApp) {
+(function(sdnViz) {
     "use strict";
-    ofvizApp.controller("StatusCtrl", function($scope, $window, repository) {
+    sdnViz.controller("StatusCtrl", function($scope, $window, repository) {
         $scope.data = repository.data;
         $scope.isInteracting = false;
 
@@ -35,4 +35,4 @@
             $window.location = "/status";
         };
     });
-})(window.ofvizApp);
+})(window.sdnViz);

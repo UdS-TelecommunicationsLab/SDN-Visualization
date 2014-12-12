@@ -62,4 +62,4 @@
         17: "UDP",
     };
 
-})((typeof process === 'undefined' || !process.versions) ? window.ofviz = window.ofviz || {} : exports);
+})((typeof process === 'undefined' || !process.versions) ? window.sdn = window.sdn || {} : exports);

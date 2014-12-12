@@ -25,14 +25,14 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function(ofvizApp) {
+(function(sdnViz) {
     "use strict";
-    ofvizApp.controller("EditDeviceCtrl", function($scope, $modalInstance, item) {
+    sdnViz.controller("EditDeviceCtrl", function($scope, $modalInstance, item) {
         $scope.item = item;
 
         $scope.types = [];
-        for (var type in ofviz.nodeTypes) {
-            $scope.types.push(ofviz.nodeTypes[type]);
+        for (var type in sdn.nodeTypes) {
+            $scope.types.push(sdn.nodeTypes[type]);
         }
 
         $scope.ok = function() {
@@ -43,4 +43,4 @@
             $modalInstance.dismiss('cancel');
         };
     });
-})(window.ofvizApp);
+})(window.sdnViz);

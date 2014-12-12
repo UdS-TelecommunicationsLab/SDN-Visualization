@@ -26,9 +26,9 @@
  */
 
 "use strict";
-var ofvizApp = angular.module("of-viz", ["ngRoute","ui.bootstrap", "colorpicker.module"]);
+var sdnViz = angular.module("sdn-visualization", ["ngRoute","ui.bootstrap", "colorpicker.module"]);
 
-ofvizApp.config(function($routeProvider, $locationProvider) {
+sdnViz.config(function($routeProvider, $locationProvider) {
     // Main Views
     $routeProvider.
         when("/topology", {
@@ -38,6 +38,10 @@ ofvizApp.config(function($routeProvider, $locationProvider) {
         when("/statistics", {
             templateUrl: "partials/statistics",
             controller: "StatisticsCtrl"
+        }).
+        when("/reports", {
+            templateUrl: "partials/reports",
+            controller: "ReportsCtrl"
         }).
         when("/documentation", {
             templateUrl: "partials/documentation",
@@ -84,7 +88,7 @@ ofvizApp.config(function($routeProvider, $locationProvider) {
     $locationProvider.html5Mode(true);
 });
 
-ofvizApp.run(function($rootScope, router, repository) {
+sdnViz.run(function($rootScope, router, repository) {
     repository.init();
     router.init();
 });

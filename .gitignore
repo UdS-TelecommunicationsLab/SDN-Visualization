@@ -1,4 +1,5 @@
 node_modules/
-ofvizConfiguration.json
+sdnConfiguration.json
 public/js/dist.js
 public/js/dist.min.js
+.idea/

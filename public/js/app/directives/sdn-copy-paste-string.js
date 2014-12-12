@@ -25,19 +25,28 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function(ofvizApp) {
+(function(sdnViz) {
     "use strict";
-
-    ofvizApp.directive("ofStatisticsLinks", function() {
+    sdnViz.directive("sdnCopyPasteString", function() {
         return {
-            restrict: "E",
             replace: true,
-            templateUrl: "/partials/statistics-links",
-            scope: true,
-            controller: function() {
-                
+            restrict: "A",
+            templateUrl: "/tmpl/sdn-copy-paste-string",
+            controller: function($scope) {
+                $scope.copy = function() {
+                    $scope.clipboard.value = angular.copy($scope.device[$scope.field]);
+                };
+                $scope.paste = function() {
+                    if ($scope.clipboard.value != "") {
+                        $scope.device[$scope.field] = $scope.clipboard.value;
+                    }
+                };
+            },
+            scope: {
+                device: "=",
+                clipboard: "=",
+                field: "@"
             }
         };
     });
-
-})(window.ofvizApp);
+})(window.sdnViz);

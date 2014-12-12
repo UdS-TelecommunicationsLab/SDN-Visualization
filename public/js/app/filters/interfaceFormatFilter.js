@@ -25,9 +25,9 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function(ofvizApp) {
+(function(sdnViz) {
     "use strict";
-    ofvizApp.filter("interfaceFormat", function() {
+    sdnViz.filter("interfaceFormat", function() {
         return function(input) {
             if (input)
                 return "Connected " + (input.name || '') + " to " + input.gw + " on Port " + input.port + " (IP: " + input.address + ")";
@@ -36,4 +36,4 @@
             }
         };
     });
-})(window.ofvizApp);
+})(window.sdnViz);

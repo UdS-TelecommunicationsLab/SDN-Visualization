@@ -73,7 +73,7 @@ module.exports = function(grunt) {
 					archive: function() {
 						var d = new Date();
 						var date = d.toISOString().slice(0,19).replace(/[-:]/g,"").replace(/T/g, "_");
-						return "../OF-Viz_" + date + ".zip";
+						return "../SDN-Viz_" + date + ".zip";
 					}
 				},
 				expand: true,
@@ -104,7 +104,7 @@ module.exports = function(grunt) {
         },
         karma: {
             unit: {
-                configFile: "ofviz.conf.js",
+                configFile: "sdnViz.conf.js",
                 runnerPort: 9999,
                 singleRun: true,
                 browsers: ['PhantomJS']

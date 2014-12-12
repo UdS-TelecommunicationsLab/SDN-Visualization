@@ -10,7 +10,7 @@ block body
 	div.row
 		div.col-md-4
 			h2 Source
-			div(of-device, device="item.srcHost",port="{{ item.srcPort }}")
+			div(sdn-device, device="item.srcHost",port="{{ item.srcPort }}")
 
 		div.col-md-4
 			h2 Connection
@@ -68,4 +68,4 @@ block body
 							td
 		div.col-md-4 
 			h2 Destination
-			div(of-device,device="item.dstHost",port="{{ item.dstPort }}")
+			div(sdn-device,device="item.dstHost",port="{{ item.dstPort }}")

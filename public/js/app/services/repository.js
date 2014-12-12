@@ -25,9 +25,9 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function(ofvizApp) {
+(function(sdnViz) {
     "use strict";
-    ofvizApp.factory("repository", function($rootScope, $http, toastr, websockets, messenger) {
+    sdnViz.factory("repository", function($rootScope, $http, toastr, websockets, messenger) {
         var data = { nvm: null, logs: [] };
 
         // Data Context Functions
@@ -96,7 +96,7 @@
             $rootScope.isStandalone = true;
 
             $rootScope.serverCRC = message.checksum;
-            $rootScope.localCRC = ofviz.hashCode(model);
+            $rootScope.localCRC = sdn.hashCode(model);
 
             if (model.controller && model.controller.isReachable) {
                 $rootScope.contactInformation = model.controller.contact;
@@ -206,4 +206,4 @@
             init: init
         };
     });
-})(window.ofvizApp);
+})(window.sdnViz);

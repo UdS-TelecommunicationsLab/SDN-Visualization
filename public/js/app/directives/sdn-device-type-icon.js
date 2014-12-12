@@ -25,16 +25,16 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function(ofvizApp) {
+(function(sdnViz) {
     "use strict";
-    ofvizApp.directive("ofUiOnOffLabel", function() {
+    sdnViz.directive("sdnDeviceTypeIcon", function() {
         return {
-            restrict: "C",
+            restrict: "A",
             replace: true,
-            template: "<span class='label' ng-class=\"{ 'label-success': field, 'label-danger': !field}\">{{ field | boolToText }}</span>",
+            templateUrl: "/tmpl/sdn-device-type-icon",
             scope: {
-                field: "="
+                device: "="
             }
         };
     });
-})(window.ofvizApp);
+})(window.sdnViz);

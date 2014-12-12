@@ -25,16 +25,16 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function(ofvizApp) {
+(function(sdnViz) {
     "use strict";
-    ofvizApp.directive("ofFlowThumbnail", function() {
+    sdnViz.directive("sdnUiOnOffLabel", function() {
         return {
-            restrict: "A",
+            restrict: "C",
             replace: true,
-            templateUrl: "/tmpl/of-flow-thumbnail",
+            template: "<span class='label' ng-class=\"{ 'label-success': field, 'label-danger': !field}\">{{ field | boolToText }}</span>",
             scope: {
-                flow: "="
+                field: "="
             }
         };
     });
-})(window.ofvizApp);
+})(window.sdnViz);

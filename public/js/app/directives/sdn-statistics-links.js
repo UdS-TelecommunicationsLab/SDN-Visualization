@@ -25,17 +25,19 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function(ofvizApp) {
+(function(sdnViz) {
     "use strict";
-    ofvizApp.directive("ofMacDigitBox", function() {
+
+    sdnViz.directive("sdnStatisticsLinks", function() {
         return {
-            restrict: "C",
+            restrict: "E",
             replace: true,
-            templateUrl: "/tmpl/of-mac-digit-box",
-            scope: {
-                devicePattern: "=",
-                index: "="
+            templateUrl: "/partials/statistics-links",
+            scope: true,
+            controller: function() {
+                
             }
         };
     });
-})(window.ofvizApp);
+
+})(window.sdnViz);

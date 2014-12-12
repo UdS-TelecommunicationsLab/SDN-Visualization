@@ -9,7 +9,7 @@ div
 				div.panel-body
 					div.row
 						div.col-xs-6.col-sm-4.col-md-4.col-lg-4(ng-repeat="device in data.nvm.devices | hasIdOrName:deviceFilter | orderBy:'name' ")
-							span(of-device-thumbnail,device="device")
+							span(sdn-device-thumbnail,device="device")
 		div.col-md-4
 			div.panel.panel-default
 				div.panel-heading
@@ -19,4 +19,4 @@ div
 				div.panel-body
 					div.row
 						div.col-xs-12(ng-repeat="flow in data.nvm.flows")
-							span(of-flow-thumbnail,flow="flow")
+							span(sdn-flow-thumbnail,flow="flow")

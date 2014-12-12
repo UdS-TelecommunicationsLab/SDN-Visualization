@@ -25,16 +25,17 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function(ofvizApp) {
+(function(sdnViz) {
     "use strict";
-    ofvizApp.directive("ofDevice", function() {
+
+    sdnViz.directive("sdnCrcBox", function() {
         return {
             replace: true,
-            templateUrl: "/tmpl/of-device",
+            restrict: "A",
+            templateUrl: "/tmpl/sdn-crc-box",
             scope: {
-                device: "=",
-                port: "@"
+                crc: "="
             }
         };
     });
-})(window.ofvizApp);
+})(window.sdnViz);

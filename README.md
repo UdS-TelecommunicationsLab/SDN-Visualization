@@ -83,7 +83,7 @@ There are two common options for running the application. In either case there w
 	sudo nohup /usr/bin/nodejs main.js > output.log &
 
 ##### Upstart Script
-The package includes the file `ofviz.conf`, which is a prepared for usage. The only required modification is the directory (`<project root>`), which you have to specify. The respective line contains a `TODO` comment. You might also consider to change the logs output.
+The package includes the file `sdnViz.conf`, which is a prepared for usage. The only required modification is the directory (`<project root>`), which you have to specify. The respective line contains a `TODO` comment. You might also consider to change the logs output.
 
 
 ## Configuration

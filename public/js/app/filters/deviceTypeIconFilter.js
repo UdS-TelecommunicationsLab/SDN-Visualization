@@ -25,61 +25,61 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function(ofvizApp) {
+(function(sdnViz) {
     "use strict";
-    ofvizApp.filter("deviceTypeIcon", function() {
+    sdnViz.filter("deviceTypeIcon", function() {
         return function(device) {
             switch (device) {
-            case ofviz.nodeTypes.AccessPoint:
+            case sdn.nodeTypes.AccessPoint:
                 return "\uf012"; // fa-signal
-            case ofviz.nodeTypes.Camera:
+            case sdn.nodeTypes.Camera:
                 return "\uf030"; // fa-camera
-            case ofviz.nodeTypes.Car:
+            case sdn.nodeTypes.Car:
                 return "\uf1b9"; // fa-automobile
-            case ofviz.nodeTypes.Cloud:
+            case sdn.nodeTypes.Cloud:
                 return "\uf0c2"; // fa-cloud
-            case ofviz.nodeTypes.Display:
+            case sdn.nodeTypes.Display:
                 return "\uf108"; // fa-desktop
-            case ofviz.nodeTypes.Earphone:
+            case sdn.nodeTypes.Earphone:
                 return "\uf095"; // fa-phone
-            case ofviz.nodeTypes.Factory:
+            case sdn.nodeTypes.Factory:
                 return "\uf1ad"; // fa-building
-            case ofviz.nodeTypes.Finland:
+            case sdn.nodeTypes.Finland:
                 return "\uf067"; // fa-plus
-            case ofviz.nodeTypes.Flag:
+            case sdn.nodeTypes.Flag:
                 return "\uf024"; // fa-flag
-            case ofviz.nodeTypes.Health:
+            case sdn.nodeTypes.Health:
                 return "\uf0fe"; // fa-plus-square 
-            case ofviz.nodeTypes.Home:
+            case sdn.nodeTypes.Home:
                 return "\uf015"; // fa-home
-            case ofviz.nodeTypes.Node:
+            case sdn.nodeTypes.Node:
                 return "\uf1e0"; // fa-share-alt
-            case ofviz.nodeTypes.Pad:
+            case sdn.nodeTypes.Pad:
                 return "\uf10a"; // fa-tablet
-            case ofviz.nodeTypes.PC:
+            case sdn.nodeTypes.PC:
                 return "\uf109"; // fa-laptop
-            case ofviz.nodeTypes.Phone:
+            case sdn.nodeTypes.Phone:
                 return "\uf10b"; // fa-mobile
-            case ofviz.nodeTypes.Position:
+            case sdn.nodeTypes.Position:
                 return "\uf041"; // fa-map-marker
-            case ofviz.nodeTypes.Power:
+            case sdn.nodeTypes.Power:
                 return "\uf0e7"; // fa-bolt
-            case ofviz.nodeTypes.Printer:
+            case sdn.nodeTypes.Printer:
                 return "\uf02f"; // fa-print
-            case ofviz.nodeTypes.Road:
+            case sdn.nodeTypes.Road:
                 return "\uf018"; // fa-road
-            case ofviz.nodeTypes.Server:
+            case sdn.nodeTypes.Server:
                 return "\uf1c0"; // fa-database
-            case ofviz.nodeTypes.Shield:
+            case sdn.nodeTypes.Shield:
                 return "\uf132"; // fa-shield
-            case ofviz.nodeTypes.Shipment:
+            case sdn.nodeTypes.Shipment:
                 return "\uf0d1"; // fa-truck
-            case ofviz.nodeTypes.Shop:
+            case sdn.nodeTypes.Shop:
                 return "\uf07a"; // fa-shop
-            case ofviz.nodeTypes.Unknown:
+            case sdn.nodeTypes.Unknown:
                 return "\uf059"; // fa-question-circle
             }
             return "\uf059"; // fa-question-circle
         };
     });
-})(window.ofvizApp);
+})(window.sdnViz);

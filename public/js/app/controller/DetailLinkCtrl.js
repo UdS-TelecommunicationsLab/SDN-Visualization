@@ -25,9 +25,9 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function(ofvizApp) {
+(function(sdnViz) {
     "use strict";
-    ofvizApp.controller("DetailLinkCtrl", function(DetailView, $rootScope, $scope, $routeParams, repository, websockets) {
+    sdnViz.controller("DetailLinkCtrl", function(DetailView, $rootScope, $scope, $routeParams, repository, websockets) {
         DetailView.init($scope, $routeParams.id, repository.getLinkById);
         $scope.isEditable = !$rootScope.isStandalone;
 
@@ -75,4 +75,4 @@
 
         $scope.load();
     });
-})(window.ofvizApp);
+})(window.sdnViz);

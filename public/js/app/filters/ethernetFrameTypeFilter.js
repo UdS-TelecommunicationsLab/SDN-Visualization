@@ -25,11 +25,11 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function(ofvizApp) {
+(function(sdnViz) {
     "use strict";
-    ofvizApp.filter("ethernetFrameType", function() {
+    sdnViz.filter("ethernetFrameType", function() {
         return function(input) {
-            return ofviz.ethernetFrameType(input);
+            return sdn.ethernetFrameType(input);
         };
     });
-})(window.ofvizApp);
+})(window.sdnViz);

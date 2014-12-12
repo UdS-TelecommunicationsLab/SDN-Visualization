@@ -25,9 +25,9 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function(ofvizApp) {
+(function(sdnViz) {
     "use strict";
-    ofvizApp.controller("TopologyCtrl", function($scope, router, deviceTypeIconFilter, packetLossRateFilter, delayFilter, repository, messenger) {
+    sdnViz.controller("TopologyCtrl", function($scope, router, deviceTypeIconFilter, packetLossRateFilter, delayFilter, repository, messenger) {
         $scope.loaded = false;
         var parameters = { nodeRadius: 16, heightMargin: 250, minHeight: 400, animationDuration: 1000, };
         parameters.iconFontSize = Math.ceil(parameters.nodeRadius * 1.0);
@@ -43,7 +43,7 @@
             .linkStrength(1)
             .on("tick", tick);
 
-        var svg = d3.select("#of-topology .map > div.mapInner").append("svg");
+        var svg = d3.select("#sdn-topology .map > div.mapInner").append("svg");
 
         var nodes = force.nodes();
         var links = force.links();
@@ -51,10 +51,10 @@
         var node = svg.selectAll(".node"),
             link = svg.selectAll(".link");
 
-        var tooltip = d3.select("#of-topology .map").append("div").attr("class", "topology-tooltip").style("opacity", 0);
+        var tooltip = d3.select("#sdn-topology .map").append("div").attr("class", "topology-tooltip").style("opacity", 0);
 
         var resize = function() {
-            w = $("#of-topology .map").width();
+            w = $("#sdn-topology .map").width();
             h = Math.max($(window).height() - parameters.heightMargin, parameters.minHeight);
             force.size([w, h]);
             svg.attr("width", w)
@@ -71,7 +71,7 @@
             }
 
             if (!$scope.loaded) {
-                $("#of-topology .mapInner").slideDown(1000);
+                $("#sdn-topology .mapInner").slideDown(1000);
                 force.alpha(0.1);
             }
 
@@ -81,7 +81,7 @@
 
         var hideTopology = function() {
             $scope.loaded = false;
-            $("#of-topology .mapInner").slideUp(1000);
+            $("#sdn-topology .mapInner").slideUp(1000);
         };
 
         var styleShape = function(shape) {
@@ -201,7 +201,7 @@
                     tooltip.style("opacity", 0.9);
                     if (type == "Node") {
                         var html = "<div><strong>" + ((obj.id !== obj.device.name) ? obj.device.name : "Unknown Device") + "</strong> ";
-                        if (obj.device.type == ofviz.Client.type)
+                        if (obj.device.type == sdn.Client.type)
                             html += "<span>(" + obj.device.interface.address + ")</span>";
                         html += "<br /><code class='dp'>" + obj.id + "</code></div>";
                         tooltip.html(html);
@@ -238,7 +238,7 @@
                     }
                 })
                 .on("mousemove", function(d) {
-                    var topologyWidth = $("#of-topology .map").width();
+                    var topologyWidth = $("#sdn-topology .map").width();
                     var tooltipWidth = $(tooltip.node()).width();
                     var tooltipHeight = $(tooltip.node()).height();
 
@@ -450,4 +450,4 @@
 
         init();
     });
-})(window.ofvizApp);
+})(window.sdnViz);

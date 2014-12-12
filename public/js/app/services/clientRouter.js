@@ -25,9 +25,9 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function(ofvizApp) {
+(function(sdnViz) {
     "use strict";
-    ofvizApp.factory("router", function($rootScope, $location, messenger, toastr) {
+    sdnViz.factory("router", function($rootScope, $location, messenger, toastr) {
         var init = function() {
             // LEAVE HANDLING
             var onLeave = null;
@@ -57,8 +57,8 @@
 
             // HANDLING ACTIVE LINK IN TOP BAR
             $rootScope.$on("$routeChangeSuccess", function() {
-                $("#of-nav li.active").removeClass("active");
-                $("#of-nav a[href='" + $location.path() + "']").closest("li").addClass("active");
+                $("#sdn-nav li.active").removeClass("active");
+                $("#sdn-nav a[href='" + $location.path() + "']").closest("li").addClass("active");
             });
         };
 
@@ -72,4 +72,4 @@
             navigate: navigate
         };
     });
-})(window.ofvizApp);
+})(window.sdnViz);

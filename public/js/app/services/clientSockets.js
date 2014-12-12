@@ -25,9 +25,9 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function(ofvizApp) {
+(function(sdnViz) {
     "use strict";
-    ofvizApp.factory("websockets", function($rootScope, toastr) {
+    sdnViz.factory("websockets", function($rootScope, toastr) {
         var socket = io.connect("/");
 
         var bind = function(channel, callback) {
@@ -86,4 +86,4 @@
             }
         };
     });
-})(window.ofvizApp);
+})(window.sdnViz);

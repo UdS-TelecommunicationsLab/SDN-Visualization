@@ -8,45 +8,45 @@ h4{font-size:12px;font-weight:bold}
 h5{font-size:12px}
 h6{font-size:12px;font-style:italic}
 .page-header{margin-top:20px}
-#of-nav{text-shadow:0 -1px 0 rgba(0,0,0,0.15);background-color:#005278;border:0;box-shadow:0 1px 0 rgba(255,255,255,0.1)}#of-nav .navbar-brand{color:white;background:transparent url("../images/ofviz.png") no-repeat center left;padding-left:46px;padding-right:20px}
-#of-nav .navbar-nav>li>a{color:#b3e1f7}#of-nav .navbar-nav>li>a img,#of-nav .navbar-nav>li>a small{vertical-align:middle}
-#of-nav .navbar-nav>li>a small{display:inline-block;margin-left:5px}
-#of-nav .navbar-nav>li.active,#of-nav .navbar-nav>li>a:hover{color:white}
-#of-nav .navbar-nav>li.ok a{color:#5cb85c !important}
-#of-nav .navbar-nav>li.error a{color:#d9534f !important}
-#of-nav .navbar-nav>li.active a{color:white;background-color:#00415f}
+#sdn-nav{text-shadow:0 -1px 0 rgba(0,0,0,0.15);background-color:#005278;border:0;box-shadow:0 1px 0 rgba(255,255,255,0.1)}#sdn-nav .navbar-brand{color:white;background:transparent url("../images/ofviz.png") no-repeat center left;padding-left:46px;padding-right:20px}
+#sdn-nav .navbar-nav>li>a{color:#b3e1f7}#sdn-nav .navbar-nav>li>a img,#sdn-nav .navbar-nav>li>a small{vertical-align:middle}
+#sdn-nav .navbar-nav>li>a small{display:inline-block;margin-left:5px}
+#sdn-nav .navbar-nav>li.active,#sdn-nav .navbar-nav>li>a:hover{color:white}
+#sdn-nav .navbar-nav>li.ok a{color:#5cb85c !important}
+#sdn-nav .navbar-nav>li.error a{color:#d9534f !important}
+#sdn-nav .navbar-nav>li.active a{color:white;background-color:#00415f}
 code{color:#005278;background-color:#eaf0f3}
 code.dp{background-color:transparent;vertical-align:middle}
 span.middle{vertical-align:middle}
 a.thumbnail{overflow:hidden;word-wrap:break-word;text-decoration:none;margin-bottom:0px}a.thumbnail code{white-space:normal}
 .nav-pills li:hover{cursor:pointer}
 .form-group{margin-left:5px;margin-right:5px}
-#of-docs h1{margin-top:5px}
-#of-docs .nav>li>a{display:block;color:#716b7a;padding:5px 20px}
-#of-docs .nav>li>a:hover,#of-docs .nav>li>a:focus{text-decoration:none;background-color:#e5e3e9;border-right:1px solid #dbd8e0}
-#of-docs .nav>.active>a,#of-docs .nav>.active:hover>a,#of-docs .nav>.active:focus>a{font-weight:bold;color:#563d7c;background-color:transparent;border-right:1px solid #563d7c}
-#of-docs .nav .nav{margin-bottom:8px}
-#of-docs .nav .nav>li>a{padding-top:3px;padding-bottom:3px;padding-left:30px;font-size:90%}
-#of-docs #of-docs-body{padding:0}
-#of-docs .affix{position:static}
-#of-docs p{max-width:800px;line-height:1.5em;margin-bottom:0.5em}#of-docs p a{font-weight:bold}
-#of-topology line.link{fill:none;stroke:#999;stroke-width:1px}
-#of-topology .node{text-align:center;vertical-align:middle}
-#of-topology marker#wlan{fill:green}
-#of-topology line.link.wlan{stroke:black;stroke-dasharray:0,2 1}
-#of-topology circle,#of-topology rect{stroke-width:2px;cursor:pointer}
-#of-topology image{cursor:pointer}
-#of-topology text{fill:white;text-anchor:middle;text-align:center;dominant-baseline:central;font-family:FontAwesome;font-style:normal;font-weight:normal;line-height:1}
-#of-topology div.topology-tooltip{position:absolute;text-align:center;padding:2px;pointer-events:none;background-color:white;border:1px solid #CCC}#of-topology div.topology-tooltip th{width:120px}
-#of-topology .icon-label{margin-left:5px;display:inline-block}
-#of-topology .busyIndicator{color:#999;font-size:24px;margin-bottom:50px}
+#sdn-docs h1{margin-top:5px}
+#sdn-docs .nav>li>a{display:block;color:#716b7a;padding:5px 20px}
+#sdn-docs .nav>li>a:hover,#sdn-docs .nav>li>a:focus{text-decoration:none;background-color:#e5e3e9;border-right:1px solid #dbd8e0}
+#sdn-docs .nav>.active>a,#sdn-docs .nav>.active:hover>a,#sdn-docs .nav>.active:focus>a{font-weight:bold;color:#563d7c;background-color:transparent;border-right:1px solid #563d7c}
+#sdn-docs .nav .nav{margin-bottom:8px}
+#sdn-docs .nav .nav>li>a{padding-top:3px;padding-bottom:3px;padding-left:30px;font-size:90%}
+#sdn-docs #sdn-docs-body{padding:0}
+#sdn-docs .affix{position:static}
+#sdn-docs p{max-width:800px;line-height:1.5em;margin-bottom:0.5em}#sdn-docs p a{font-weight:bold}
+#sdn-topology line.link{fill:none;stroke:#999;stroke-width:1px}
+#sdn-topology .node{text-align:center;vertical-align:middle}
+#sdn-topology marker#wlan{fill:green}
+#sdn-topology line.link.wlan{stroke:black;stroke-dasharray:0,2 1}
+#sdn-topology circle,#sdn-topology rect{stroke-width:2px;cursor:pointer}
+#sdn-topology image{cursor:pointer}
+#sdn-topology text{fill:white;text-anchor:middle;text-align:center;dominant-baseline:central;font-family:FontAwesome;font-style:normal;font-weight:normal;line-height:1}
+#sdn-topology div.topology-tooltip{position:absolute;text-align:center;padding:2px;pointer-events:none;background-color:white;border:1px solid #CCC}#sdn-topology div.topology-tooltip th{width:120px}
+#sdn-topology .icon-label{margin-left:5px;display:inline-block}
+#sdn-topology .busyIndicator{color:#999;font-size:24px;margin-bottom:50px}
 span.device{display:inline-block;vertical-align:middle;line-height:16px;margin:5px;padding:5px;color:white;-ms-border-radius:2px;border-radius:2px}span.device i{width:16px;height:16px;vertical-align:middle;text-align:center;padding:0;margin:0}
 span.device.Link{background:#a23800 !important}
 span.device.Flow{background:#ffb800 !important}
-#of-about .logo{text-align:center;margin-bottom:10px}
-#of-about .jumbotron img{position:relative;top:-30px;left:-30px;margin:0}
-#of-about .row img{margin:0 auto;display:block;background:white;padding:10px}
-#of-about .row a:hover{text-decoration:none}
+#sdn-about .logo{text-align:center;margin-bottom:10px}
+#sdn-about .jumbotron img{position:relative;top:-30px;left:-30px;margin:0}
+#sdn-about .row img{margin:0 auto;display:block;background:white;padding:10px}
+#sdn-about .row a:hover{text-decoration:none}
 .topologyStats{font-size:1.2em}
 .panel-heading h2{margin:5px 0 5px 0}
 .helpTooltip{color:#428bca;font-size:10px;position:relative;top:-5px}
