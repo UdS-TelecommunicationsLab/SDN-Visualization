@@ -28,16 +28,14 @@
 (function(sdnViz) {
     "use strict";
 
-    sdnViz.directive("sdnStatisticsDashboard", function() {
+    sdnViz.directive("sdnCrcBox", function() {
         return {
-            restrict: "E",
             replace: true,
-            templateUrl: "/partials/statistics-dashboard",
-            scope: true,
-            controller: function() {
-                
+            restrict: "A",
+            templateUrl: "/templates/controls/sdn-crc-box",
+            scope: {
+                crc: "="
             }
         };
     });
-
 })(window.sdnViz);

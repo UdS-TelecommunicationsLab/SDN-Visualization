@@ -27,17 +27,26 @@
 
 (function(sdnViz) {
     "use strict";
-
-    sdnViz.directive("sdnStatisticsFlows", function() {
+    sdnViz.directive("sdnCopyPasteString", function() {
         return {
-            restrict: "E",
             replace: true,
-            templateUrl: "/partials/statistics-flows",
-            scope: true,
-            controller: function() {
-                
+            restrict: "A",
+            templateUrl: "/templates/controls/sdn-copy-paste-string",
+            controller: function($scope) {
+                $scope.copy = function() {
+                    $scope.clipboard.value = angular.copy($scope.device[$scope.field]);
+                };
+                $scope.paste = function() {
+                    if ($scope.clipboard.value != "") {
+                        $scope.device[$scope.field] = $scope.clipboard.value;
+                    }
+                };
+            },
+            scope: {
+                device: "=",
+                clipboard: "=",
+                field: "@"
             }
         };
     });
-
 })(window.sdnViz);

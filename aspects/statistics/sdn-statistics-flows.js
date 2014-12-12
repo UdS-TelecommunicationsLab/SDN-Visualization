@@ -28,14 +28,16 @@
 (function(sdnViz) {
     "use strict";
 
-    sdnViz.directive("sdnCrcBox", function() {
+    sdnViz.directive("sdnStatisticsFlows", function() {
         return {
+            restrict: "E",
             replace: true,
-            restrict: "A",
-            templateUrl: "/tmpl/sdn-crc-box",
-            scope: {
-                crc: "="
+            templateUrl: "/templates/statistics/sdn-statistics-flows",
+            scope: true,
+            controller: function() {
+                
             }
         };
     });
+
 })(window.sdnViz);

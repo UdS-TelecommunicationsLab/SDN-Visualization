@@ -28,11 +28,11 @@
 (function(sdnViz) {
     "use strict";
 
-    sdnViz.directive("sdnStatisticsLinks", function() {
+    sdnViz.directive("sdnStatisticsDevices", function() {
         return {
             restrict: "E",
             replace: true,
-            templateUrl: "/partials/statistics-links",
+            templateUrl: "/templates/statistics/sdn-statistics-devices",
             scope: true,
             controller: function() {
                 

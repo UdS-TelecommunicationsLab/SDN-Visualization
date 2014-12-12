@@ -27,15 +27,17 @@
 
 (function(sdnViz) {
     "use strict";
-    sdnViz.directive("sdnMacDigitBox", function() {
+
+    sdnViz.directive("sdnStatisticsLinks", function() {
         return {
-            restrict: "C",
+            restrict: "E",
             replace: true,
-            templateUrl: "/tmpl/sdn-mac-digit-box",
-            scope: {
-                devicePattern: "=",
-                index: "="
+            templateUrl: "/templates/statistics/sdn-statistics-links",
+            scope: true,
+            controller: function() {
+                
             }
         };
     });
+
 })(window.sdnViz);

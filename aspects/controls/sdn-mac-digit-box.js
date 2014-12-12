@@ -27,13 +27,14 @@
 
 (function(sdnViz) {
     "use strict";
-    sdnViz.directive("sdnDevice", function() {
+    sdnViz.directive("sdnMacDigitBox", function() {
         return {
+            restrict: "C",
             replace: true,
-            templateUrl: "/tmpl/sdn-device",
+            templateUrl: "/templates/controls/sdn-mac-digit-box",
             scope: {
-                device: "=",
-                port: "@"
+                devicePattern: "=",
+                index: "="
             }
         };
     });

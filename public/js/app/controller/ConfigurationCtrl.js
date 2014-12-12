@@ -144,7 +144,7 @@
 
         $scope.edit = function(device) {
             var modalInstance = $modal.open({
-                templateUrl: "/tmpl/sdn-edit-device",
+                templateUrl: "/templates/controls/sdn-edit-device",
                 controller: "EditDeviceCtrl",
                 resolve: {
                     item: function() {

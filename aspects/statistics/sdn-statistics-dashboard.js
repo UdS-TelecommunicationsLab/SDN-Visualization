@@ -27,14 +27,17 @@
 
 (function(sdnViz) {
     "use strict";
-    sdnViz.directive("sdnFlowThumbnail", function() {
+
+    sdnViz.directive("sdnStatisticsDashboard", function() {
         return {
-            restrict: "A",
+            restrict: "E",
             replace: true,
-            templateUrl: "/tmpl/sdn-flow-thumbnail",
-            scope: {
-                flow: "="
+            templateUrl: "/templates/statistics/sdn-statistics-dashboard",
+            scope: true,
+            controller: function() {
+                
             }
         };
     });
+
 })(window.sdnViz);

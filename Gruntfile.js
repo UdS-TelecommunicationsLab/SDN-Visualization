@@ -98,7 +98,7 @@ module.exports = function(grunt) {
                 stripBanners: true
             },
             dist: {
-                src: ['public/js/app/**/*.js'],
+                src: ['public/js/app/**/*.js', 'aspects/**/*.js'],
                 dest: 'public/js/dist.js'
             }
         },

@@ -27,11 +27,11 @@
 
 (function(sdnViz) {
     "use strict";
-    sdnViz.directive("sdnDeviceThumbnail", function() {
+    sdnViz.directive("sdnDeviceTypeIcon", function() {
         return {
             restrict: "A",
             replace: true,
-            templateUrl: "/tmpl/sdn-device-thumbnail",
+            templateUrl: "/templates/controls/sdn-device-type-icon",
             scope: {
                 device: "="
             }

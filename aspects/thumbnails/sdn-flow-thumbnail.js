@@ -27,13 +27,13 @@
 
 (function(sdnViz) {
     "use strict";
-    sdnViz.directive("sdnDeviceTypeIcon", function() {
+    sdnViz.directive("sdnFlowThumbnail", function() {
         return {
             restrict: "A",
             replace: true,
-            templateUrl: "/tmpl/sdn-device-type-icon",
+            templateUrl: "/templates/thumbnails/sdn-flow-thumbnail",
             scope: {
-                device: "="
+                flow: "="
             }
         };
     });

@@ -27,17 +27,14 @@
 
 (function(sdnViz) {
     "use strict";
-
-    sdnViz.directive("sdnStatisticsDevices", function() {
+    sdnViz.directive("sdnDevice", function() {
         return {
-            restrict: "E",
             replace: true,
-            templateUrl: "/partials/statistics-devices",
-            scope: true,
-            controller: function() {
-                
+            templateUrl: "/templates/controls/sdn-device",
+            scope: {
+                device: "=",
+                port: "@"
             }
         };
     });
-
 })(window.sdnViz);

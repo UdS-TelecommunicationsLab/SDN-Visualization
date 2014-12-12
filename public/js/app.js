@@ -32,51 +32,47 @@ sdnViz.config(function($routeProvider, $locationProvider) {
     // Main Views
     $routeProvider.
         when("/topology", {
-            templateUrl: "partials/topology",
+            templateUrl: "templates/pages/topology",
             controller: "TopologyCtrl"
         }).
         when("/statistics", {
-            templateUrl: "partials/statistics",
+            templateUrl: "templates/pages/statistics",
             controller: "StatisticsCtrl"
         }).
-        when("/reports", {
-            templateUrl: "partials/reports",
-            controller: "ReportsCtrl"
-        }).
         when("/documentation", {
-            templateUrl: "partials/documentation",
+            templateUrl: "templates/pages/documentation",
             controller: "DocumentationCtrl"
         }).
         when("/configuration", {
-            templateUrl: "partials/configuration",
+            templateUrl: "templates/pages/configuration",
             controller: "ConfigurationCtrl"
         }).
         when("/configuration/addDevice/:id", {
-            templateUrl: "partials/configuration",
+            templateUrl: "templates/pages/configuration",
             controller: "ConfigurationCtrl"
         }).
         when("/about", {
-            templateUrl: "partials/about",
+            templateUrl: "templates/pages/about",
             controller: "AboutCtrl"
         }).
         when("/status", {
-            templateUrl: "partials/status",
+            templateUrl: "templates/pages/status",
             controller: "StatusCtrl"
         });
 
     // Detail Views
     $routeProvider.when("/detail/device/:id", {
-        templateUrl: "partials/detailDevice",
+        templateUrl: "templates/pages/detailDevice",
         controller: "DetailDeviceCtrl"
     });
 
     $routeProvider.when("/detail/link/:id", {
-        templateUrl: "partials/detailLink",
+        templateUrl: "templates/pages/detailLink",
         controller: "DetailLinkCtrl"
     });
 
     $routeProvider.when("/detail/flow/:id", {
-        templateUrl: "partials/detailFlow",
+        templateUrl: "templates/pages/detailFlow",
         controller: "DetailFlowCtrl"
     });
 

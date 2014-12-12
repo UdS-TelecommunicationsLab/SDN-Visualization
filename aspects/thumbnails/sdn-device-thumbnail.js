@@ -27,25 +27,13 @@
 
 (function(sdnViz) {
     "use strict";
-    sdnViz.directive("sdnCopyPasteString", function() {
+    sdnViz.directive("sdnDeviceThumbnail", function() {
         return {
-            replace: true,
             restrict: "A",
-            templateUrl: "/tmpl/sdn-copy-paste-string",
-            controller: function($scope) {
-                $scope.copy = function() {
-                    $scope.clipboard.value = angular.copy($scope.device[$scope.field]);
-                };
-                $scope.paste = function() {
-                    if ($scope.clipboard.value != "") {
-                        $scope.device[$scope.field] = $scope.clipboard.value;
-                    }
-                };
-            },
+            replace: true,
+            templateUrl: "/templates/thumbnails/sdn-device-thumbnail",
             scope: {
-                device: "=",
-                clipboard: "=",
-                field: "@"
+                device: "="
             }
         };
     });
