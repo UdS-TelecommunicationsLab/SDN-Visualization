@@ -39,7 +39,7 @@ var app = module.exports = express();
 
 app.set("port", process.env.PORT || pkg.appPort || 3000);
 app.set("redirect", pkg.isHttpRedirectEnabled);
-app.set("views", __dirname + "/views");
+app.set("views", __dirname + "/aspects");
 app.set("view engine", "jade");
 app.use(express.cookieParser());
 app.use(lessMiddleware({ src: __dirname + "/public", compress: true }));
@@ -47,7 +47,7 @@ app.use(lessMiddleware({ src: __dirname + "/public", compress: true }));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.static(path.join(__dirname, "public")));
-app.use(express.session({ secret: "df34<ajdrf9364aherf0üq34a<rh" }));
+app.use(express.session({ secret: "df34<ajdrf9364aherf0ï¿½q34a<rh" }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(app.router);

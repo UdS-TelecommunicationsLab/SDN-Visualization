@@ -50,14 +50,9 @@
         }
     };
 
-
     var registerTemplates = function(app) {
-        app.get("/partials/:name", ensureLoggedIn(loginUrl), function(request, response) {
-            response.render("partials/" + request.params.name);
-        });
-
-        app.get("/tmpl/:name", ensureLoggedIn(loginUrl), function(request, response) {
-            response.render("templates/" + request.params.name);
+        app.get("/templates/*", ensureLoggedIn(loginUrl), function(request, response) {
+            response.render(request.params[0]);
         });
     };
 

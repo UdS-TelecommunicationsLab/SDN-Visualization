@@ -1,0 +1,47 @@
+div#sdn-statistics
+	div
+		div.row
+			div.col-md-7.col-lg-8
+				ul.nav.nav-pills
+					li.active
+						a(data-target="#dashboard", data-toggle="pill")
+							i.fa.fa-dashboard
+							|  Dashboard
+					li
+						a(data-target="#devices", data-toggle="pill")
+							i.fa.fa-hdd-o
+							|  Devices 
+							span.badge {{ data.nvm.devices.length }} 
+					li
+						a(data-target="#links", data-toggle="pill")
+							i.fa.fa-link
+							|  Links 
+							span.badge {{ data.nvm.links.length }} 
+					li
+						a(data-target="#flows", data-toggle="pill")
+							i.fa.fa-random
+							|  Flows 
+							span.badge {{ data.nvm.flows.length }} 
+			div.col-md-5.col-lg-4
+				div.btn-toolbar
+					div.btn-group
+						div.input-group(style="width:350px")
+							input.form-control(type="text", ng-model="deviceFilter",placeholder="filter name, mac or datapath")
+							span.input-group-btn
+								button.btn.btn-default(type="button",ng-click="clearFilter()",ng-disabled="deviceFilter == ''")
+									i.fa.fa-times
+
+		hr
+
+		div.tab-content
+			div.tab-pane.active#dashboard
+				sdn-statistics-dashboard
+
+			div.tab-pane#devices
+				sdn-statistics-devices
+			
+			div.tab-pane#links
+				sdn-statistics-links
+
+			div.tab-pane#flows
+				sdn-statistics-flows

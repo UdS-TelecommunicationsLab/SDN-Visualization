@@ -1,0 +1,54 @@
+!!!
+html(ng-app="sdn-visualization",xlink="http://www.w3.org/1999/xlink")
+	head
+		meta(charset="utf8")
+		meta(name="viewport", content="width=device-width, initial-scale=1.0")
+		base(href="/")
+		title SDN Visualization
+		link(rel="stylesheet", href="/css/bootstrap.css")
+		link(rel="stylesheet", href="/css/colorpicker.css")
+		link(rel="stylesheet", href="/css/toastr.min.css")
+		link(rel="stylesheet", href="/css/font-awesome.min.css")
+		link(rel="stylesheet", href="/css/app.css")
+	body
+		a(class="sr-only",href="#content")
+			Skip navigation
+		header#sdn-nav.navbar.navbar-inverse.navbar-fixed-top(role="banner")
+			div.container
+				div.navbar-header
+					a.navbar-brand(href="/") SDN-Viz
+				nav(class="navbar-collapse collapse")
+					block nav			
+			
+		div#content
+			div.container
+				div.row
+					div.col-sm-8.col-md-10
+						div.container
+							block body
+					div.col-sm-4.col-md-2
+						a.thumbnail(href="/operator", target="_blank")
+							img(src="/images/OperatorLogo.jpg")
+						| <br/>
+						a.thumbnail(href="http://www.uni-saarland.de/", target="_blank")
+							img(src="/images/logos/UdS.jpg")
+						| <br/>
+						a.thumbnail(href="http://www.intel-vci.uni-saarland.de/", target="_blank")
+							img(src="/images/logos/ivci.jpg")
+						hr
+						p Created by 
+							a(href="http://www.nt.uni-saarland.de/",target="_blank") Telecommunications Lab
+							|  / 
+							a(href="http://www.intel-vci.uni-saarland.de",target="_blank") Intel Visual Computing Institute
+							|  at 
+							a(href="http://www.uni-saarland.de",target="_blank") Saarland University
+							|.
+						p Licensed under 
+							a(href="http://opensource.org/licenses/MIT",target="_blank") MIT
+							| . </br>
+							span(ng-cloak)
+								|  Version: v
+								span(sdn-app-version)
+								| .
+
+		block scripts

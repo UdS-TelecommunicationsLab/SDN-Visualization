@@ -38,5 +38,5 @@
         return exports.hashCode(obj).substr(0, 10);
     };
 
-})((typeof process === 'undefined' || !process.versions) ? window.ofviz = window.ofviz || {} : exports,
+})((typeof process === 'undefined' || !process.versions) ? window.sdn = window.sdn || {} : exports,
 (typeof process === 'undefined' || !process.versions) ? window.CryptoJS : undefined);
