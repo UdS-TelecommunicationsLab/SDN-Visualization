@@ -98,7 +98,7 @@ module.exports = function(grunt) {
                 stripBanners: true
             },
             dist: {
-                src: ['public/js/app/**/*.js', 'aspects/**/*.js'],
+                src: ['aspects/**/*.js'],
                 dest: 'public/js/dist.js'
             }
         },
@@ -121,7 +121,7 @@ module.exports = function(grunt) {
             }
         },
         watch: {
-            files: "public/js/app/**/*.js",
+            files: "aspects/**/*.js",
             tasks: ["concat", "uglify"],
             options: {
                 interrupt: true
