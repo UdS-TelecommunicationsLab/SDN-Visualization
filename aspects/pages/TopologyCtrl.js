@@ -29,7 +29,7 @@
     "use strict";
     sdnViz.controller("TopologyCtrl", function($scope, $modal, router, deviceTypeIconFilter, packetLossRateFilter, delayFilter, repository, messenger) {
         $scope.loaded = false;
-        var parameters = { nodeRadius: 16, heightMargin: 250, minHeight: 400, animationDuration: 1000, };
+        var parameters = { nodeRadius: 16, heightMargin: 340, minHeight: 400, animationDuration: 500 };
         parameters.iconFontSize = Math.ceil(parameters.nodeRadius * 1.0);
 
         var colors = { flowLink: "#ffb800", openFlowLink: "#006fa2", cableLink: "#666", unknownLink: "#444" };
