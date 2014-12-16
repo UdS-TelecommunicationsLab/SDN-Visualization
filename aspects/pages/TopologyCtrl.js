@@ -27,7 +27,7 @@
 
 (function(sdnViz) {
     "use strict";
-    sdnViz.controller("TopologyCtrl", function($scope, router, deviceTypeIconFilter, packetLossRateFilter, delayFilter, repository, messenger) {
+    sdnViz.controller("TopologyCtrl", function($scope, $modal, router, deviceTypeIconFilter, packetLossRateFilter, delayFilter, repository, messenger) {
         $scope.loaded = false;
         var parameters = { nodeRadius: 16, heightMargin: 250, minHeight: 400, animationDuration: 1000, };
         parameters.iconFontSize = Math.ceil(parameters.nodeRadius * 1.0);
@@ -380,6 +380,20 @@
             });
         };
 
+        $scope.showHelp = function() {
+            $modal.open({
+                templateUrl: "/templates/topology/sdn-topology-help",
+                resolve: { },
+                size: "sm",
+                controller: function($scope, $modalInstance) {
+                    $scope.close = function() {
+                        $modalInstance.dismiss('cancel');
+                    };
+
+                },
+                backdrop: true
+            })
+        };
 
         /* Flow highlighting */
         var unhighlightAll = function() {
