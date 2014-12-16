@@ -25,7 +25,7 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function() {
+(function(DEBUG) {
     "use strict";
     var dataSource = require("../application/dataSources/source"),
         config = require("./config"),
@@ -64,7 +64,7 @@
     };
 
     var loadingProcess = function() {
-        console.log("Worker run started.");
+        DEBUG && console.log("Worker run started.");
         try {
             if (isAvailable()) {
                 dataSource.getAllData(model, finish);
@@ -72,7 +72,7 @@
                 setTimeout(loadingProcess, pollingDelay);
             }
         } catch (e) {
-            console.log(e);
+            DEBUG && console.log(e);
         }
     };
 
@@ -90,4 +90,4 @@
             oldModel.latestInteraction = m.latestInteraction;
         }
     });
-})();
+})(false);
