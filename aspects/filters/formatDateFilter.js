@@ -29,7 +29,7 @@
     "use strict";
     sdnViz.filter("formatDate", function() {
         return function(input) {
-            return moment(input).format("Do MMMM YYYY HH:mm:ss");
+            return moment(input).format("Do MMMM YYYY - HH:mm:ss");
         };
     });
 })(window.sdnViz);
