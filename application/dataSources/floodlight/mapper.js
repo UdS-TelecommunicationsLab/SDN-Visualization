@@ -73,7 +73,7 @@
                 gateway = attachmentPoints[0].switchDPID;
                 port = attachmentPoints[0].port;
             }
-            var ip = undefined;
+            var ip = "unknown";
             if (d.ipv4 && d.ipv4.length > 0) {
                 ip = d.ipv4[0];
             }
