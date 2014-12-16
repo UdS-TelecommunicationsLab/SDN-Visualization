@@ -28,6 +28,7 @@
 (function (client) {
     "use strict";
     var mapper = require("./mapper"),
+        _ = require("underscore"),
         intf = require("./interface");
 
     var resourceCount = 0;
@@ -73,6 +74,7 @@
         getResource(client.commands.get.devices, processDevices);
         getResource(client.commands.get.flows, processFlows);
         getResource(client.commands.get.links, processLinks);
+        getResource(client.commands.get.ports, processPorts);
 
         callback();
     };
@@ -84,6 +86,21 @@
             var linkData = mapper.links.mapAll(data, model.devices);
             model.links = model.links.concat(linkData.links);
             model._internals.drMax = linkData.drMax;
+        }
+
+        callback();
+    };
+
+    var processPorts = function (data) {
+        if (data == null) {
+            console.error("processPorts called without data");
+        } else {
+            for(var dpid in data) {
+                var device = _.find(model.devices, function(d) { return d.id === dpid; });
+                if(device) {
+                    device.ports = mapper.ports.mapAll(data[dpid]);
+                }
+            }
         }
 
         callback();
@@ -131,7 +148,8 @@
             switches: "core/controller/switches/json",
             devices: "device/",
             links: "topology/links/json",
-            flows: "core/switch/all/flow/json"
+            flows: "core/switch/all/flow/json",
+            ports: "core/switch/all/port/json"
         }
     };
 })(exports);

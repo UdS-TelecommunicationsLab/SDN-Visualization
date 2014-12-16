@@ -27,10 +27,10 @@
 
 (function(sdnViz) {
     "use strict";
-    sdnViz.filter("delay", function(numberToFixedFilter) {
+    sdnViz.filter("decimal", function(numberToFixedFilter) {
         return function(input) {
-            if (input !== null)
-                return (numberToFixedFilter(input * 1000, 3)).toString() + " ms";
+            if (input !== undefined && input !== null)
+                return parseInt(input);
             return "UNK";
         };
     });

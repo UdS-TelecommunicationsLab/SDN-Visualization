@@ -27,11 +27,14 @@
 
 (function(sdnViz) {
     "use strict";
-    sdnViz.filter("delay", function(numberToFixedFilter) {
-        return function(input) {
-            if (input !== null)
-                return (numberToFixedFilter(input * 1000, 3)).toString() + " ms";
-            return "UNK";
+    sdnViz.directive("sdnHelpTooltip", function() {
+        return {
+            restrict: "E",
+            replace: true,
+            templateUrl: "/templates/controls/sdn-help-tooltip",
+            scope: {
+                tooltip: "@"
+            }
         };
     });
 })(window.sdnViz);

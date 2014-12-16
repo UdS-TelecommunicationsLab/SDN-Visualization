@@ -74,7 +74,7 @@
         case 33080:
             return "Novell IPX";
         default:
-            return "unknown";
+            return "UNK";
         }
     };
 

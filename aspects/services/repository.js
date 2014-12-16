@@ -36,18 +36,18 @@
                 return e.id == id;
             });
 
-            var connectedDevices = [];
+            var connectedDevices = {};
             if (device) {
                 var links = _.filter(data.nvm.links, function(d) {
                     return d.srcHost.id == device.id || d.dstHost.id == device.id;
                 });
-                connectedDevices = _.map(links, function(d) {
+                connectedDevices = _.object(_.map(links, function(d) {
                     if (d.srcHost.id == device.id)
-                        return d.dstHost;
+                        return [d.srcPort, d.dstHost];
                     else {
-                        return d.srcHost;
+                        return [d.dstPort, d.srcHost];
                     }
-                });
+                }));
             }
             return { item: device, connectedDevices: connectedDevices, latestInteraction: data.nvm.latestInteraction };
         };

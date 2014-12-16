@@ -62,3 +62,4 @@ td.nonZero.loss{color:#d9534f }
 .colorpickerBox{display:inline-block}
 #toast-container>div{opacity:1}
 [ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak{display:none !important}
+td.decimal{text-align:right !important;vertical-align:middle !important}

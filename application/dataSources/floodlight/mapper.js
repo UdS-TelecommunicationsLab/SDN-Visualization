@@ -40,8 +40,8 @@
             var configuration = config.getConfiguration();
 
             var ctrl = new nvm.Controller("Floodlight");
-            ctrl.name = (configuration && configuration.controller && configuration.controller.name) || "unknown";
-            ctrl.contact = (configuration && configuration.controller && configuration.controller.contact) || "unknown";
+            ctrl.name = (configuration && configuration.controller && configuration.controller.name) || "UNK";
+            ctrl.contact = (configuration && configuration.controller && configuration.controller.contact) || "UNK";
             ctrl.isStandalone = !(configuration && configuration.controller && !configuration.controller.isStandalone);
             ctrl.monitoredNetworks = [];
 
@@ -73,7 +73,7 @@
                 gateway = attachmentPoints[0].switchDPID;
                 port = attachmentPoints[0].port;
             }
-            var ip = "unknown";
+            var ip = "UNK";
             if (d.ipv4 && d.ipv4.length > 0) {
                 ip = d.ipv4[0];
             }
@@ -184,6 +184,39 @@
     };
     exports.links = links;
 
+    var ports = {
+        map: function(obj) {
+            var port = new nvm.Port(obj.portNumber);
+            port.receivePackets = obj.receivePackets;
+            port.transmitPackets = obj.transmitPackets;
+
+            port.receiveBytes = obj.receiveBytes;
+            port.transmitBytes = obj.transmitBytes;
+
+            port.receiveDropped = obj.receiveDropped;
+            port.transmitDropped = obj.transmitDropped;
+
+            port.receiveErrors = obj.receiveErrors;
+            port.transmitErrors = obj.transmitErrors;
+
+            port.receiveFrameErrors = obj.receiveFrameErrors;
+            port.receiveOverrunErrors = obj.receiveOverrunErrors;
+            port.receiveCRCErrors = obj.receiveCRCErrors;
+
+            port.collisions = obj.collisions;
+            return port;
+        },
+        mapAll: function(obj) {
+            var allPorts = {};
+
+            for(var i = 0; i < obj.length; i++) {
+                var p = obj[i];
+                allPorts[p.portNumber] = ports.map(p);
+            }
+            return allPorts;
+        }
+    };
+    exports.ports = ports;
 
     // Mapping Flows
     var flows = {

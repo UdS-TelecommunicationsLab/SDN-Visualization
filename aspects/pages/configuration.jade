@@ -55,12 +55,10 @@ div#sdn-configuration
 							th(style="width:38px")
 								button.btn.btn-success.btn-xs(ng-click="addPattern()")
 									i.fa.fa-plus
-							th(style="width:160px") DeviceID / Pattern 
-								span.helpTooltip(tooltip="?: Wildcard \n #: Wildcard, but value is extracted",
-									tooltip-placement="right") [?]
-							th Name 
-								span.helpTooltip(tooltip="# is replaced with extracted value",
-									tooltip-placement="right") [?]
+							th(style="width:160px") DeviceID / Pattern
+								sdn-help-tooltip(tooltip="?: Wildcard \n #: Wildcard, but value is extracted")
+							th Name
+								sdn-help-tooltip(tooltip="# is replaced with extracted value")
 							th User Name
 							th Url
 							th Location

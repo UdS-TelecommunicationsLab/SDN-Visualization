@@ -5,8 +5,9 @@ block header
 	code.dp {{ item.name }}
 block body
 	div.row
-		div.col-md-6
-			p 
+		div.col-md-4
+			h2 General
+			p
 				| ID: 
 				code {{ item.id }}
 			p(ng-show="item.userName") User Name: {{ item.userName }}
@@ -36,8 +37,61 @@ block body
 				span {{ item.purpose }}
 
 			hr.visible-xs.visible-sm
-		div.col-md-6
-			h2 Connections
-			div.row
-				div.col-sm-4.col-md-4(ng-repeat="device in connectedDevices | orderBy:'name' ")
-					span(sdn-device-thumbnail,device="device")
+		div.col-md-8
+			h2 Ports
+			table.table.table-condensed.table-bordered
+				thead
+					tr
+						th(rowspan=2) Connected Device
+						th(colspan=2) Packets
+						th(colspan=2) Bytes
+						th(colspan=2) Dropped
+						th(colspan=5) Errors
+						th(rowspan=2) Coll
+							sdn-help-tooltip(tooltip="Collisions")
+					tr
+						th(width="80px") R
+							sdn-help-tooltip(tooltip="Receive")
+						th(width="80px") T
+							sdn-help-tooltip(tooltip="Transmit")
+						th(width="80px") R
+							sdn-help-tooltip(tooltip="Receive")
+						th(width="80px") T
+							sdn-help-tooltip(tooltip="Transmit")
+						th(width="40px") R
+							sdn-help-tooltip(tooltip="Receive")
+						th(width="40px") T
+							sdn-help-tooltip(tooltip="Transmit")
+
+						th(width="40px") R
+							sdn-help-tooltip(tooltip="Receive")
+						th(width="40px") T
+							sdn-help-tooltip(tooltip="Transmit")
+						th(width="40px") F
+							sdn-help-tooltip(tooltip="Frame")
+						th(width="40px") O
+							sdn-help-tooltip(tooltip="Overrun")
+						th(width="40px") C
+							sdn-help-tooltip(tooltip="CRC")
+				tbody
+					tr(ng-repeat="(port, device) in connectedDevices | orderBy:'name' ")
+						td
+							a(href="{{ '/detail/device/' + device.id }}")
+								span(sdn-device-type-icon,device="device")
+								code.dp {{ device.name }}
+						td.decimal {{ item.ports[port].receivePackets | decimal }}
+						td.decimal {{ item.ports[port].transmitPackets | decimal }}
+
+						td.decimal {{ item.ports[port].receiveBytes | decimal }}
+						td.decimal {{ item.ports[port].transmitBytes | decimal }}
+
+						td.decimal {{ item.ports[port].receiveDropped | decimal }}
+						td.decimal {{ item.ports[port].transmitDropped | decimal }}
+
+						td.decimal {{ item.ports[port].receiveErrors | decimal }}
+						td.decimal {{ item.ports[port].transmitErrors | decimal }}
+						td.decimal {{ item.ports[port].receiveFrameErrors | decimal }}
+						td.decimal {{ item.ports[port].receiveOverrunErrors | decimal }}
+						td.decimal {{ item.ports[port].receiveCRCErrors | decimal }}
+
+						td.decimal {{ item.ports[port].collisions | decimal }}

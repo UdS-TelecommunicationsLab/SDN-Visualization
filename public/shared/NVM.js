@@ -65,8 +65,8 @@ var __extends = this.__extends || function(d, b) {
      * The Controller type that stores general information like name, type and the monitored networks.
      */
     exports.Controller = function(type) {
-        this.name = "unknown";
-        this.type = type || "unknown";
+        this.name = "UNK";
+        this.type = type || "UNK";
         this.monitoredNetworks = [];
         this.isReachable = false;
         this.isStandalone = true;
@@ -99,6 +99,30 @@ var __extends = this.__extends || function(d, b) {
         this.port = port;
     };
 
+    /**
+     * The Port represents a physical port on a switch, which has some associated statistics.
+     */
+    exports.Port = function(portNumber) {
+        this.number = portNumber;
+        this.receivePackets = 0;
+        this.transmitPackets = 0;
+
+        this.receiveBytes = 0;
+        this.transmitBytes = 0;
+
+        this.receiveDropped = 0;
+        this.transmitDropped = 0;
+
+        this.receiveErrors = 0;
+        this.transmitErrors = 0;
+
+        this.receiveFrameErrors = 0;
+        this.receiveOverrunErrors = 0;
+        this.receiveCRCErrors = 0;
+
+        this.collisions = 0;
+    };
+
 
     /**
      * The Device represents a common base class for Clients and Switches.
@@ -114,6 +138,7 @@ var __extends = this.__extends || function(d, b) {
         this.url = url || "";
         this.color = color || "#444444";
         this.activeFlows = [];
+        this.ports = {};
     };
     exports.Device.type = "Unknown";
 

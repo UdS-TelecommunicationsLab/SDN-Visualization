@@ -31,7 +31,7 @@
         return function(input) {
             if (input !== undefined && input !== null)
                 return (numberToFixedFilter(input, 3)).toString() + " kB/s";
-            return "unknown";
+            return "UNK";
         };
     });
 })(window.sdnViz);
