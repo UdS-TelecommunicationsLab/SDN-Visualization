@@ -49,50 +49,51 @@ div#sdn-configuration
 							button.btn.btn-default(type="button",ng-click="cancelPatternEdit(configForm)",ng-disabled="configForm.$pristine") Cancel
 
 			div.panel.panel-default
-				table.table.table-bordered.table-striped
-					thead
-						tr
-							th(style="width:38px")
-								button.btn.btn-success.btn-xs(ng-click="addPattern()")
-									i.fa.fa-plus
-							th(style="width:160px") DeviceID / Pattern
-								sdn-help-tooltip(tooltip="?: Wildcard \n #: Wildcard, but value is extracted")
-							th Name
-								sdn-help-tooltip(tooltip="# is replaced with extracted value")
-							th User Name
-							th Url
-							th Location
-							th Purpose
-							th(style="width:100px")
-				
-					tbody
-						tr(ng-repeat="deviceEntry in configuration.deviceInformation", ng-class="{ 'warning': deviceEntry.highlight }")
-							td
-								button.btn.btn-danger.btn-xs(ng-click="removePattern(deviceEntry)")
-									i.fa.fa-minus
-							td 
-								code.dp {{ deviceEntry.pattern }}
-							td.no-wrap
-								span(class="device", style="background-color: {{ deviceEntry.color }}")
-									i.fa {{ deviceEntry.type | deviceTypeIcon }}
-								code.dp {{ deviceEntry.name }}
-							td 
-								code.dp {{ deviceEntry.userName }}
-								div(sdn-copy-paste-string, clipboard="clipboard", device="deviceEntry", field="userName")
-							td
-								code.dp {{ deviceEntry.url }}
-								div(sdn-copy-paste-string, clipboard="clipboard", device="deviceEntry", field="url")
-							td
-								| {{ deviceEntry.location }} 
-								div(sdn-copy-paste-string, clipboard="clipboard", device="deviceEntry", field="location")
-							td
-								| {{ deviceEntry.purpose }} 
-								div(sdn-copy-paste-string, clipboard="clipboard", device="deviceEntry", field="purpose")
-							td
-								div.btn-group
-									button.btn.btn-default.btn-xs(ng-click="edit(deviceEntry)")
-										i.fa.fa-cog
-									button.btn.btn-default.btn-xs(ng-click="moveUp($index)",ng-disabled="$index == 0 || deviceEntry.status == 'blank'")
-										i.fa.fa-chevron-up
-									button.btn.btn-default.btn-xs(ng-click="moveDown($index)",ng-disabled="$index >= (configuration.deviceInformation.length-1)|| deviceEntry.status == 'blank'")
-										i.fa.fa-chevron-down
+				div.table-responsive
+					table.table.table-bordered.table-striped
+						thead
+							tr
+								th(style="width:38px")
+									button.btn.btn-success.btn-xs(ng-click="addPattern()")
+										i.fa.fa-plus
+								th(style="width:160px") DeviceID / Pattern
+									sdn-help-tooltip(tooltip="?: Wildcard \n #: Wildcard, but value is extracted")
+								th Name
+									sdn-help-tooltip(tooltip="# is replaced with extracted value")
+								th User Name
+								th Url
+								th Location
+								th Purpose
+								th(style="width:100px")
+
+						tbody
+							tr(ng-repeat="deviceEntry in configuration.deviceInformation", ng-class="{ 'warning': deviceEntry.highlight }")
+								td
+									button.btn.btn-danger.btn-xs(ng-click="removePattern(deviceEntry)")
+										i.fa.fa-minus
+								td
+									code.dp {{ deviceEntry.pattern }}
+								td.no-wrap
+									span(class="device", style="background-color: {{ deviceEntry.color }}")
+										i.fa {{ deviceEntry.type | deviceTypeIcon }}
+									code.dp {{ deviceEntry.name }}
+								td
+									code.dp {{ deviceEntry.userName }}
+									div(sdn-copy-paste-string, clipboard="clipboard", device="deviceEntry", field="userName")
+								td
+									code.dp {{ deviceEntry.url }}
+									div(sdn-copy-paste-string, clipboard="clipboard", device="deviceEntry", field="url")
+								td
+									| {{ deviceEntry.location }}
+									div(sdn-copy-paste-string, clipboard="clipboard", device="deviceEntry", field="location")
+								td
+									| {{ deviceEntry.purpose }}
+									div(sdn-copy-paste-string, clipboard="clipboard", device="deviceEntry", field="purpose")
+								td
+									div.btn-group
+										button.btn.btn-default.btn-xs(ng-click="edit(deviceEntry)")
+											i.fa.fa-cog
+										button.btn.btn-default.btn-xs(ng-click="moveUp($index)",ng-disabled="$index == 0 || deviceEntry.status == 'blank'")
+											i.fa.fa-chevron-up
+										button.btn.btn-default.btn-xs(ng-click="moveDown($index)",ng-disabled="$index >= (configuration.deviceInformation.length-1)|| deviceEntry.status == 'blank'")
+											i.fa.fa-chevron-down
