@@ -11,11 +11,13 @@ body {
     background-color: @background-color;
 }
 
-@media (min-width: 1200px) {
-    .container {
-        width: auto;
-        max-width: 98%;
-    }
+.navbar > .container .navbar-brand,
+.navbar > .container-fluid .navbar-brand,
+.container > .navbar-header,
+.container-fluid > .navbar-header,
+.container > .navbar-collapse,
+.container-fluid > .navbar-collapse {
+    margin-left: 0;
 }
 
 h1 {
