@@ -40,7 +40,7 @@ a.thumbnail{overflow:hidden;word-wrap:break-word;text-decoration:none;margin-bot
 #sdn-topology div.topology-tooltip{position:absolute;text-align:center;padding:2px;pointer-events:none;background-color:white;border:1px solid #CCC}#sdn-topology div.topology-tooltip th{width:120px}
 #sdn-topology .icon-label{margin-left:5px;display:inline-block}
 #sdn-topology .busyIndicator{color:#999;font-size:24px;margin-bottom:50px}
-span.device{display:inline-block;vertical-align:middle;line-height:16px;margin:5px;padding:5px;color:white;-ms-border-radius:2px;border-radius:2px}span.device i{width:16px;height:16px;vertical-align:middle;text-align:center;padding:0;margin:0}
+span.device{display:inline-block;vertical-align:middle;line-height:16px;margin:5px;padding:5px;color:white;-ms-border-radius:2px;border-radius:2px}
 span.device.Link{background:#a23800 !important}
 span.device.Flow{background:#ffb800 !important}
 #sdn-about .logo{text-align:center;margin-bottom:10px}

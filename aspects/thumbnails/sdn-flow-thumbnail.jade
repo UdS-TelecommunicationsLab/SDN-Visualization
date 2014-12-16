@@ -1,8 +1,8 @@
 ﻿div
 	a.thumbnail(href="{{ '/detail/flow/' + flow.id }}")
 		span(class="device Flow")
-			i.fa.fa-random
+			i.fa.fa-fw.fa-random
 		code.dp
-			| {{ flow.nw.src }} -> {{ flow.nw.dst }}
+			| {{ flow.nw.src }}:{{ flow.tp.src }} -> {{ flow.nw.dst }}:{{ flow.tp.dst }}
 			| [{{ flow.nw.protocol | networkProtocol }}]
 	| <br />
