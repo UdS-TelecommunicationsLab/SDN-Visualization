@@ -227,7 +227,7 @@
             flow.dl.dst = "00:00:" + obj.match.dataLayerDestination;
             flow.dl.type = parseInt(obj.match.dataLayerType.replace(/0x/g, ""), 16);
             flow.dl.vlan = parseInt(obj.match.dataLayerVirtualLan, 10);
-            flow.dl.vlanPriority = parseInt(obj.dldataLayerVirtualLanPriorityCodePoint, 10);
+            flow.dl.vlanPriority = parseInt(obj.match.dataLayerVirtualLanPriorityCodePoint, 10);
 
             flow.nw.src = obj.match.networkSource;
             flow.nw.dst = obj.match.networkDestination;
@@ -241,6 +241,8 @@
             flow.path.push(flow.dl.dst);
 
             flow.id = crypt.flowId(flow);
+
+            flow.actions = obj.actions;
 
             return flow;
         },
