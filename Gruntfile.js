@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  * 
- * This license applies to all parts of the OpenFlow Visualization Application that are not externally
+ * This license applies to all parts of the SDN-Visualization Application that are not externally
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
@@ -73,7 +73,7 @@ module.exports = function(grunt) {
 					archive: function() {
 						var d = new Date();
 						var date = d.toISOString().slice(0,19).replace(/[-:]/g,"").replace(/T/g, "_");
-						return "../OF-Viz_" + date + ".zip";
+						return "../SDN-Viz_" + date + ".zip";
 					}
 				},
 				expand: true,
@@ -98,13 +98,13 @@ module.exports = function(grunt) {
                 stripBanners: true
             },
             dist: {
-                src: ['public/js/app/**/*.js'],
+                src: ['aspects/**/*.js'],
                 dest: 'public/js/dist.js'
             }
         },
         karma: {
             unit: {
-                configFile: "ofviz.conf.js",
+                configFile: "sdnViz.conf.js",
                 runnerPort: 9999,
                 singleRun: true,
                 browsers: ['PhantomJS']
@@ -121,7 +121,7 @@ module.exports = function(grunt) {
             }
         },
         watch: {
-            files: "public/js/app/**/*.js",
+            files: "aspects/**/*.js",
             tasks: ["concat", "uglify"],
             options: {
                 interrupt: true

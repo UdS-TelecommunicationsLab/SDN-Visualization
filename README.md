@@ -1,6 +1,6 @@
-# OpenFlow Visualization Application
+# Software Defined Networking Visualization Application
 
-Providing a web-based interactive visualization solution for *Software Defined Networks* (in particular *OpenFlow* driven systems).
+Providing a web-based interactive visualization solution for *Software-Defined Networks* (in particular *OpenFlow* driven systems).
 
 **Authors:** [Andreas Schmidt](mailto:schmidt@nt.uni-saarland.de), [Michael Karl](mailto:karl@nt.uni-saarland.de)
 
@@ -8,7 +8,7 @@ Providing a web-based interactive visualization solution for *Software Defined N
 
 **Institution:** [Telecommuncations Chair](http://www.nt.uni-saarland.de/) - [Saarland University](http://www.uni-saarland.de/)
 
-**Version:** 0.1.0 - May 2014
+**Version:** 2014.1.1
 
 ## Installation Guide
 
@@ -19,14 +19,17 @@ We assume the sources are extracted and reside in the folder `<project root>`. W
 ### Platform Compatibility
 The software is regularly tested on a *Windows 8.1* machine as well as *Ubuntu 14.04*. Other operating systems might require different steps than these mentioned here.
 
-It is compatible with most modern browsers (e.g. Chrome >=30, Firefox >=25, Internet Explorer >=11, Opera >=17)
+It is compatible with most modern browsers (e.g. Chrome >=30, Firefox >=25, Internet Explorer >=11, Opera >=17).
 
 ### Prerequisites
 
-	* node 0.10.20 or newer
+	* nodejs 0.10.20 or newer
 	* npm 1.3.11 or newer
+	* grunt
 
 These can be installed via your package manager (Linux, e.g. apt-get) or via an installer (Windows).
+
+In order to have `grunt` as a command line utility you have to enter the following: `npm install -g grunt-cli`
 
 ### Setup Process
 Install Node.js modules as well as build the JavaScript sources:
@@ -80,7 +83,7 @@ There are two common options for running the application. In either case there w
 	sudo nohup /usr/bin/nodejs main.js > output.log &
 
 ##### Upstart Script
-The package includes the file `ofviz.conf`, which is a prepared for usage. The only required modification is the directory (`<project root>`), which you have to specify. The respective line contains a `TODO` comment. You might also consider to change the logs output.
+The package includes the file `sdnViz.conf`, which is a prepared for usage. The only required modification is the directory (`<project root>`), which you have to specify. The respective line contains a `TODO` comment. You might also consider to change the logs output.
 
 
 ## Configuration

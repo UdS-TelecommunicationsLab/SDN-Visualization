@@ -1,13 +1,13 @@
 {
-    "name": "of-viz",
-    "version": "0.1.0",
+    "name": "sdn-visualization",
+    "version": "2014.1.1",
     "private": true,
     "appPort": "443",
-    "isHttpRedirectEnabled": true,
+    "isHttpRedirectEnabled": false,
     "operatorUrl": "http://www.openflow.uni-saarland.de",
     "credentials": {
         "name": "root",
-        "pass": "ofviz"
+        "pass": "sdn"
     },
     "dependencies": {
         "connect-ensure-login": "0.1.1",

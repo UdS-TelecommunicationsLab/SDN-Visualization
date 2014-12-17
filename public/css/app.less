@@ -11,10 +11,13 @@ body {
     background-color: @background-color;
 }
 
-@media (min-width: 1200px) {
-    .container {
-        max-width: 98%;
-    }
+.navbar > .container .navbar-brand,
+.navbar > .container-fluid .navbar-brand,
+.container > .navbar-header,
+.container-fluid > .navbar-header,
+.container > .navbar-collapse,
+.container-fluid > .navbar-collapse {
+    margin-left: 0;
 }
 
 h1 {
@@ -56,7 +59,7 @@ h6 {
     margin-top: 20px;
 }
 
-#of-nav {
+#sdn-nav {
     text-shadow: 0 -1px 0 rgba(0,0,0,.15);
     background-color: @header-background;
     border:0;
@@ -119,6 +122,7 @@ a.thumbnail {
     overflow: hidden;
     word-wrap: break-word;
     text-decoration: none;
+    margin-bottom: 0px;
 
     code {
         white-space: normal;
@@ -146,15 +150,12 @@ span.device {
     color: white;
     -ms-border-radius: 2px;
     border-radius: 2px;
+}
 
-    i {
-        width: 16px;
-        height: 16px;
-        vertical-align: middle;
-        text-align: center;
-        padding: 0;
-        margin: 0;
-    }
+span.device strong { // same style as fa-fw
+    display: block;
+    width: 1.28571429em;
+    text-align: center;
 }
 
 
@@ -166,7 +167,7 @@ span.device.Flow {
     background: #ffb800 !important;
 }
 
-#of-about {
+#sdn-about {
     .logo {
         text-align: center;
         margin-bottom: 10px;
@@ -261,3 +262,34 @@ td.nonZero.loss {
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
   display: none !important;
 }
+
+td.decimal {
+    text-align: right !important;
+    vertical-align: middle !important;
+}
+
+#sdn-copyright {
+    text-align: center;
+    color: #666;
+    font-size: 0.9em;
+
+    p {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    a.uds {
+        display: block;
+        vertical-align: middle;
+        height: 65px;
+        width: 150px;
+        margin: 0 auto;
+        background: url(../images/logos/UdS.png) 0 65px;
+        text-indent: -999em;
+    }
+
+    a.uds:hover {
+        background: url(../images/logos/UdS.png) 0 0;
+    }
+}
+

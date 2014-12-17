@@ -21,19 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  * 
- * This license applies to all parts of the OpenFlow Visualization Application that are not externally
+ * This license applies to all parts of the SDN-Visualization Application that are not externally
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function() {
+(function(DEBUG) {
     "use strict";
-    var controllerAPI = require("../application/ofia/controllerAPI"),
+    var dataSource = require("../application/dataSources/source"),
         config = require("./config"),
         objectDiff = require("../public/js/lib/objectDiff"),
-        ofvm = require("../public/shared/OFVM");
+        nvm = require("../public/shared/NVM");
 
     var pollingDelay = 1500; // in milliseconds
-    var model = new ofvm.OFVM();
+    var model = new nvm.NVM();
     var oldModel = model;
 
     var finish = function (errorRaised) {
@@ -53,32 +53,35 @@
         process.send({ model: model, changes: changes });
 
         oldModel = model;
-        model = new ofvm.OFVM(oldModel.started);
+        model = new nvm.NVM(oldModel.started);
         model.latestInteraction = oldModel.latestInteraction;
         setTimeout(loadingProcess, pollingDelay);
     };
 
     var isAvailable = function () {
         var configuration = config.getConfiguration();
-        return (configuration && configuration.controller && configuration.controller.address) ? true : false;
+        return (configuration && configuration.dataSource && configuration.dataSource.type && configuration.dataSource.connectionString) ? true : false;
     };
 
     var loadingProcess = function() {
-        console.log("Worker run started.");
+        DEBUG && console.log("Worker run started.");
         try {
             if (isAvailable()) {
-                controllerAPI.getAllData(model, finish);
+                dataSource.getAllData(model, finish);
             } else {
                 setTimeout(loadingProcess, pollingDelay);
             }
         } catch (e) {
-            console.log(e);
+            DEBUG && console.log(e);
         }
     };
 
     process.on("message", function(m) {
         // starting the worker
         if (m && m.start) {
+            var configuration = config.getConfiguration();
+            dataSource.init(configuration.dataSource);
+
             loadingProcess();
         }
 
@@ -87,4 +90,4 @@
             oldModel.latestInteraction = m.latestInteraction;
         }
     });
-})();
+})(false);

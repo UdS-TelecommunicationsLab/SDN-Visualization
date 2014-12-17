@@ -1,0 +1,98 @@
+extend detail
+block header
+	span(sdn-device-type-icon, device="item")
+	span Device:
+	code.dp {{ item.name }}
+block body
+	div.row
+		div.col-md-4
+			h2 General
+			p
+				| ID: 
+				code {{ item.id }}
+			p(ng-show="item.userName") User Name: {{ item.userName }}
+			p(ng-show="item") Connected since: {{ item.connectedSince | formatDate }}
+			p(ng-show="item.url")
+				| Link: 
+				a(href="{{ 'http://' + item.url }}",target="_blank") {{ item.url | lowercase }}
+
+			div(ng-show="item.interface != undefined")
+				hr
+				h2 Interface
+				div.row
+					div.col-sm-6
+						| Gateway: 
+						code {{ item.interface.gw }}
+					div.col-sm-4 IP: {{ item.interface.address }}
+					div.col-sm-2 Port: {{ item.interface.port }}
+			hr
+			p.pull-right
+				a.btn.btn-default(href="{{ '/configuration/addDevice/' + item.id }}")
+					i.fa.fa-cog
+					|  Change
+			h2 Device
+			p Location: 
+				span {{ item.location }}
+			p Purpose: 
+				span {{ item.purpose }}
+
+			hr.visible-xs.visible-sm
+		div.col-md-8
+			h2 Ports
+			div.table-responsive
+				table.table.table-condensed.table-bordered.table-striped
+					thead
+						tr
+							th(rowspan=2) Connected Device
+							th(colspan=2) Packets
+							th(colspan=2) Bytes
+							th(colspan=2) Dropped
+							th(colspan=5) Errors
+							th(rowspan=2) Coll
+								sdn-help-tooltip(tooltip="Collisions")
+						tr
+							th(width="80px") Rx
+								sdn-help-tooltip(tooltip="Receive")
+							th(width="80px") Tx
+								sdn-help-tooltip(tooltip="Transmit")
+							th(width="80px") Rx
+								sdn-help-tooltip(tooltip="Receive")
+							th(width="80px") Tx
+								sdn-help-tooltip(tooltip="Transmit")
+							th(width="40px") Rx
+								sdn-help-tooltip(tooltip="Receive")
+							th(width="40px") Tx
+								sdn-help-tooltip(tooltip="Transmit")
+
+							th(width="40px") Rx
+								sdn-help-tooltip(tooltip="Receive")
+							th(width="40px") Tx
+								sdn-help-tooltip(tooltip="Transmit")
+							th(width="40px") F
+								sdn-help-tooltip(tooltip="Frame")
+							th(width="40px") O
+								sdn-help-tooltip(tooltip="Overrun")
+							th(width="40px") C
+								sdn-help-tooltip(tooltip="CRC")
+					tbody
+						tr(ng-repeat="(port, device) in connectedDevices | orderBy:'name' ")
+							td
+								a(href="{{ '/detail/device/' + device.id }}")
+									span(sdn-device-type-icon,device="device")
+									code.dp {{ device.name }}
+							td.decimal {{ item.ports[port].receivePackets | decimal }}
+							td.decimal {{ item.ports[port].transmitPackets | decimal }}
+
+							td.decimal {{ item.ports[port].receiveBytes | decimal }}
+							td.decimal {{ item.ports[port].transmitBytes | decimal }}
+
+							td.decimal {{ item.ports[port].receiveDropped | decimal }}
+							td.decimal {{ item.ports[port].transmitDropped | decimal }}
+
+							td.decimal {{ item.ports[port].receiveErrors | decimal }}
+							td.decimal {{ item.ports[port].transmitErrors | decimal }}
+							td.decimal {{ item.ports[port].receiveFrameErrors | decimal }}
+							td.decimal {{ item.ports[port].receiveOverrunErrors | decimal }}
+							td.decimal {{ item.ports[port].receiveCRCErrors | decimal }}
+
+							td.decimal {{ item.ports[port].collisions | decimal }}

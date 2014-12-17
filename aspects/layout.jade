@@ -1,0 +1,45 @@
+!!!
+html(ng-app="sdn-visualization",xlink="http://www.w3.org/1999/xlink")
+	head
+		meta(charset="utf8")
+		meta(name="viewport", content="width=device-width, initial-scale=1.0")
+		base(href="/")
+		title SDN Visualization
+		link(rel="stylesheet", href="/css/bootstrap.css")
+		link(rel="stylesheet", href="/css/colorpicker.css")
+		link(rel="stylesheet", href="/css/toastr.min.css")
+		link(rel="stylesheet", href="/css/font-awesome.min.css")
+		link(rel="stylesheet", href="/css/app.css")
+	body
+		a(class="sr-only",href="#content")
+			Skip navigation
+		header#sdn-nav.navbar.navbar-inverse.navbar-fixed-top(role="banner")
+			div.container-fluid
+				div.navbar-header
+					a.navbar-brand(href="/") SDN-Viz
+				nav(class="navbar-collapse collapse")
+					block nav			
+			
+		div#content
+			div.container-fluid
+				block body
+				hr
+				div#sdn-copyright
+					p SDN-Visualization (
+						span(ng-cloak)
+							| v
+							span(sdn-app-version)
+							| .
+						| ) - Created by&nbsp;
+						a(href="http://www.nt.uni-saarland.de/",target="_blank") Telecommunications Lab
+						|  /&nbsp;
+						a(href="http://www.intel-vci.uni-saarland.de",target="_blank") Intel Visual Computing Institute
+						|  at&nbsp;
+						a(href="http://www.uni-saarland.de",target="_blank") Saarland University
+						|  - Licensed under&nbsp;
+						a(href="http://opensource.org/licenses/MIT",target="_blank") MIT
+					a.uds(href="http://www.uni-saarland.de/", target="_blank") Saarland University
+					br
+
+
+		block scripts

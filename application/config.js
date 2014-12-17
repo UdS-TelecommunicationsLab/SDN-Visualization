@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  * 
- * This license applies to all parts of the OpenFlow Visualization Application that are not externally
+ * This license applies to all parts of the SDN-Visualization Application that are not externally
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
@@ -32,20 +32,20 @@
 
     var config = null;
     var callbacks = [];
-    var ofvizConfigurationPath = "./ofvizConfiguration.json";
+    var sdnConfigurationPath = "./sdnConfiguration.json";
 
     var createFileIfNotExistent = function () {
-        if (!fs.existsSync(ofvizConfigurationPath)) {
-            fs.writeFileSync(ofvizConfigurationPath, "{ }");
+        if (!fs.existsSync(sdnConfigurationPath)) {
+            fs.writeFileSync(sdnConfigurationPath, "{ }");
         }
     };
 
     var readConfig = function () {
-        config = JSON.parse(fs.readFileSync(ofvizConfigurationPath, { encoding: "utf-8" }));
+        config = JSON.parse(fs.readFileSync(sdnConfigurationPath, { encoding: "utf-8" }));
         callbacks.forEach(function (cb) { cb(config); });
     };
 
-    fs.watchFile(ofvizConfigurationPath, function (curr, prev) {
+    fs.watchFile(sdnConfigurationPath, function (curr, prev) {
         if (curr.mtime.valueOf() > prev.mtime.valueOf()) {
             createFileIfNotExistent();
             readConfig();
@@ -59,7 +59,7 @@
                 return;
             }
 
-            fs.writeFile(ofvizConfigurationPath, data, function (writeError) {
+            fs.writeFile(sdnConfigurationPath, data, function (writeError) {
                 if (writeError) {
                     writeErrback(writeError);
                     return;
@@ -71,8 +71,8 @@
     };
 
     exports.attachToResponse = function (response) {
-        response.setHeader("Content-type", mime.lookup(ofvizConfigurationPath));
-        fs.createReadStream(ofvizConfigurationPath).pipe(response);
+        response.setHeader("Content-type", mime.lookup(sdnConfigurationPath));
+        fs.createReadStream(sdnConfigurationPath).pipe(response);
     };
 
     exports.getConfiguration = function () {
@@ -85,7 +85,7 @@
     };
 
     exports.saveConfiguration = function (configData) {
-        fs.writeFileSync(ofvizConfigurationPath, JSON.stringify(configData));
+        fs.writeFileSync(sdnConfigurationPath, JSON.stringify(configData));
     };
 
     exports.registerHandler = function (cb) {

@@ -21,58 +21,58 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  * 
- * This license applies to all parts of the OpenFlow Visualization Application that are not externally
+ * This license applies to all parts of the SDN-Visualization Application that are not externally
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
 "use strict";
-var ofvizApp = angular.module("of-viz", ["ui.bootstrap", "colorpicker.module"]);
+var sdnViz = angular.module("sdn-visualization", ["ngRoute","ui.bootstrap", "colorpicker.module"]);
 
-ofvizApp.config(function($routeProvider, $locationProvider) {
+sdnViz.config(function($routeProvider, $locationProvider) {
     // Main Views
     $routeProvider.
         when("/topology", {
-            templateUrl: "partials/topology",
+            templateUrl: "templates/pages/topology",
             controller: "TopologyCtrl"
         }).
         when("/statistics", {
-            templateUrl: "partials/statistics",
+            templateUrl: "templates/pages/statistics",
             controller: "StatisticsCtrl"
         }).
         when("/documentation", {
-            templateUrl: "partials/documentation",
+            templateUrl: "templates/pages/documentation",
             controller: "DocumentationCtrl"
         }).
         when("/configuration", {
-            templateUrl: "partials/configuration",
+            templateUrl: "templates/pages/configuration",
             controller: "ConfigurationCtrl"
         }).
         when("/configuration/addDevice/:id", {
-            templateUrl: "partials/configuration",
+            templateUrl: "templates/pages/configuration",
             controller: "ConfigurationCtrl"
         }).
         when("/about", {
-            templateUrl: "partials/about",
+            templateUrl: "templates/pages/about",
             controller: "AboutCtrl"
         }).
         when("/status", {
-            templateUrl: "partials/status",
+            templateUrl: "templates/pages/status",
             controller: "StatusCtrl"
         });
 
     // Detail Views
     $routeProvider.when("/detail/device/:id", {
-        templateUrl: "partials/detailDevice",
+        templateUrl: "templates/pages/detailDevice",
         controller: "DetailDeviceCtrl"
     });
 
     $routeProvider.when("/detail/link/:id", {
-        templateUrl: "partials/detailLink",
+        templateUrl: "templates/pages/detailLink",
         controller: "DetailLinkCtrl"
     });
 
     $routeProvider.when("/detail/flow/:id", {
-        templateUrl: "partials/detailFlow",
+        templateUrl: "templates/pages/detailFlow",
         controller: "DetailFlowCtrl"
     });
 
@@ -84,7 +84,7 @@ ofvizApp.config(function($routeProvider, $locationProvider) {
     $locationProvider.html5Mode(true);
 });
 
-ofvizApp.run(function($rootScope, router, repository) {
+sdnViz.run(function($rootScope, router, repository) {
     repository.init();
     router.init();
 });

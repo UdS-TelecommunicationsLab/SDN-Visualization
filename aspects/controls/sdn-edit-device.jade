@@ -1,0 +1,61 @@
+﻿div
+	div.modal-header
+		| Edit Device
+	div.modal-body.form-horizontal
+		div.form-group
+			label.control-label.col-md-2 Pattern:
+			div.col-md-10
+				div.row
+					div.col-sm-6.col-md-4.col-lg-2
+						div.sdn-mac-digit-box(device-pattern="item",index="0")
+					div.col-sm-6.col-md-4.col-lg-2
+						div.sdn-mac-digit-box(device-pattern="item",index="1")
+					div.col-sm-6.col-md-4.col-lg-2
+						div.sdn-mac-digit-box(device-pattern="item",index="2")
+					div.col-sm-6.col-md-4.col-lg-2
+						div.sdn-mac-digit-box(device-pattern="item",index="3")
+					div.col-sm-6.col-md-4.col-lg-2
+						div.sdn-mac-digit-box(device-pattern="item",index="4")
+					div.col-sm-6.col-md-4.col-lg-2
+						div.sdn-mac-digit-box(device-pattern="item",index="5")
+					div.col-sm-6.col-md-4.col-lg-2
+						div.sdn-mac-digit-box(device-pattern="item",index="6")
+					div.col-sm-6.col-md-4.col-lg-2
+						div.sdn-mac-digit-box(device-pattern="item",index="7")
+	
+		div.form-group
+			label.control-label.col-md-2 Name:
+			div.col-md-10
+				input.form-control(ng-model="item.name")
+
+		div.form-group
+			label.control-label.col-md-2 User Name:
+			div.col-md-10
+				input.form-control(ng-model="item.userName")
+
+		div.form-group
+			label.control-label.col-md-2 Url:
+			div.col-md-10
+				input.form-control(ng-model="item.url")
+
+		div.form-group.no-wrap
+			label.control-label.col-md-2 Type / Color:
+			div.col-md-10
+				select.input-sm.form-control(style="width: 120px",ng-model="item.type", ng-options="value for value in types")
+				span(class="device", style="background-color: {{ item.color }}")
+					i.fa {{ item.type | deviceTypeIcon }}
+				input.input-sm.form-control.colorpickerBox(style="width: 80px", colorpicker="hex", type="text", ng-model="item.color")
+
+		div.form-group
+			label.control-label.col-md-2 Location:
+			div.col-md-10
+				textarea.form-control(ng-model="item.location")
+
+		div.form-group
+			label.control-label.col-md-2 Purpose:
+			div.col-md-10
+				textarea.form-control(ng-model="item.purpose")
+
+	div.modal-footer
+		button.btn.btn-success(ng-click="ok()") OK
+		button.btn.btn-danger(ng-click="cancel()") Cancel

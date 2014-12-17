@@ -1,0 +1,9 @@
+﻿div
+	a.thumbnail(href="{{ '/detail/flow/' + flow.id }}")
+		span(class="device Flow", ng-switch="flow.nw.protocol")
+			strong(ng-switch-when="6") T
+			strong(ng-switch-when="17") U
+			strong(ng-switch-default="") {{ flow.nw.protocol }}
+		code.dp
+			| {{ flow.nw.src }}:{{ flow.tp.src }} -> {{ flow.nw.dst }}:{{ flow.tp.dst }}
+	| <br />

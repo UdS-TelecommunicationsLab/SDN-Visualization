@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  * 
- * This license applies to all parts of the OpenFlow Visualization Application that are not externally
+ * This license applies to all parts of the SDN-Visualization Application that are not externally
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
@@ -50,14 +50,9 @@
         }
     };
 
-
     var registerTemplates = function(app) {
-        app.get("/partials/:name", ensureLoggedIn(loginUrl), function(request, response) {
-            response.render("partials/" + request.params.name);
-        });
-
-        app.get("/tmpl/:name", ensureLoggedIn(loginUrl), function(request, response) {
-            response.render("templates/" + request.params.name);
+        app.get("/templates/*", ensureLoggedIn(loginUrl), function(request, response) {
+            response.render(request.params[0]);
         });
     };
 
@@ -75,7 +70,7 @@
         app.get("/api/model", ensureLoggedIn(loginUrl), function(request, response) {
             response.json({
                 data: msgpack.pack({
-                    ofvm: storage.getOFVM(),
+                    nvm: storage.getNVM(),
                     checksum: storage.getChecksum()
                 }, true)
             });
@@ -83,7 +78,7 @@
 
         app.get("/api/vizConfiguration", ensureLoggedIn(loginUrl), function(request, response) {
             response.json({
-                latestInteraction: storage.getOFVM().latestInteraction,
+                latestInteraction: storage.getNVM().latestInteraction,
                 configuration: config.getConfiguration()
             });
         });

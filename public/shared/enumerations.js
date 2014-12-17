@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  * 
- * This license applies to all parts of the OpenFlow Visualization Application that are not externally
+ * This license applies to all parts of the SDN-Visualization Application that are not externally
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
@@ -54,9 +54,12 @@
         Unknown: "Unknown"
     };
 
+    // http://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml
     exports.networkProtocols = {
         1: "ICMP",
+        2: "IGMP",
+        6: "TCP",
         17: "UDP",
     };
 
-})((typeof process === 'undefined' || !process.versions) ? window.ofviz = window.ofviz || {} : exports);
+})((typeof process === 'undefined' || !process.versions) ? window.sdn = window.sdn || {} : exports);

@@ -1,0 +1,99 @@
+div#sdn-configuration
+	form.form(name="importForm",action="/api/importVizConfiguration",method="post",enctype="multipart/form-data")
+			div.row
+				div.col-md-12
+					div.panel.panel-default
+						div.panel-body
+							div.row
+								div.col-md-2
+									button.btn.btn-default(type="button",ng-click="exportConfig()",ng-disabled="!configForm.$pristine")
+										i.fa.fa-upload
+										|  Export
+								div.col-md-8
+									div.input-group(style="width:350px")
+										input.form-control(type="file",name="importConfiguration")
+										span.input-group-btn
+											button.btn.btn-default(type="submit")
+												i.fa.fa-download
+												|  Import
+
+	form.form.form-horizontal(name="configForm")
+		div
+			div.panel.panel-default
+				div.panel-body
+					div.form-group
+						label.col-sm-1.control-label Name:
+						div.col-sm-4
+							input.form-control(type="text",ng-model="configuration.controller.name",ng-required="true")
+
+						label.col-sm-2.control-label Contact Mail:
+						div.col-sm-5
+							input.form-control(type="text",ng-model="configuration.controller.contact")
+
+					div.form-group
+						label.col-sm-1.control-label Type:
+						div.col-sm-4
+							select.form-control(ng-model="configuration.dataSource.type",
+								ng-options="item.type as item.title for item in dataSources",
+								ng-required="true")
+
+						label.col-sm-2.control-label Connection:
+						div.col-sm-5
+							input.form-control(type="text",ng-model="configuration.dataSource.connectionString",ng-required="true")
+	
+					hr
+					div.form-group
+						div.col-sm-2.col-sm-offset-0
+							button.btn.btn-primary(type="submit",ng-click="saveConfiguration()",ng-disabled="!configForm.$valid") Save
+							|  
+							button.btn.btn-default(type="button",ng-click="cancelPatternEdit(configForm)",ng-disabled="configForm.$pristine") Cancel
+
+			div.panel.panel-default
+				div.table-responsive
+					table.table.table-bordered.table-striped
+						thead
+							tr
+								th(style="width:38px")
+									button.btn.btn-success.btn-xs(ng-click="addPattern()")
+										i.fa.fa-plus
+								th(style="width:160px") DeviceID / Pattern
+									sdn-help-tooltip(tooltip="?: Wildcard \n #: Wildcard, but value is extracted")
+								th Name
+									sdn-help-tooltip(tooltip="# is replaced with extracted value")
+								th User Name
+								th Url
+								th Location
+								th Purpose
+								th(style="width:100px")
+
+						tbody
+							tr(ng-repeat="deviceEntry in configuration.deviceInformation", ng-class="{ 'warning': deviceEntry.highlight }")
+								td
+									button.btn.btn-danger.btn-xs(ng-click="removePattern(deviceEntry)")
+										i.fa.fa-minus
+								td
+									code.dp {{ deviceEntry.pattern }}
+								td.no-wrap
+									span(class="device", style="background-color: {{ deviceEntry.color }}")
+										i.fa {{ deviceEntry.type | deviceTypeIcon }}
+									code.dp {{ deviceEntry.name }}
+								td
+									code.dp {{ deviceEntry.userName }}
+									div(sdn-copy-paste-string, clipboard="clipboard", device="deviceEntry", field="userName")
+								td
+									code.dp {{ deviceEntry.url }}
+									div(sdn-copy-paste-string, clipboard="clipboard", device="deviceEntry", field="url")
+								td
+									| {{ deviceEntry.location }}
+									div(sdn-copy-paste-string, clipboard="clipboard", device="deviceEntry", field="location")
+								td
+									| {{ deviceEntry.purpose }}
+									div(sdn-copy-paste-string, clipboard="clipboard", device="deviceEntry", field="purpose")
+								td
+									div.btn-group
+										button.btn.btn-default.btn-xs(ng-click="edit(deviceEntry)")
+											i.fa.fa-cog
+										button.btn.btn-default.btn-xs(ng-click="moveUp($index)",ng-disabled="$index == 0 || deviceEntry.status == 'blank'")
+											i.fa.fa-chevron-up
+										button.btn.btn-default.btn-xs(ng-click="moveDown($index)",ng-disabled="$index >= (configuration.deviceInformation.length-1)|| deviceEntry.status == 'blank'")
+											i.fa.fa-chevron-down
