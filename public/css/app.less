@@ -11,11 +11,13 @@ body {
     background-color: @background-color;
 }
 
-@media (min-width: 1200px) {
-    .container {
-        width: auto;
-        max-width: 98%;
-    }
+.navbar > .container .navbar-brand,
+.navbar > .container-fluid .navbar-brand,
+.container > .navbar-header,
+.container-fluid > .navbar-header,
+.container > .navbar-collapse,
+.container-fluid > .navbar-collapse {
+    margin-left: 0;
 }
 
 h1 {
@@ -150,6 +152,12 @@ span.device {
     border-radius: 2px;
 }
 
+span.device strong { // same style as fa-fw
+    display: block;
+    width: 1.28571429em;
+    text-align: center;
+}
+
 
 span.device.Link {
     background: #a23800 !important;
@@ -259,3 +267,29 @@ td.decimal {
     text-align: right !important;
     vertical-align: middle !important;
 }
+
+#sdn-copyright {
+    text-align: center;
+    color: #666;
+    font-size: 0.9em;
+
+    p {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    a.uds {
+        display: block;
+        vertical-align: middle;
+        height: 65px;
+        width: 150px;
+        margin: 0 auto;
+        background: url(../images/logos/UdS.png) 0 65px;
+        text-indent: -999em;
+    }
+
+    a.uds:hover {
+        background: url(../images/logos/UdS.png) 0 0;
+    }
+}
+
