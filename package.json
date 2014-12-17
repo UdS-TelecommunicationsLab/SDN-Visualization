@@ -3,7 +3,7 @@
     "version": "2014.1.1",
     "private": true,
     "appPort": "443",
-    "isHttpRedirectEnabled": true,
+    "isHttpRedirectEnabled": false,
     "operatorUrl": "http://www.openflow.uni-saarland.de",
     "credentials": {
         "name": "root",
