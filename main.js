@@ -46,6 +46,7 @@ app.use(lessMiddleware({ src: __dirname + "/public", compress: true }));
 //app.use(express.logger("dev"));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
+app.use("/lib", express.static(path.join(__dirname, "lib")));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.session({ secret: "df34<ajdrf9364aherf0�q34a<rh" }));
 app.use(passport.initialize());

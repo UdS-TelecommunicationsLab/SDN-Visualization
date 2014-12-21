@@ -1,0 +1,20 @@
+{
+  "name": "sdn-visualization",
+  "version": "2014.1.1",
+  "dependencies": {
+    "angular": "1.2.27",
+    "angular-bootstrap-colorpicker": "~3.0.10",
+    "angular-route": "1.2.27",
+    "angular-ui-bootstrap-bower": "~0.12.0",
+    "bootstrap": "3.3.1",
+    "cryptojslib": "~3.1.2",
+    "d3": "~3.5.2",
+    "fontawesome": "~4.2.0",
+    "jquery": "2.0.3",
+    "moment": "2.4.0",
+    "msgpack-javascript": "*",
+    "objectDiff-enhanced": "git://github.com/Darneas/objectDiff.js.git#~1.1.1",
+    "toastr": "2.1.0",
+    "underscore": "1.7.0"
+  }
+}

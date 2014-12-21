@@ -30,7 +30,7 @@
     var config = require("./config"),
         io = require("socket.io"),
         moment = require("moment"),
-        msgpack = require('../public/js/lib/msgpack.codec.js').msgpack,
+        msgpack = require('../lib/msgpack-javascript/msgpack.codec.js').msgpack,
         linkManipulation = require("./ofca/linkManipulation"),
         storage = require("./storage");
 

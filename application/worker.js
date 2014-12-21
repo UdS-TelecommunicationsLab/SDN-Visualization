@@ -29,7 +29,7 @@
     "use strict";
     var dataSource = require("../application/dataSources/source"),
         config = require("./config"),
-        objectDiff = require("../public/js/lib/objectDiff"),
+        objectDiff = require("../lib/objectDiff-enhanced/objectDiff"),
         nvm = require("../public/shared/NVM");
 
     var pollingDelay = 1500; // in milliseconds

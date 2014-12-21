@@ -3,4 +3,5 @@ sdnConfiguration.json
 public/js/dist.js
 public/js/dist.min.js
 public/css/app.css
+lib/
 .idea/

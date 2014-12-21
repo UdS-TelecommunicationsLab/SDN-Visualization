@@ -31,7 +31,7 @@
 
     var config = require("./config"),
         moment = require("moment"),
-        msgpack = require("../public/js/lib/msgpack.codec.js").msgpack,
+        msgpack = require("../lib/msgpack-javascript/msgpack.codec.js").msgpack,
         passport = require("passport"),
         ensureLoggedIn = require("connect-ensure-login").ensureLoggedIn,
         storage = require("./storage");
