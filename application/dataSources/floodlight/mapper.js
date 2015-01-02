@@ -117,7 +117,19 @@
             } else {
                 url = "";
             }
-            var sw = new nvm.Switch(obj.dpid, name || obj.dpid, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color, obj.connectedSince);
+            var sw = new nvm.Switch(obj.dpid, name || obj.dpid,
+                node && node.type,
+                node && node.userName,
+                url,
+                node && node.location,
+                node && node.purpose,
+                node && node.color,
+                obj.connectedSince,
+                obj.description,
+                obj.capabilities,
+                obj.actions,
+                obj.inetAddress,
+                obj.attributes);
 
             for (var i = 0; i < obj.ports.length; i++) {
                 var port = obj.ports[i];

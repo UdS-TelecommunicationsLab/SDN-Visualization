@@ -5,7 +5,7 @@ block header
 	code.dp {{ item.name }}
 block body
 	div.row
-		div.col-sm-6
+		div.col-sm-3
 			h2 General
 			p
 				| ID:
@@ -15,7 +15,6 @@ block body
 			p(ng-show="item.url")
 				| Link:
 				a(href="{{ 'http://' + item.url }}",target="_blank") {{ item.url | lowercase }}
-
 			div(ng-show="item.interface != undefined")
 				hr
 				h2 Interface
@@ -25,7 +24,7 @@ block body
 						code {{ item.interface.gw }}
 					div.col-sm-4 IP: {{ item.interface.address }}
 					div.col-sm-2 Port: {{ item.interface.port }}
-		div.col-sm-6
+		div.col-sm-3
 			p.pull-right
 					a.btn.btn-default(href="{{ '/configuration/addDevice/' + item.id }}")
 						i.fa.fa-cog
@@ -36,6 +35,27 @@ block body
 			p Purpose:
 				span {{ item.purpose }}
 
+		div.col-sm-6(ng-show="item.type == 'Switch'")
+			h2 Switch
+			table.table.table-condensed.table-bordered.table-striped
+				tr
+					td Description
+					td(colspan=2) {{ item.description.hardware }}, {{ item.description.software }} by {{ item.description.manufacturer }}
+						// TODO: missing serialNum, datapath
+				tr
+					td Capabilities
+					td(colspan=2) {{ item.capabilities }}
+				tr
+					td Actions
+					td(colspan=2) {{ item.actions }}
+				tr
+					td Address
+					td(colspan=2) {{ item.internetAddress }}
+				tr
+					td(rowspan="{{ attributeCount }}") Attributes
+				tr(ng-repeat="(k,v) in item.attributes")
+					td {{ k }}
+					td {{ v }}
 	hr
 	div
 		h2 Ports

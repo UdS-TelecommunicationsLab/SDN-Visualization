@@ -30,6 +30,7 @@
     sdnViz.controller("DetailDeviceCtrl", function(DetailView, $scope, $routeParams, repository) {
         DetailView.init($scope, $routeParams.id, repository.getDeviceById, function(data) {
             $scope.connectedDevices = data.connectedDevices;
+            $scope.attributeCount = Object.keys(data.item.attributes).length + 1;
         });
 
         $scope.load();
