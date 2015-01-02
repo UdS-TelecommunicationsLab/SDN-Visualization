@@ -136,23 +136,34 @@ var __extends = this.__extends || function (d, b) {
      */
     exports.Port = function (portNumber) {
         this.number = portNumber;
-        this.receivePackets = 0;
-        this.transmitPackets = 0;
 
-        this.receiveBytes = 0;
-        this.transmitBytes = 0;
+        this.hardwareAddress = "";
+        this.name = "";
 
-        this.receiveDropped = 0;
-        this.transmitDropped = 0;
+        this.config = undefined;
+        this.state = undefined;
+        this.currentFeatures = undefined;
+        this.advertisedFeatures = undefined;
+        this.supportedFeatures = undefined;
+        this.peerFeatures = undefined;
 
-        this.receiveErrors = 0;
-        this.transmitErrors = 0;
+        this.receivePackets = undefined;        // number
+        this.transmitPackets = undefined;       // number
 
-        this.receiveFrameErrors = 0;
-        this.receiveOverrunErrors = 0;
-        this.receiveCRCErrors = 0;
+        this.receiveBytes = undefined;          // number
+        this.transmitBytes = undefined;         // number
 
-        this.collisions = 0;
+        this.receiveDropped = undefined;        // number
+        this.transmitDropped = undefined;       // number
+
+        this.receiveErrors = undefined;         // number
+        this.transmitErrors = undefined;        // number
+
+        this.receiveFrameErrors = undefined;    // number
+        this.receiveOverrunErrors = undefined;  // number
+        this.receiveCRCErrors = undefined;      // number
+
+        this.collisions = undefined;            // number
     };
 
 
@@ -160,18 +171,30 @@ var __extends = this.__extends || function (d, b) {
      * The Device represents a common base class for Clients and Switches.
      */
     exports.Device = function (id, name, userName, url, location, purpose, color) {
-        this.id = id;
-        this.active = true;
-        this.name = name || id;
-        this.type = exports.Device.type;
-        this.deviceType = "";
-        this.location = location || "-";
-        this.purpose = purpose || "-";
-        this.userName = userName || "";
-        this.url = url || "";
-        this.color = color || "#444444";
-        this.activeFlows = [];
-        this.ports = {};
+        var self = this;
+
+        self.id = id;
+        self.active = true;
+        self.name = name || id;
+        self.type = exports.Device.type;
+        self.deviceType = "";
+        self.location = location || "-";
+        self.purpose = purpose || "-";
+        self.userName = userName || "";
+        self.url = url || "";
+        self.color = color || "#444444";
+        self.activeFlows = [];
+        self.ports = {};
+
+        self.updatePorts = function(ports) {
+            for(var portNumber in ports) {
+                if (self.ports[portNumber] !== undefined) {
+                    self.ports[portNumber] = _.extend(self.ports[portNumber], ports[portNumber]);
+                } else {
+                    self.ports[portNumber] = ports[portNumber];
+                }
+            }
+        }
     };
     exports.Device.type = "Unknown";
 

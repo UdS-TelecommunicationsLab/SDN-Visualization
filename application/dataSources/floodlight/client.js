@@ -119,10 +119,10 @@
         if (data == null) {
             console.error("processPorts called without data");
         } else {
-            for(var dpid in data) {
-                var device = _.find(model.devices, function(d) { return d.id === dpid; });
+            for(var deviceId in data) {
+                var device = _.find(model.devices, function(d) { return d.id === deviceId; });
                 if(device) {
-                    device.ports = mapper.ports.mapAll(data[dpid]);
+                    device.updatePorts(mapper.ports.mapAll(data[deviceId], device));
                 }
             }
         }

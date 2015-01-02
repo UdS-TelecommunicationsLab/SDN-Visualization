@@ -117,7 +117,22 @@
             } else {
                 url = "";
             }
-            return new nvm.Switch(obj.dpid, name || obj.dpid, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color, obj.connectedSince);
+            var sw = new nvm.Switch(obj.dpid, name || obj.dpid, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color, obj.connectedSince);
+
+            for (var i = 0; i < obj.ports.length; i++) {
+                var port = obj.ports[i];
+                var p = new nvm.Port(port.portNumber);
+                p.hardwareAddress = port.hardwareAddress;
+                p.name = port.name;
+                p.config = port.config;
+                p.state = port.state;
+                p.currentFeatures = port.currentFeatures;
+                p.advertisedFeatures = port.advertisedFeatures;
+                p.supportedFeatures = port.supportedFeatures;
+                p.peerFeatures = port.peerFeatures;
+                sw.ports[port.portNumber] = p;
+            }
+            return sw;
         },
         mapAll: function(obj) {
             var res = [];
@@ -185,8 +200,8 @@
     exports.links = links;
 
     var ports = {
-        map: function(obj) {
-            var port = new nvm.Port(obj.portNumber);
+        map: function(obj, existingPort) {
+            var port = (existingPort !== undefined) ? existingPort : new nvm.Port(obj.portNumber);
             port.receivePackets = obj.receivePackets;
             port.transmitPackets = obj.transmitPackets;
 
@@ -206,12 +221,12 @@
             port.collisions = obj.collisions;
             return port;
         },
-        mapAll: function(obj) {
+        mapAll: function(obj, device) {
             var allPorts = {};
 
             for(var i = 0; i < obj.length; i++) {
                 var p = obj[i];
-                allPorts[p.portNumber] = ports.map(p);
+                allPorts[p.portNumber] = ports.map(p, device.ports[p.portNumber]);
             }
             return allPorts;
         }
