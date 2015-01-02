@@ -1,39 +1,44 @@
 {
-    "name": "sdn-visualization",
-    "version": "2014.1.1",
-    "private": true,
-    "appPort": "443",
-    "isHttpRedirectEnabled": false,
-    "operatorUrl": "http://www.openflow.uni-saarland.de",
-    "credentials": {
-        "name": "root",
-        "pass": "sdn"
-    },
-    "dependencies": {
-        "connect-ensure-login": "0.1.1",
-        "express": "~3.2.6",
-        "grunt": "0.4.1",
-        "jade": "~0.31.2",
-        "karma": "0.12.16",
-        "mime": "1.2.11",
-        "moment": "2.3.1",
-        "less-middleware": "0.1.12",
-        "passport": "0.1.17",
-        "passport-local": "0.1.6",
-        "socket.io": "0.9.16",
-        "underscore": "1.5.2"
-    },
-    "licenses": [ "MIT" ],
-    "author": { "name": "Saarland University" },
-    "homepage": "http://www.openflow.uni-saarland.de",
-    "devDependencies": {
-        "grunt": "0.4.1",
-        "grunt-karma": "~0.7.1",
-        "grunt-contrib-concat": "~0.3.0",
-        "grunt-contrib-compress": "~0.8.0",
-        "grunt-contrib-jshint": "~0.6.0",
-        "grunt-contrib-uglify": "~0.2.2",
-        "grunt-contrib-watch": "~0.6.1",
-        "grunt-cli": "~0.1.11"
-    }
+  "name": "sdn-visualization",
+  "version": "2014.1.1",
+  "private": true,
+  "appPort": "443",
+  "isHttpRedirectEnabled": false,
+  "operatorUrl": "http://www.openflow.uni-saarland.de",
+  "credentials": {
+    "name": "root",
+    "pass": "sdn"
+  },
+  "dependencies": {
+    "connect-ensure-login": "0.1.1",
+    "express": "~3.2.6",
+    "grunt": "0.4.1",
+    "jade": "~0.31.2",
+    "karma": "0.12.16",
+    "mime": "1.2.11",
+    "moment": "2.3.1",
+    "less-middleware": "0.1.12",
+    "passport": "0.1.17",
+    "passport-local": "0.1.6",
+    "socket.io": "0.9.16",
+    "underscore": "1.5.2",
+    "lodash": "~2.4.1"
+  },
+  "licenses": [
+    "MIT"
+  ],
+  "author": {
+    "name": "Saarland University"
+  },
+  "homepage": "http://www.openflow.uni-saarland.de",
+  "devDependencies": {
+    "grunt": "0.4.1",
+    "grunt-karma": "~0.7.1",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-compress": "~0.8.0",
+    "grunt-contrib-jshint": "~0.6.0",
+    "grunt-contrib-uglify": "~0.2.2",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-cli": "~0.1.11"
+  }
 }

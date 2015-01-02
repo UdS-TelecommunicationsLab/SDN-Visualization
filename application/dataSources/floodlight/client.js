@@ -53,6 +53,12 @@
         callback();
     };
 
+    /**
+     * Manipulates the model object during execution.
+     *
+     * @param {Object} data JSON object containing the retrieved information.
+     *
+     */
     var processInfos = function (data) {
         if (data === null || data == undefined || data === {}) {
             console.error("processInfos called without data");
@@ -64,11 +70,17 @@
         callback();
     };
 
+    /**
+     * Manipulates the model object during execution.
+     *
+     * @param {Object} data JSON object containing the retrieved information.
+     *
+     */
     var processSwitches = function (data) {
         if (data === null || data == undefined || data === {}) {
             console.error("processSwitches called without data");
         } else {
-            model.devices = model.devices.concat(mapper.switches.mapAll(data));
+            model.addDevices(mapper.switches.mapAll(data));
         }
 
         getResource(client.commands.get.devices, processDevices);
@@ -79,18 +91,30 @@
         callback();
     };
 
+    /**
+     * Manipulates the model object during execution.
+     *
+     * @param {Object} data JSON object containing the retrieved information.
+     *
+     */
     var processLinks = function (data) {
         if (data == null) {
             console.error("processLinks called without data");
         } else {
             var linkData = mapper.links.mapAll(data, model.devices);
-            model.links = model.links.concat(linkData.links);
+            model.addLinks(linkData.links);
             model._internals.drMax = linkData.drMax;
         }
 
         callback();
     };
 
+    /**
+     * Manipulates the model object during execution.
+     *
+     * @param {Object} data JSON object containing the retrieved information.
+     *
+     */
     var processPorts = function (data) {
         if (data == null) {
             console.error("processPorts called without data");
@@ -106,6 +130,12 @@
         callback();
     };
 
+    /**
+     * Manipulates the model object during execution.
+     *
+     * @param {Object} data JSON object containing the retrieved information.
+     *
+     */
     var processFlows = function (data) {
         if (data == null) {
             console.error("processFlows called without data");
@@ -116,13 +146,19 @@
         callback();
     };
 
+    /**
+     * Manipulates the model object during execution.
+     *
+     * @param {Object} data JSON object containing the retrieved information.
+     *
+     */
     var processDevices = function (data) {
         if (data == null) {
             console.error("processDevices called without data");
         } else {
             var clientData = mapper.clients.mapAll(data, model.devices);
-            model.devices = model.devices.concat(clientData.clients);
-            model.links = model.links.concat(clientData.links);
+            model.addDevices(clientData.clients);
+            model.addLinks(clientData.links);
         }
 
         callback();

@@ -25,46 +25,76 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-var __extends = this.__extends || function(d, b) {
-    for (var p in b) {
-        if (b.hasOwnProperty(p)) {
-            d[p] = b[p];
+var __extends = this.__extends || function (d, b) {
+        for (var p in b) {
+            if (b.hasOwnProperty(p)) {
+                d[p] = b[p];
+            }
         }
-    }
 
-    function Ctor() { this.constructor = d; }
+        function Ctor() {
+            this.constructor = d;
+        }
 
-    Ctor.prototype = b.prototype;
-    d.prototype = new Ctor();
-};
+        Ctor.prototype = b.prototype;
+        d.prototype = new Ctor();
+    };
 
-(function(exports) {
+(function (exports, _) {
     "use strict";
+
     /**
      * The NVM type assembles all the other entites together in one extensive model.
      */
-    exports.NVM = function(startDate) {
-        this.started = startDate || (new Date());
-        this.latestInteraction = new Date();
-        this.latestUpdate = new Date();
+    exports.NVM = function (startDate, oldModel) {
+        var self = this;
+        self.started = startDate || (new Date());
+        self.latestInteraction = new Date();
+        self.latestUpdate = new Date();
 
-        this.controller = new exports.Controller(new Date());
+        self.controller = new exports.Controller(new Date());
 
-        this.devices = [];
-        this.links = [];
-        this.flows = [];
+        self.devices = [];
+        self.links = [];
+        self.flows = [];
+
+        if (oldModel) {
+            var setInactive = function (d) {
+                return _.extend(d, {active: false});
+            };
+            self.devices = _.cloneDeep(oldModel.devices).map(setInactive);
+            self.links = _.cloneDeep(oldModel.links).map(setInactive);
+        }
 
         // used for storing temporary data
-        this._internals = {
+        self._internals = {
             drMax: 0
         };
+
+        var mergeEntitiesWithExisting = function (targetCollection) {
+            return function (newItems) {
+                newItems.forEach(function (newItem) {
+                    var existingItem = _.find(targetCollection, function (d) {
+                        return d.id == newItem.id;
+                    });
+                    if (existingItem !== undefined) {
+                        _.extend(existingItem, newItem);
+                    } else {
+                        targetCollection.push(newItem);
+                    }
+                });
+            };
+        };
+
+        self.addDevices = mergeEntitiesWithExisting(self.devices);
+        self.addLinks = mergeEntitiesWithExisting(self.links);
     };
 
 
     /**
      * The Controller type that stores general information like name, type and the monitored networks.
      */
-    exports.Controller = function(type) {
+    exports.Controller = function (type) {
         this.name = "UNK";
         this.type = type || "UNK";
         this.monitoredNetworks = [];
@@ -76,8 +106,9 @@ var __extends = this.__extends || function(d, b) {
     /**
      * The Link contains two connected hosts and some statistics about the connection in between.
      */
-    exports.Link = function(srcHost, srcPort, dstHost, dstPort, type) {
+    exports.Link = function (srcHost, srcPort, dstHost, dstPort, type) {
         this.id = srcHost.id + '.' + dstHost.id;
+        this.active = true;
         this.srcHost = srcHost;
         this.srcPort = srcPort;
         this.dstHost = dstHost;
@@ -93,16 +124,17 @@ var __extends = this.__extends || function(d, b) {
     /**
      * The Interface encapsulates information on the connected switch, port and the configured IP address.
      */
-    exports.Interface = function(gw, address, port) {
+    exports.Interface = function (gw, address, port) {
         this.gw = gw;
         this.address = address;
         this.port = port;
     };
 
+
     /**
      * The Port represents a physical port on a switch, which has some associated statistics.
      */
-    exports.Port = function(portNumber) {
+    exports.Port = function (portNumber) {
         this.number = portNumber;
         this.receivePackets = 0;
         this.transmitPackets = 0;
@@ -127,8 +159,9 @@ var __extends = this.__extends || function(d, b) {
     /**
      * The Device represents a common base class for Clients and Switches.
      */
-    exports.Device = function(id, name, userName, url, location, purpose, color) {
+    exports.Device = function (id, name, userName, url, location, purpose, color) {
         this.id = id;
+        this.active = true;
         this.name = name || id;
         this.type = exports.Device.type;
         this.deviceType = "";
@@ -146,8 +179,8 @@ var __extends = this.__extends || function(d, b) {
     /**
      * The Client contains a connected interface as well as general information of devices.
      */
-    exports.Client = (function(base) {
-        var client = function(id, name, gw, ip, port, deviceType, userName, url, location, purpose, color) {
+    exports.Client = (function (base) {
+        var client = function (id, name, gw, ip, port, deviceType, userName, url, location, purpose, color) {
             base.call(this, id, name, userName, url, location, purpose, color);
             this.type = exports.Client.type;
             this.deviceType = deviceType;
@@ -158,10 +191,11 @@ var __extends = this.__extends || function(d, b) {
     })(exports.Device);
     exports.Client.type = "Client";
 
+
     /**
      * The Switch primarily extends Device. It does not contain specific fields.
      */
-    exports.Switch = (function(base) {
+    exports.Switch = (function (base) {
         var lclSwitch = function (id, name, deviceType, userName, url, location, purpose, color, connectedSince) {
             base.call(this, id, name, userName, url, location, purpose, color);
             this.type = exports.Switch.type;
@@ -177,7 +211,7 @@ var __extends = this.__extends || function(d, b) {
     /**
      * The Flow contains information on all layers from data link over network to transport layer.
      */
-    exports.Flow = function() {
+    exports.Flow = function () {
         this.id = "";
 
         // Data Link Layer
@@ -206,5 +240,5 @@ var __extends = this.__extends || function(d, b) {
         this.path = []; // list of NodeIDs from src to dst
     };
 
-
-})((typeof process === 'undefined' || !process.versions) ? window.sdn = window.sdn || {} : exports);
+})((typeof process === 'undefined' || !process.versions) ? window.sdn = window.sdn || {} : exports,
+    (typeof process === 'undefined' || !process.versions) ? window._ : require("lodash"));

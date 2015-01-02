@@ -53,7 +53,7 @@
         process.send({ model: model, changes: changes });
 
         oldModel = model;
-        model = new nvm.NVM(oldModel.started);
+        model = new nvm.NVM(oldModel.started, oldModel);
         model.latestInteraction = oldModel.latestInteraction;
         setTimeout(loadingProcess, pollingDelay);
     };

@@ -29,8 +29,7 @@
     "use strict";
     sdnViz.controller("TopologyCtrl", function($scope, $modal, router, deviceTypeIconFilter, packetLossRateFilter, delayFilter, repository, messenger) {
         $scope.loaded = false;
-        var parameters = { nodeRadius: 16, heightMargin: 340, minHeight: 400, animationDuration: 500 };
-        parameters.iconFontSize = Math.ceil(parameters.nodeRadius * 1.0);
+        var parameters = { nodeRadius: 16, heightMargin: 340, minHeight: 400, animationDuration: 500, iconFontSize: 16, inactiveOpacity: 0.25 };
 
         var colors = { flowLink: "#ffb800", openFlowLink: "#006fa2", cableLink: "#666", unknownLink: "#444" };
         var linkStrengthMax = 1;
@@ -54,7 +53,7 @@
         var tooltip = d3.select("#sdn-topology .map").append("div").attr("class", "topology-tooltip").style("opacity", 0);
 
         var resize = function() {
-            w = $("#sdn-topology .map").width();
+            w = $("#sdn-topology").find(".map").width();
             h = Math.max($(window).height() - parameters.heightMargin, parameters.minHeight);
             force.size([w, h]);
             svg.attr("width", w)
@@ -71,7 +70,7 @@
             }
 
             if (!$scope.loaded) {
-                $("#sdn-topology .mapInner").slideDown(1000);
+                $("#sdn-topology").find(".mapInner").slideDown(1000);
                 force.alpha(0.1);
             }
 
@@ -81,13 +80,16 @@
 
         var hideTopology = function() {
             $scope.loaded = false;
-            $("#sdn-topology .mapInner").slideUp(1000);
+            $("#sdn-topology").find(".mapInner").slideUp(1000);
         };
 
         var styleShape = function(shape) {
             shape.transition(parameters.animationDuration)
-                .style("fill", function(d) { return d.device.color; })
-                .style("stroke", function(d) { return d3.rgb(d.device.color).darker(1); });
+                .style({
+                    "fill": function(d) { return d.device.color; },
+                    "opacity": function(d) { return d.device.active ? 1.0 : parameters.inactiveOpacity },
+                    "stroke": function(d) { return d3.rgb(d.device.color).darker(1); }
+                });
             return shape;
         };
 
@@ -98,11 +100,12 @@
             var linkElements = link.enter().insert("line", ".node");
 
             link.attr("class", function(d) { return "link " + d.type; })
+                .style({"opacity": function(d) { return d.link.active ? 1.0 : parameters.inactiveOpacity/2 }})
                 .on("contextmenu", function(d) {
                     router.navigate("/detail/link/" + d.id);
                     d3.event.preventDefault();
                 })
-                .transition().duration(250)
+                .transition().duration(parameters.animationDuration)
                 .style("stroke", function(d) {
                     if (d.flowHighlight) return colors.flowLink;
                     else if (d.type == "OpenFlow") return colors.openFlowLink;
@@ -153,8 +156,7 @@
                 .call(force.drag);
 
             groups.append("circle").attr("r", parameters.nodeRadius);
-            groups.append(iconType)
-                .attr("font-size", parameters.iconFontSize);
+            groups.append(iconType).attr("font-size", parameters.iconFontSize);
 
             addTooltipToElement(groups, "Node");
 

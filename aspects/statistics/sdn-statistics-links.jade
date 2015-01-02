@@ -4,6 +4,7 @@ div
 			thead
 				tr
 					th(style="width: 50px")
+					th(style="width: 20px")
 					th Source [Port]
 					th Destination [Port]
 					th.linkParameter Tx Rate
@@ -14,6 +15,8 @@ div
 				tr(ng-repeat="link in data.nvm.links | srcOrDstId:deviceFilter")
 					td
 						a.btn.btn-default.btn-sm(href="{{ '/detail/link/' + link.id }}") Details
+					td
+						sdn-ui-on-off-label(field="link.active")
 					td 
 						a(href="{{ '/detail/device/' + link.srcHost.id }}")
 							span(sdn-device-type-icon,device="link.srcHost")

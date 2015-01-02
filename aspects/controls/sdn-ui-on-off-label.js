@@ -29,7 +29,7 @@
     "use strict";
     sdnViz.directive("sdnUiOnOffLabel", function() {
         return {
-            restrict: "C",
+            restrict: "E",
             replace: true,
             template: "<span class='label' ng-class=\"{ 'label-success': field, 'label-danger': !field}\">{{ field | boolToText }}</span>",
             scope: {
