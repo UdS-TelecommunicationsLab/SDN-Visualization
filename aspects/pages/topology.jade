@@ -38,6 +38,8 @@ div#sdn-topology
 								td(width="48px")
 									a(href="{{ '/detail/flow/' + flow.id }}")
 										span(class="device Flow", ng-switch="flow.nw.protocol")
+											strong(ng-switch-when="1") IC
+											strong(ng-switch-when="2") IG
 											strong(ng-switch-when="6") T
 											strong(ng-switch-when="17") U
 											strong(ng-switch-default="") {{ flow.nw.protocol }}
