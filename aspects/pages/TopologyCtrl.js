@@ -25,9 +25,9 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function(sdnViz) {
+(function (sdnViz) {
     "use strict";
-    sdnViz.controller("TopologyCtrl", function($scope, repository, messenger, topology) {
+    sdnViz.controller("TopologyCtrl", function ($scope, repository, messenger, topology) {
         $scope.data = repository.data;
         $scope.height = Math.max($(window).height() - 360, 400);
 

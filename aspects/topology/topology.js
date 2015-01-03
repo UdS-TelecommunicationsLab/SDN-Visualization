@@ -78,6 +78,7 @@
                         return Math.min((d.dr / (2 * linkStrengthMax) * 7 + 3), 10) + "px";
                     }
                 });
+            return collection;
         };
 
         // Tooltips

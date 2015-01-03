@@ -39,7 +39,8 @@
                 };
             },
             scope: {
-                "height": "@"
+                "height": "@",
+                "styles": "="
             },
             controller: function ($scope, $modal, router, deviceTypeIconFilter, repository, messenger, topology) {
                 var isMapCreated = false;
@@ -135,11 +136,19 @@
 
                 // Node and Link Styling
                 var styleNode = function (collection) {
-                    return topology.defaultShapeStyle(collection.transition(topology.defaultParameters.animationDuration))
+                    collection = topology.defaultShapeStyle(collection.transition(topology.defaultParameters.animationDuration));
+                    if ($scope.styles && $scope.styles.node) {
+                        collection = $scope.styles.node(collection);
+                    }
+                    return collection;
                 };
 
                 var styleLink = function (collection) {
-                    return topology.defaultLinkStyle(collection.transition(topology.defaultParameters.animationDuration), linkStrengthMax)
+                    collection = topology.defaultLinkStyle(collection.transition(topology.defaultParameters.animationDuration), linkStrengthMax);
+                    if ($scope.styles && $scope.styles.link) {
+                        collection = $scope.styles.link(collection);
+                    }
+                    return collection;
                 };
 
                 var redrawLinks = function () {
@@ -199,8 +208,6 @@
                     });
                     nodeSelection.exit().remove();
 
-                    var iconType = "text";
-
                     var groups = nodeSelection.enter().append("g")
                         .attr("class", "node")
                         .attr("width", topology.defaultParameters.nodeRadius)
@@ -210,7 +217,7 @@
                             if (d.fixed) {
                                 var rd = 3;
                                 d3.select(this).selectAll("circle").remove();
-                                styleNode(d3.select(this).insert("rect", iconType)
+                                styleNode(d3.select(this).insert("rect", "text")
                                     .attr("x", -topology.defaultParameters.nodeRadius)
                                     .attr("y", -topology.defaultParameters.nodeRadius)
                                     .attr("rx", rd)
@@ -219,7 +226,7 @@
                                     .attr("height", topology.defaultParameters.nodeRadius * 2));
                             } else {
                                 d3.select(this).selectAll("rect").remove();
-                                styleNode(d3.select(this).insert("circle", iconType)
+                                styleNode(d3.select(this).insert("circle", "text")
                                     .attr("r", topology.defaultParameters.nodeRadius));
                             }
 
@@ -232,17 +239,20 @@
                         .call(force.drag);
 
                     groups.append("circle").attr("r", topology.defaultParameters.nodeRadius);
-                    groups.append(iconType).attr("font-size", topology.defaultParameters.iconFontSize);
+                    groups.append("text").attr("font-size", topology.defaultParameters.iconFontSize);
 
                     addTooltipToElement(groups, "Node");
 
                     var t = svg.selectAll(".node");
                     styleNode(t.selectAll("circle"));
                     styleNode(t.selectAll("rect"));
-                    t.selectAll(iconType)
-                        .text(function (d) {
+
+                    var texts = t.selectAll("text").text(function (d) {
                             return deviceTypeIconFilter(d.device.deviceType);
                         });
+                    if($scope.styles && $scope.styles.text) {
+                        $scope.styles.text(texts);
+                    }
 
                     if (nodeCollection.length == 0) {
                         hideTopology();
@@ -325,7 +335,7 @@
                     });
                     messenger.subscribe({
                         topic: "flowHighlight",
-                        callback: function(event, flow) {
+                        callback: function (event, flow) {
                             linkCollection.forEach(function (d) {
                                 if (_.contains(flow.path, d.source.id) && _.contains(flow.path, d.target.id)) {
                                     d.flowHighlight = true;
