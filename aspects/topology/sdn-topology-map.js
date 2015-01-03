@@ -367,17 +367,20 @@
                             });
 
                             nvm.links.forEach(function (d) {
-                                linkCollection.push({
-                                    id: d.id,
-                                    source: devices[d.srcHost.id],
-                                    target: devices[d.dstHost.id],
-                                    type: d.type,
-                                    link: d,
-                                    dr: (d.drTx + d.drRx)
-                                });
+                                var source = devices[d.srcHost.id];
+                                var target = devices[d.dstHost.id];
+                                if (source && target) {
+                                    linkCollection.push({
+                                        id: d.id,
+                                        source: source,
+                                        target: target,
+                                        type: d.type,
+                                        link: d,
+                                        dr: (d.drTx + d.drRx)
+                                    });
+                                }
                             });
                         }
-
                         isDataInitialized = true;
                     }
                 };

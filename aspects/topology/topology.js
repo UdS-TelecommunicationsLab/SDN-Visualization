@@ -25,7 +25,7 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function(sdnViz){
+(function (sdnViz) {
     "use strict";
 
     sdnViz.factory("topology", function (repository, packetLossRateFilter, delayFilter) {
@@ -42,7 +42,11 @@
         // Helpers
         var boundingBox = function (actualValue, maxValue) {
             var minValue = defaultParameters.nodeRadius + 2;
-            return Math.min(maxValue - minValue, Math.max(actualValue, minValue));
+            if (_.isNaN(actualValue)) {
+                return (maxValue - minValue) / 2;
+            } else {
+                return Math.min(maxValue - minValue, Math.max(actualValue, minValue));
+            }
         };
 
         // Styles
