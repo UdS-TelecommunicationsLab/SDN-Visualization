@@ -1,6 +1,6 @@
 extend detail
 block header
-	span(sdn-device-type-icon, device="item")
+	sdn-device-type-icon(device="item")
 	span Device:
 	code.dp {{ item.name }}
 block body
@@ -116,7 +116,7 @@ block body
 							code.dp {{ item.ports[port].hardwareAddress }}
 						td
 							a(href="{{ '/detail/device/' + device.id }}")
-								span(sdn-device-type-icon,device="device")
+								sdn-device-type-icon(device="device")
 								code.dp {{ device.name }}
 						td {{ item.ports[port].config }} | {{ item.ports[port].state }}
 						td {{ item.ports[port].currentFeatures }}

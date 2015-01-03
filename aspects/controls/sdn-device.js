@@ -30,6 +30,7 @@
     sdnViz.directive("sdnDevice", function() {
         return {
             replace: true,
+            restrict: "E",
             templateUrl: "/templates/controls/sdn-device",
             scope: {
                 device: "=",

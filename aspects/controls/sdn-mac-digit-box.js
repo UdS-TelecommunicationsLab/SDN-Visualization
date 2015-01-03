@@ -29,7 +29,7 @@
     "use strict";
     sdnViz.directive("sdnMacDigitBox", function() {
         return {
-            restrict: "C",
+            restrict: "E",
             replace: true,
             templateUrl: "/templates/controls/sdn-mac-digit-box",
             scope: {

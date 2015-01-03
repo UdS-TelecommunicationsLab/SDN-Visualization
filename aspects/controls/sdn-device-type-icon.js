@@ -29,7 +29,7 @@
     "use strict";
     sdnViz.directive("sdnDeviceTypeIcon", function() {
         return {
-            restrict: "A",
+            restrict: "E",
             replace: true,
             templateUrl: "/templates/controls/sdn-device-type-icon",
             scope: {

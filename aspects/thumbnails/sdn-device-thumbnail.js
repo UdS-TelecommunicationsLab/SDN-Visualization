@@ -29,7 +29,7 @@
     "use strict";
     sdnViz.directive("sdnDeviceThumbnail", function() {
         return {
-            restrict: "A",
+            restrict: "E",
             replace: true,
             templateUrl: "/templates/thumbnails/sdn-device-thumbnail",
             scope: {

@@ -30,7 +30,7 @@
     sdnViz.directive("sdnCopyPasteString", function() {
         return {
             replace: true,
-            restrict: "A",
+            restrict: "E",
             templateUrl: "/templates/controls/sdn-copy-paste-string",
             controller: function($scope) {
                 $scope.copy = function() {

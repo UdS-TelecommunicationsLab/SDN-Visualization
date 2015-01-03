@@ -12,6 +12,6 @@ div
 	hr
 	div.row
 		div.col-lg-3.col-md-6(ng-repeat="device in data.nvm.devices | isDeviceType:{'node':isNodeVisible,'client':isClientVisible} | hasIdOrName:deviceFilter | orderBy:'name'")
-			div(sdn-device, device="device", rename="rename(device)")
+			sdn-device(device="device", rename="rename(device)")
 	div.alert.alert-info(ng-show="data.nvm.devices.length == 0")
 		strong There are no devices at the moment.

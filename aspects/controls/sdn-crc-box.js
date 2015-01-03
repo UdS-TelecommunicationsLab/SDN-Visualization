@@ -31,7 +31,7 @@
     sdnViz.directive("sdnCrcBox", function() {
         return {
             replace: true,
-            restrict: "A",
+            restrict: "E",
             templateUrl: "/templates/controls/sdn-crc-box",
             scope: {
                 crc: "="

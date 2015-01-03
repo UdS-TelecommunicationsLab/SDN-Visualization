@@ -31,16 +31,15 @@ div#sdn-status
 						tr
 							td Monitored Networks
 							td(colspan=2)
-								p(ng-repeat="network in data.nvm.controller.monitoredNetworks")
-									{{ network }}
+								p(ng-repeat="network in data.nvm.controller.monitoredNetworks") {{ network }}
 						tr
 							td Local CRC
 							td(colspan=2)
-								span(sdn-crc-box,crc="localCRC")
+								sdn-crc-box(crc="localCRC")
 						tr
 							td Server CRC
 							td(colspan=2)
-								span(sdn-crc-box,crc="serverCRC")
+								sdn-crc-box(crc="serverCRC")
 							
 		div.col-sm-5.col-md-8
 			div.panel.panel-default

@@ -29,7 +29,7 @@
     "use strict";
     sdnViz.directive("sdnFlowThumbnail", function() {
         return {
-            restrict: "A",
+            restrict: "E",
             replace: true,
             templateUrl: "/templates/thumbnails/sdn-flow-thumbnail",
             scope: {
