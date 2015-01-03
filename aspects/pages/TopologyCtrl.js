@@ -27,7 +27,16 @@
 
 (function(sdnViz) {
     "use strict";
-    sdnViz.controller("TopologyCtrl", function($scope, repository) {
+    sdnViz.controller("TopologyCtrl", function($scope, repository, messenger, topology) {
         $scope.data = repository.data;
+        $scope.height = Math.max($(window).height() - 360, 400);
+
+        $scope.highlightFlow = function (flow) {
+            messenger.publish("flowHighlight", flow);
+        };
+
+        $scope.unhighlightFlow = function (flow) {
+            messenger.publish("flowUnhighlight", flow);
+        };
     });
 })(window.sdnViz);
