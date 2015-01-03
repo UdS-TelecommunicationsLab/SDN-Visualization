@@ -28,7 +28,7 @@
 (function (client) {
     "use strict";
     var mapper = require("./mapper"),
-        _ = require("underscore"),
+        _ = require("lodash"),
         intf = require("./interface");
 
     var resourceCount = 0;

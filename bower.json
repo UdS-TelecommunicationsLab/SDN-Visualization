@@ -11,10 +11,10 @@
     "d3": "~3.5.2",
     "fontawesome": "~4.2.0",
     "jquery": "2.0.3",
+    "lodash": "~2.4.1",
     "moment": "2.4.0",
     "msgpack-javascript": "*",
     "objectDiff-enhanced": "git://github.com/Darneas/objectDiff.js.git#~1.1.1",
-    "toastr": "2.1.0",
-    "underscore": "1.7.0"
+    "toastr": "2.1.0"
   }
 }

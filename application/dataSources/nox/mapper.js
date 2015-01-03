@@ -27,7 +27,7 @@
 
 (function() {
     "use strict";
-    var _ = require("underscore"),
+    var _ = require("lodash"),
         common = require("../common"),
         config = require("../../config"),
         crypt = require("../../../public/shared/crypt"),
