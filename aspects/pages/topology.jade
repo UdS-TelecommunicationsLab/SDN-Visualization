@@ -16,15 +16,8 @@ div#sdn-topology
 					i.fa.fa-random
 					| &nbsp;
 					span Flows: {{ data.nvm.flows.length }}
-				| &nbsp;
-				button.btn.btn-primary.btn-xs(ng-click="showHelp()")
-					i.fa.fa-question
 			| <br>
-			div.well
-				div.map
-					div.mapInner(style="display:none")
-					div.busyIndicator(ng-show="!loaded")
-						span Preparing topology ...
+			sdn-topology-map(height="{{ height }}")
 		div.col-sm-4.col-md-3
 			div.panel.panel-default
 				div.panel-heading
