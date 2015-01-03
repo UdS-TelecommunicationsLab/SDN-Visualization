@@ -1,17 +1,86 @@
 (function (sdnViz) {
     "use strict";
 
-    sdnViz.factory("topology", function () {
+    sdnViz.factory("topology", function (packetLossRateFilter, delayFilter) {
+        var defaultParameters = {
+            nodeRadius: 16,
+            heightMargin: 340,
+            minHeight: 400,
+            animationDuration: 500,
+            iconFontSize: 16,
+            inactiveOpacity: 0.25
+        };
+
+        var boundingBox = function (actualValue, maxValue) {
+            var minValue = defaultParameters.nodeRadius + 2;
+            return Math.min(maxValue - minValue, Math.max(actualValue, minValue));
+        };
+
+        var colors = {flowLink: "#ffb800", openFlowLink: "#006fa2", cableLink: "#666", unknownLink: "#444"};
+
+        var style = function (shape) {
+            shape.transition(defaultParameters.animationDuration)
+                .style({
+                    "fill": function (d) {
+                        return d.device.color;
+                    },
+                    "opacity": function (d) {
+                        return d.device.active ? 1.0 : defaultParameters.inactiveOpacity
+                    },
+                    "stroke": function (d) {
+                        return d3.rgb(d.device.color).darker(1);
+                    }
+                });
+            return shape;
+        };
+
+        var createNodeTooltip = function (obj) {
+            var html = "<div><strong>" + ((obj.id !== obj.device.name) ? obj.device.name : "Unknown Device") + "</strong> ";
+            if (obj.device.type == sdn.Client.type)
+                html += "<span>(" + obj.device.interface.address + ")</span>";
+            html += "<br /><code class='dp'>" + obj.id + "</code></div>";
+            return html;
+        };
+
+        var createLinkTooltip = function (tt, obj) {
+            var div = tt.append("div");
+            div.append("strong").html("Link");
+            div.append("br");
+            var tab = div.append("table");
+            if (obj.link) {
+                if (obj.link.srcHost) {
+                    var srcHost = tab.append("tr");
+                    srcHost.append("th").html("Source:");
+                    srcHost.append("td").html("<code>" + obj.link.srcHost.name + "</code> [" + obj.link.srcPort + "]");
+                }
+                if (obj.link.dstHost) {
+                    var dstHost = tab.append("tr");
+                    dstHost.append("th").html("Destination:");
+                    dstHost.append("td").html("<code>" + obj.link.dstHost.name + "</code> [" + obj.link.dstPort + "]");
+                }
+
+                var plr = tab.append("tr");
+                plr.append("th").html("Packet Loss:");
+                plr.append("td").html(packetLossRateFilter(obj.link.plr));
+
+                var delay = tab.append("tr");
+                delay.append("th").html("Delay:");
+                delay.append("td").html(delayFilter(obj.link.delay));
+
+                var dr = tab.append("tr");
+                dr.append("th").html("Data Rate (T/R):");
+                dr.append("td").html(obj.link.drTx + " / " + obj.link.drRx + " kB/s");
+            }
+        };
+
         return {
-            defaultParameters: {
-                nodeRadius: 16,
-                heightMargin: 340,
-                minHeight: 400,
-                animationDuration: 500,
-                iconFontSize: 16,
-                inactiveOpacity: 0.25
-            },
-            colors: {flowLink: "#ffb800", openFlowLink: "#006fa2", cableLink: "#666", unknownLink: "#444"}
+            boundingBox: boundingBox,
+            colors: colors,
+            createLinkTooltip: createLinkTooltip,
+            createNodeTooltip: createNodeTooltip,
+            defaultParameters: defaultParameters,
+            defaultShapeStyle: style
+
         };
     });
 
@@ -26,7 +95,7 @@
                 };
             },
             scope: {},
-            controller: function ($scope, $modal, router, deviceTypeIconFilter, packetLossRateFilter, delayFilter, repository, messenger, topology) {
+            controller: function ($scope, $modal, router, deviceTypeIconFilter, repository, messenger, topology) {
                 $scope.loaded = false;
 
                 $scope.showHelp = function () {
@@ -53,47 +122,48 @@
                     .linkStrength(1);
 
                 var createTopologyMap = function () {
+                    var mapNode = angular.element($scope.element).find(".map");
+                    var mapInner = angular.element($scope.element).find(".mapInner");
+                    var svg = d3.select(mapInner.get(0)).append("svg");
+
+                    var tooltip = d3.select(mapNode.get(0)).append("div").attr("class", "topology-tooltip").style("opacity", 0);
+
                     // ------------------------------ BORDER ------------------------------
-                    var svg = d3.select("#sdn-topology .map > div.mapInner").append("svg");
 
-                    var nodes = force.nodes();
-                    var links = force.links();
+                    var nodeCollection = force.nodes();
+                    var linkCollection = force.links();
 
-                    var node = svg.selectAll(".node"),
-                        link = svg.selectAll(".link");
+                    var nodeSelection = svg.selectAll(".node");
+                    var linkSelection = svg.selectAll(".link");
 
-                    var tick = function () {
-                        node.attr("transform", function (d) {
-                            return "translate(" + boundingBox(d.x, w) + "," + boundingBox(d.y, h) + ")";
+                    force.on("tick", function () {
+                        nodeSelection.attr("transform", function (d) {
+                            return "translate(" + topology.boundingBox(d.x, w) + "," + topology.boundingBox(d.y, h) + ")";
                         });
 
-                        link.attr("x1", function (d) {
-                            return boundingBox(d.source.x, w);
+                        linkSelection.attr("x1", function (d) {
+                            return topology.boundingBox(d.source.x, w);
                         })
                             .attr("y1", function (d) {
-                                return boundingBox(d.source.y, h);
+                                return topology.boundingBox(d.source.y, h);
                             })
                             .attr("x2", function (d) {
-                                return boundingBox(d.target.x, w);
+                                return topology.boundingBox(d.target.x, w);
                             })
                             .attr("y2", function (d) {
-                                return boundingBox(d.target.y, h);
+                                return topology.boundingBox(d.target.y, h);
                             });
 
                         if (force.alpha() < 0.02) {
                             showTopology();
                         }
-                    };
-                    force.on("tick", tick);
-
-                    var tooltip = d3.select("#sdn-topology .map").append("div").attr("class", "topology-tooltip").style("opacity", 0);
+                    });
 
                     var resize = function () {
-                        w = angular.element($scope.element).width();
+                        w = mapNode.width();
                         h = Math.max($(window).height() - topology.defaultParameters.heightMargin, topology.defaultParameters.minHeight);
                         force.size([w, h]);
-                        svg.attr("width", w)
-                            .attr("height", h);
+                        svg.attr({"width": w, "height": h});
                     };
 
                     var setMaxStrength = function (val) {
@@ -101,12 +171,12 @@
                     };
 
                     var showTopology = function () {
-                        if (nodes.length == 0) {
+                        if (nodeCollection.length == 0) {
                             return;
                         }
 
                         if (!$scope.loaded) {
-                            $("#sdn-topology").find(".mapInner").slideDown(1000);
+                            mapInner.slideDown(1000);
                             force.alpha(0.1);
                         }
 
@@ -116,51 +186,36 @@
 
                     var hideTopology = function () {
                         $scope.loaded = false;
-                        $("#sdn-topology").find(".mapInner").slideUp(1000);
-                    };
-
-                    var styleShape = function (shape) {
-                        shape.transition(topology.defaultParameters.animationDuration)
-                            .style({
-                                "fill": function (d) {
-                                    return d.device.color;
-                                },
-                                "opacity": function (d) {
-                                    return d.device.active ? 1.0 : topology.defaultParameters.inactiveOpacity
-                                },
-                                "stroke": function (d) {
-                                    return d3.rgb(d.device.color).darker(1);
-                                }
-                            });
-                        return shape;
+                        mapInner.slideUp(1000);
                     };
 
                     var redrawLinks = function () {
-                        link = link.data(links, function (d) {
+                        linkSelection = linkSelection.data(linkCollection, function (d) {
                             return d.id;
                         });
-                        link.exit().remove();
+                        linkSelection.exit().remove();
 
-                        var linkElements = link.enter().insert("line", ".node");
+                        var linkElements = linkSelection.enter().insert("line", ".node");
 
-                        link.attr("class", function (d) {
-                            return "link " + d.type;
-                        })
-                            .style({
-                                "opacity": function (d) {
-                                    return d.link.active ? 1.0 : topology.defaultParameters.inactiveOpacity / 2
-                                }
+                        linkSelection
+                            .attr("class", function (d) {
+                                return "link " + d.type;
                             })
                             .on("contextmenu", function (d) {
                                 router.navigate("/detail/link/" + d.id);
                                 d3.event.preventDefault();
                             })
                             .transition().duration(topology.defaultParameters.animationDuration)
-                            .style("stroke", function (d) {
-                                if (d.flowHighlight) return topology.colors.flowLink;
-                                else if (d.type == "OpenFlow") return topology.colors.openFlowLink;
-                                else if (d.type == "Ethernet") return topology.colors.cableLink;
-                                else return topology.colors.unknownLink;
+                            .style({
+                                "stroke": function (d) {
+                                    if (d.flowHighlight) return topology.colors.flowLink;
+                                    else if (d.type == "OpenFlow") return topology.colors.openFlowLink;
+                                    else if (d.type == "Ethernet") return topology.colors.cableLink;
+                                    else return topology.colors.unknownLink;
+                                },
+                                "opacity": function (d) {
+                                    return d.link.active ? 1.0 : topology.defaultParameters.inactiveOpacity / 2
+                                }
                             })
                             .transition().duration(topology.defaultParameters.animationDuration)
                             .style("stroke-width", function (d) {
@@ -170,16 +225,18 @@
                         addTooltipToElement(linkElements, "Link");
                     };
 
+                    var styleShape = topology.defaultShapeStyle;
+
                     var redrawNodes = function () {
-                        node = node.data(nodes, function (d) {
+                        nodeSelection = nodeSelection.data(nodeCollection, function (d) {
                             return d.id;
                         });
 
-                        node.exit().remove();
+                        nodeSelection.exit().remove();
 
                         var iconType = "text";
 
-                        var groups = node.enter().append("g")
+                        var groups = nodeSelection.enter().append("g")
                             .attr("class", "node")
                             .attr("width", topology.defaultParameters.nodeRadius)
                             .attr("height", topology.defaultParameters.nodeRadius)
@@ -222,7 +279,7 @@
                                 return deviceTypeIconFilter(d.device.deviceType);
                             });
 
-                        if (nodes.length == 0) {
+                        if (nodeCollection.length == 0) {
                             hideTopology();
                         }
                     };
@@ -230,59 +287,22 @@
                     var restart = function () {
                         redrawLinks();
                         redrawNodes();
-
                         force.start();
                     };
 
-                    var boundingBox = function (actualValue, maxValue) {
-                        var minValue = topology.defaultParameters.nodeRadius + 2;
-                        return Math.min(maxValue - minValue, Math.max(actualValue, minValue));
-                    };
-
-
                     var addTooltipToElement = function (items, type) {
-                        items.on("mouseover", function (obj) {
-                            tooltip.style("opacity", 0.9);
-                            if (type == "Node") {
-                                var html = "<div><strong>" + ((obj.id !== obj.device.name) ? obj.device.name : "Unknown Device") + "</strong> ";
-                                if (obj.device.type == sdn.Client.type)
-                                    html += "<span>(" + obj.device.interface.address + ")</span>";
-                                html += "<br /><code class='dp'>" + obj.id + "</code></div>";
-                                tooltip.html(html);
-                            } else if (type == "Link") {
+                        items
+                            .on("mouseover", function (obj) {
+                                tooltip.style("opacity", 0.9);
                                 tooltip.html("");
-                                var div = tooltip.append("div");
-                                div.append("strong").html("Link");
-                                div.append("br");
-                                var tab = div.append("table");
-                                if (obj.link) {
-                                    if (obj.link.srcHost) {
-                                        var srcHost = tab.append("tr");
-                                        srcHost.append("th").html("Source:");
-                                        srcHost.append("td").html("<code>" + obj.link.srcHost.name + "</code> [" + obj.link.srcPort + "]");
-                                    }
-                                    if (obj.link.dstHost) {
-                                        var dstHost = tab.append("tr");
-                                        dstHost.append("th").html("Destination:");
-                                        dstHost.append("td").html("<code>" + obj.link.dstHost.name + "</code> [" + obj.link.dstPort + "]");
-                                    }
-
-                                    var plr = tab.append("tr");
-                                    plr.append("th").html("Packet Loss:");
-                                    plr.append("td").html(packetLossRateFilter(obj.link.plr));
-
-                                    var delay = tab.append("tr");
-                                    delay.append("th").html("Delay:");
-                                    delay.append("td").html(delayFilter(obj.link.delay));
-
-                                    var dr = tab.append("tr");
-                                    dr.append("th").html("Data Rate (T/R):");
-                                    dr.append("td").html(obj.link.drTx + " / " + obj.link.drRx + " kB/s");
+                                if (type == "Node") {
+                                    tooltip.html(topology.createNodeTooltip(obj));
+                                } else if (type == "Link") {
+                                    topology.createLinkTooltip(tooltip, obj);
                                 }
-                            }
-                        })
+                            })
                             .on("mousemove", function (d) {
-                                var topologyWidth = $("#sdn-topology .map").width();
+                                var topologyWidth = mapNode.width();
                                 var tooltipWidth = $(tooltip.node()).width();
                                 var tooltipHeight = $(tooltip.node()).height();
 
@@ -302,262 +322,159 @@
                             });
                     };
 
+                    var updateDiff = function (event, message) {
+                        if (!initialized) {
+                            return;
+                        }
+
+                        var changed = false;
+                        var nodeChanged = false;
+                        var change = message.changes;
+
+
+                        if ((!change[objectDiff.token.changed]) || (!change[objectDiff.token.value].devices && !change[objectDiff.token.value].links)) {
+                            return;
+                        }
+
+                        if (change[objectDiff.token.changed] && change[objectDiff.token.value].flows && change[objectDiff.token.value].flows[objectDiff.token.changed]) {
+                            unhighlightAll();
+                        }
+
+                        setMaxStrength($scope.data.nvm && $scope.data.nvm._internals.drMax);
+
+                        var nodeManipul = {add: [], remove: []};
+
+                        var localDevices = (change[objectDiff.token.value].devices && change[objectDiff.token.value].devices[objectDiff.token.value]) || [];
+                        for (var deviceIndex in localDevices) {
+                            var nodeChange = localDevices[deviceIndex];
+                            if (nodeChange !== undefined && nodeChange[objectDiff.token.changed] !== objectDiff.token.equal) {
+                                if (nodeChange[objectDiff.token.changed] === objectDiff.token.added) {
+                                    changed = true;
+                                    nodeManipul.add.push({
+                                        id: nodeChange[objectDiff.token.value].id,
+                                        name: nodeChange[objectDiff.token.value].name,
+                                        device: nodeChange[objectDiff.token.value],
+                                        x: w / 2,
+                                        y: h / 2
+                                    });
+                                } else if (nodeChange[objectDiff.token.changed] === objectDiff.token.object) {
+                                    nodeChanged = true;
+                                    var changedNode = _.find(nodeCollection, function (lclN) {
+                                        return lclN.id == nodeChange[objectDiff.token.value].id[objectDiff.token.value];
+                                    });
+                                    if (changedNode) {
+                                        repository.applyChanges(changedNode.device, nodeChange);
+                                    }
+                                } else if (nodeChange[objectDiff.token.changed] === objectDiff.token.removed) {
+                                    changed = true;
+                                    var removeNode = _.find(nodeCollection, function (d) {
+                                        return d.id == nodeChange[objectDiff.token.value].id;
+                                    });
+                                    if (removeNode) {
+                                        nodeManipul.remove.push(removeNode);
+                                    }
+                                }
+                            }
+                        }
+
+                        var linkManipul = {add: [], remove: [], changed: false, linkChanged: false};
+                        var localLinks = (change[objectDiff.token.value].links && change[objectDiff.token.value].links[objectDiff.token.value]) || [];
+                        for (var linkIndex in localLinks) {
+                            var linkChange = localLinks[linkIndex];
+                            if (linkChange[objectDiff.token.changed] !== objectDiff.token.equal) {
+                                if (linkChange[objectDiff.token.changed] === objectDiff.token.added) {
+                                    linkManipul.changed = true;
+                                    var localLink = linkChange[objectDiff.token.value];
+                                    linkManipul.add.push({
+                                        id: localLink.id,
+                                        source: localLink.srcHost.id,
+                                        target: localLink.dstHost.id,
+                                        type: localLink.type,
+                                        link: localLink,
+                                        dr: (localLink.drTx + localLink.drRx)
+                                    });
+                                } else if (linkChange[objectDiff.token.changed] === objectDiff.token.object) {
+                                    linkManipul.linkChanged = true;
+                                    var changedLink = _.find(linkCollection, function (lclL) {
+                                        return lclL.id == linkChange[objectDiff.token.value].id[objectDiff.token.value];
+                                    });
+                                    if (changedLink) {
+                                        repository.applyChanges(changedLink.link, linkChange);
+                                        changedLink.dr = (changedLink.link.drTx + changedLink.link.drRx);
+                                    }
+                                } else if (linkChange[objectDiff.token.changed] === objectDiff.token.removed) {
+                                    linkManipul.changed = true;
+                                    var removeLink = _.find(linkCollection, function (lclL) {
+                                        return lclL.id == linkChange[objectDiff.token.value].id;
+                                    });
+                                    if (removeLink)
+                                        linkManipul.remove.push(removeLink);
+                                }
+                            }
+                        }
+
+                        // process changes
+                        linkManipul.remove.forEach(function (link) {
+                            linkCollection.splice(linkCollection.indexOf(link), 1);
+                        });
+
+                        nodeManipul.remove.forEach(function (node) {
+                            nodeCollection.splice(nodeCollection.indexOf(node), 1);
+                        });
+
+                        nodeManipul.add.forEach(function (node) {
+                            nodeCollection.push(node);
+                        });
+
+                        linkManipul.add.forEach(function (link) {
+                            link.source = _.find(nodeCollection, function (dt) {
+                                return dt.id === link.source;
+                            });
+                            link.target = _.find(nodeCollection, function (dt) {
+                                return dt.id === link.target;
+                            });
+                            linkCollection.push(link);
+                        });
+
+                        if (changed || linkManipul.changed) {
+                            restart();
+                        } else if (linkManipul.linkChanged || nodeChanged) {
+                            redrawLinks();
+                            redrawNodes();
+                        }
+                    };
+
+
                     var subscribeToUpdates = function () {
                         messenger.subscribe({
                             topic: "modelUpdate",
                             callback: function (event, message) {
                                 if (initialized) {
                                     hideTopology();
-                                    nodes.splice(0, nodes.length);
-                                    links.splice(0, links.length);
+                                    nodeCollection.splice(0, nodeCollection.length);
+                                    linkCollection.splice(0, linkCollection.length);
                                     initialized = false;
                                 }
                                 set();
                             }
                         });
 
-                        var callback = function (event, message) {
-                            if (!initialized) {
-                                return;
-                            }
-
-                            var changed = false;
-                            var nodeChanged = false;
-                            var linkChanged = false;
-                            var change = message.changes;
-
-                            if ((!change[objectDiff.token.changed]) || (!change[objectDiff.token.value].devices && !change[objectDiff.token.value].links)) {
-                                return;
-                            }
-
-                            if (change[objectDiff.token.changed] && change[objectDiff.token.value].flows && change[objectDiff.token.value].flows[objectDiff.token.changed]) {
-                                unhighlightAll();
-                            }
-
-                            setMaxStrength($scope.data.nvm && $scope.data.nvm._internals.drMax);
-
-                            var nodeChangeSet = {add: [], remove: []};
-
-                            var localDevices = (change[objectDiff.token.value].devices && change[objectDiff.token.value].devices[objectDiff.token.value]) || [];
-                            for (var deviceIndex in localDevices) {
-                                var nodeChange = localDevices[deviceIndex];
-                                if (nodeChange !== undefined && nodeChange[objectDiff.token.changed] !== objectDiff.token.equal) {
-                                    if (nodeChange[objectDiff.token.changed] === objectDiff.token.added) {
-                                        changed = true;
-                                        nodeChangeSet.add.push({
-                                            id: nodeChange[objectDiff.token.value].id,
-                                            name: nodeChange[objectDiff.token.value].name,
-                                            device: nodeChange[objectDiff.token.value],
-                                            x: w / 2,
-                                            y: h / 2
-                                        });
-                                    } else if (nodeChange[objectDiff.token.changed] === objectDiff.token.object) {
-                                        nodeChanged = true;
-                                        var changedNode = _.find(nodes, function (lclN) {
-                                            return lclN.id == nodeChange[objectDiff.token.value].id[objectDiff.token.value];
-                                        });
-                                        if (changedNode) {
-                                            repository.applyChanges(changedNode.device, nodeChange);
-                                        }
-                                    } else if (nodeChange[objectDiff.token.changed] === objectDiff.token.removed) {
-                                        changed = true;
-                                        var removeNode = _.find(nodes, function (d) {
-                                            return d.id == nodeChange[objectDiff.token.value].id;
-                                        });
-                                        if (removeNode) {
-                                            nodeChangeSet.remove.push(removeNode);
-                                        }
-                                    }
-                                }
-                            }
-
-                            var linkChangeSet = {add: [], remove: []};
-
-                            var localLinks = (change[objectDiff.token.value].links && change[objectDiff.token.value].links[objectDiff.token.value]) || [];
-                            for (var linkIndex in localLinks) {
-                                var linkChange = localLinks[linkIndex];
-                                if (linkChange[objectDiff.token.changed] !== objectDiff.token.equal) {
-                                    if (linkChange[objectDiff.token.changed] === objectDiff.token.added) {
-                                        changed = true;
-                                        var localLink = linkChange[objectDiff.token.value];
-                                        linkChangeSet.add.push({
-                                            id: localLink.id,
-                                            source: localLink.srcHost.id,
-                                            target: localLink.dstHost.id,
-                                            type: localLink.type,
-                                            link: localLink,
-                                            dr: (localLink.drTx + localLink.drRx)
-                                        });
-
-                                    } else if (linkChange[objectDiff.token.changed] === objectDiff.token.object) {
-                                        linkChanged = true;
-                                        var changedLink = _.find(links, function (lclL) {
-                                            return lclL.id == linkChange[objectDiff.token.value].id[objectDiff.token.value];
-                                        });
-                                        if (changedLink) {
-                                            repository.applyChanges(changedLink.link, linkChange);
-                                            changedLink.dr = (changedLink.link.drTx + changedLink.link.drRx);
-                                        }
-                                    } else if (linkChange[objectDiff.token.changed] === objectDiff.token.removed) {
-                                        changed = true;
-                                        var removeLink = _.find(links, function (lclL) {
-                                            return lclL.id == linkChange[objectDiff.token.value].id;
-                                        });
-                                        if (removeLink)
-                                            linkChangeSet.remove.push(removeLink);
-                                    }
-                                }
-                            }
-
-                            // process changes
-                            linkChangeSet.remove.forEach(function (link) {
-                                links.splice(links.indexOf(link), 1);
-                            });
-
-                            nodeChangeSet.remove.forEach(function (node) {
-                                nodes.splice(nodes.indexOf(node), 1);
-                            });
-
-                            nodeChangeSet.add.forEach(function (node) {
-                                nodes.push(node);
-                            });
-
-                            linkChangeSet.add.forEach(function (link) {
-                                link.source = _.find(nodes, function (dt) {
-                                    return dt.id === link.source;
-                                });
-                                link.target = _.find(nodes, function (dt) {
-                                    return dt.id === link.target;
-                                });
-                                links.push(link);
-                            });
-
-                            if (changed) {
-                                restart();
-                            } else if (linkChanged || nodeChanged) {
-                                redrawLinks();
-                                redrawNodes();
-                            }
-                        };
-
                         messenger.subscribe({
                             topic: "modelUpdateDiff",
-                            callback: function(event, message) {
-                                if (!initialized) {
-                                    return;
-                                }
-
-                                var changed = false;
-                                var nodeChanged = false;
-                                var linkChanged = false;
-                                var change = message.changes;
-
-
-                                if ((!change[objectDiff.token.changed]) || (!change[objectDiff.token.value].devices && !change[objectDiff.token.value].links)) {
-                                    return;
-                                }
-
-                                if (change[objectDiff.token.changed] && change[objectDiff.token.value].flows && change[objectDiff.token.value].flows[objectDiff.token.changed]) {
-                                    unhighlightAll();
-                                }
-
-                                setMaxStrength($scope.data.nvm && $scope.data.nvm._internals.drMax);
-
-                                var nodeManipul = { add: [], remove: [] };
-
-                                var localDevices = (change[objectDiff.token.value].devices && change[objectDiff.token.value].devices[objectDiff.token.value]) || [];
-                                for (var deviceIndex in localDevices) {
-                                    var nodeChange = localDevices[deviceIndex];
-                                    if (nodeChange !== undefined && nodeChange[objectDiff.token.changed] !== objectDiff.token.equal) {
-                                        if (nodeChange[objectDiff.token.changed] === objectDiff.token.added) {
-                                            changed = true;
-                                            nodeManipul.add.push({ id: nodeChange[objectDiff.token.value].id, name: nodeChange[objectDiff.token.value].name, device: nodeChange[objectDiff.token.value], x: w / 2, y: h / 2 });
-                                        } else if (nodeChange[objectDiff.token.changed] === objectDiff.token.object) {
-                                            nodeChanged = true;
-                                            var changedNode = _.find(nodes, function(lclN) { return lclN.id == nodeChange[objectDiff.token.value].id[objectDiff.token.value]; });
-                                            if (changedNode) {
-                                                repository.applyChanges(changedNode.device, nodeChange);
-                                            }
-                                        } else if (nodeChange[objectDiff.token.changed] === objectDiff.token.removed) {
-                                            changed = true;
-                                            var removeNode = _.find(nodes, function(d) {
-                                                return d.id == nodeChange[objectDiff.token.value].id;
-                                            });
-                                            if (removeNode) {
-                                                nodeManipul.remove.push(removeNode);
-                                            }
-                                        }
-                                    }
-                                }
-
-                                var linkManipul = { add: [], remove: [] };
-
-                                var localLinks = (change[objectDiff.token.value].links && change[objectDiff.token.value].links[objectDiff.token.value]) || [];
-                                for (var linkIndex in localLinks) {
-                                    var linkChange = localLinks[linkIndex];
-                                    if (linkChange[objectDiff.token.changed] !== objectDiff.token.equal) {
-                                        if (linkChange[objectDiff.token.changed] === objectDiff.token.added) {
-                                            changed = true;
-                                            var localLink = linkChange[objectDiff.token.value];
-                                            linkManipul.add.push({ id: localLink.id, source: localLink.srcHost.id, target: localLink.dstHost.id, type: localLink.type, link: localLink, dr: (localLink.drTx + localLink.drRx) });
-
-                                        } else if (linkChange[objectDiff.token.changed] === objectDiff.token.object) {
-                                            linkChanged = true;
-                                            var changedLink = _.find(links, function(lclL) {
-                                                return lclL.id == linkChange[objectDiff.token.value].id[objectDiff.token.value];
-                                            });
-                                            if (changedLink) {
-                                                repository.applyChanges(changedLink.link, linkChange);
-                                                changedLink.dr = (changedLink.link.drTx + changedLink.link.drRx);
-                                            }
-                                        } else if (linkChange[objectDiff.token.changed] === objectDiff.token.removed) {
-                                            changed = true;
-                                            var removeLink = _.find(links, function(lclL) { return lclL.id == linkChange[objectDiff.token.value].id; });
-                                            if (removeLink)
-                                                linkManipul.remove.push(removeLink);
-                                        }
-                                    }
-                                }
-
-                                // process changes
-                                linkManipul.remove.forEach(function(link) {
-                                    links.splice(links.indexOf(link), 1);
-                                });
-
-                                nodeManipul.remove.forEach(function(node) {
-                                    nodes.splice(nodes.indexOf(node), 1);
-                                });
-
-                                nodeManipul.add.forEach(function(node) {
-                                    nodes.push(node);
-                                });
-
-                                linkManipul.add.forEach(function(link) {
-                                    link.source = _.find(nodes, function(dt) { return dt.id === link.source; });
-                                    link.target = _.find(nodes, function(dt) { return dt.id === link.target; });
-                                    links.push(link);
-                                });
-
-                                if (changed) {
-                                    restart();
-                                } else if (linkChanged || nodeChanged) {
-                                    redrawLinks();
-                                    redrawNodes();
-                                }
-                            }
+                            callback: updateDiff
                         });
                     };
 
                     /* Flow highlighting */
                     var unhighlightAll = function () {
-                        links.forEach(function (d) {
+                        linkCollection.forEach(function (d) {
                             d.flowHighlight = false;
                         });
                         redrawLinks();
                     };
 
                     $scope.highlightFlow = function (flow) {
-                        links.forEach(function (d) {
+                        linkCollection.forEach(function (d) {
                             if (_.contains(flow.path, d.source.id) && _.contains(flow.path, d.target.id)) {
                                 d.flowHighlight = true;
                             }
@@ -580,12 +497,12 @@
                                 var devices = {};
                                 nvm.devices.forEach(function (d) {
                                     var device = {id: d.id, name: d.name, device: d, x: w / 2, y: h / 2};
-                                    nodes.push(device);
+                                    nodeCollection.push(device);
                                     devices[d.id] = device;
                                 });
 
                                 nvm.links.forEach(function (d) {
-                                    links.push({
+                                    linkCollection.push({
                                         id: d.id,
                                         source: devices[d.srcHost.id],
                                         target: devices[d.dstHost.id],
