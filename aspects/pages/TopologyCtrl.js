@@ -31,6 +31,15 @@
         $scope.data = repository.data;
         $scope.height = Math.max($(window).height() - 360, 400);
 
+        $scope.styles = {
+            node: function (collection) {
+                return topology.defaultDeviceActiveStyle(topology.defaultShapeStyle(collection));
+            },
+            link: function (collection, linkStrength) {
+                return topology.defaultLinkStyle(topology.defaultLinkActiveStyle(collection), linkStrength);
+            }
+        };
+
         $scope.highlightFlow = function (flow) {
             messenger.publish("flowHighlight", flow);
         };

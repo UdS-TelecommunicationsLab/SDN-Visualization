@@ -28,7 +28,7 @@
 (function (sdnViz) {
     "use strict";
 
-    sdnViz.factory("topology", function (repository, packetLossRateFilter, delayFilter) {
+    sdnViz.factory("topology", function (repository, packetLossRateFilter, delayFilter, deviceTypeIconFilter) {
         // Parameters
         var defaultParameters = {
             nodeRadius: 16,
@@ -56,12 +56,25 @@
                     "fill": function (d) {
                         return d.device.color;
                     },
-                    "opacity": function (d) {
-                        return d.device.active ? 1.0 : defaultParameters.inactiveOpacity
-                    },
                     "stroke": function (d) {
                         return d3.rgb(d.device.color).darker(1);
                     }
+                });
+            return collection;
+        };
+
+        var defaultDeviceActiveStyle = function (collection) {
+            collection
+                .style("opacity", function (d) {
+                    return d.device.active ? 1.0 : defaultParameters.inactiveOpacity
+                });
+            return collection;
+        };
+
+        var defaultLinkActiveStyle = function (collection) {
+            collection
+                .style("opacity", function (d) {
+                    return d.link.active ? 1.0 : defaultParameters.inactiveOpacity / 2
                 });
             return collection;
         };
@@ -75,15 +88,19 @@
                         else if (d.type == "Ethernet") return colors.cableLink;
                         else return colors.unknownLink;
                     },
-                    "opacity": function (d) {
-                        return d.link.active ? 1.0 : defaultParameters.inactiveOpacity / 2
-                    },
                     "stroke-width": function (d) {
                         return Math.min((d.dr / (2 * linkStrengthMax) * 7 + 3), 10) + "px";
                     }
                 });
             return collection;
         };
+
+        var defaultTextStyle = function (collection) {
+            collection.text(function (d) {
+                return deviceTypeIconFilter(d.device.deviceType);
+            })
+            return collection;
+        }
 
         // Tooltips
         var createNodeTooltip = function (obj) {
@@ -209,9 +226,12 @@
             colors: colors,
             createLinkTooltip: createLinkTooltip,
             createNodeTooltip: createNodeTooltip,
-            defaultParameters: defaultParameters,
+            defaultDeviceActiveStyle: defaultDeviceActiveStyle,
             defaultLinkStyle: defaultLinkStyle,
-            defaultShapeStyle: defaultShapeStyle
+            defaultLinkActiveStyle: defaultLinkActiveStyle,
+            defaultParameters: defaultParameters,
+            defaultShapeStyle: defaultShapeStyle,
+            defaultTextStyle: defaultTextStyle
         };
     });
 })(window.sdnViz);

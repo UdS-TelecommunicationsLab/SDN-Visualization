@@ -42,7 +42,7 @@
                 "height": "@",
                 "styles": "="
             },
-            controller: function ($scope, $modal, router, deviceTypeIconFilter, repository, messenger, topology) {
+            controller: function ($scope, $modal, router, repository, messenger, topology) {
                 var isMapCreated = false;
                 var isDataInitialized = false;
 
@@ -136,17 +136,21 @@
 
                 // Node and Link Styling
                 var styleNode = function (collection) {
-                    collection = topology.defaultShapeStyle(collection.transition(topology.defaultParameters.animationDuration));
+                    collection = collection.transition(topology.defaultParameters.animationDuration);
                     if ($scope.styles && $scope.styles.node) {
                         collection = $scope.styles.node(collection);
+                    } else {
+                        collection = topology.defaultShapeStyle(collection);
                     }
                     return collection;
                 };
 
                 var styleLink = function (collection) {
-                    collection = topology.defaultLinkStyle(collection.transition(topology.defaultParameters.animationDuration), linkStrengthMax);
+                    collection = collection.transition(topology.defaultParameters.animationDuration);
                     if ($scope.styles && $scope.styles.link) {
-                        collection = $scope.styles.link(collection);
+                        collection = $scope.styles.link(collection, linkStrengthMax);
+                    } else {
+                        collection = topology.defaultLinkStyle(collection, linkStrengthMax);
                     }
                     return collection;
                 };
@@ -247,11 +251,11 @@
                     styleNode(t.selectAll("circle"));
                     styleNode(t.selectAll("rect"));
 
-                    var texts = t.selectAll("text").text(function (d) {
-                            return deviceTypeIconFilter(d.device.deviceType);
-                        });
-                    if($scope.styles && $scope.styles.text) {
+                    var texts = t.selectAll("text");
+                    if ($scope.styles && $scope.styles.text) {
                         $scope.styles.text(texts);
+                    } else {
+                        topology.defaultTextStyle(texts);
                     }
 
                     if (nodeCollection.length == 0) {
