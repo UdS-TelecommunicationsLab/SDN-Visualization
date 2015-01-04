@@ -9,21 +9,13 @@ block body
 			h2 General
 			p
 				| ID:
-				code {{ item.id }}
+				code.dp {{ item.id }}
 			p(ng-show="item.userName") User Name: {{ item.userName }}
 			p(ng-show="item") Connected since: {{ item.connectedSince | formatDate }}
 			p(ng-show="item.url")
 				| Link:
 				a(href="{{ 'http://' + item.url }}",target="_blank") {{ item.url | lowercase }}
-			div(ng-show="item.interface != undefined")
-				hr
-				h2 Interface
-				div.row
-					div.col-sm-6
-						| Gateway:
-						code {{ item.interface.gw }}
-					div.col-sm-4 IP: {{ item.interface.address }}
-					div.col-sm-2 Port: {{ item.interface.port }}
+
 		div.col-sm-3
 			p.pull-right
 					a.btn.btn-default(href="{{ '/configuration/addDevice/' + item.id }}")
@@ -34,6 +26,15 @@ block body
 				span {{ item.location }}
 			p Purpose:
 				span {{ item.purpose }}
+		div.col-sm-6(ng-show="item.type == 'Client'")
+			h2 Client
+			div(ng-show="item.interface != undefined")
+				div.row
+					div.col-md-6.col-lg-6 Gateway:&nbsp;
+						code.dp
+							a(href="{{ ' /detail/device/' + item.interface.gw}}") {{ item.interface.gw }}
+					div.col-md-6.col-lg-4 IP: {{ item.interface.address }}
+					div.col-md-6.col-lg-2 Port: {{ item.interface.port }}
 
 		div.col-sm-6(ng-show="item.type == 'Switch'")
 			h2 Switch

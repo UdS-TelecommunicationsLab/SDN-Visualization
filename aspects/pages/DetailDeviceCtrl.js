@@ -28,9 +28,12 @@
 (function(sdnViz) {
     "use strict";
     sdnViz.controller("DetailDeviceCtrl", function(DetailView, $scope, $routeParams, repository) {
+        $scope.attributeCount = 0;
         DetailView.init($scope, $routeParams.id, repository.getDeviceById, function(data) {
             $scope.connectedDevices = data.connectedDevices;
-            $scope.attributeCount = Object.keys(data.item.attributes).length + 1;
+            if(data.item && data.item.attributes) {
+                $scope.attributeCount = Object.keys(data.item.attributes).length + 1;
+            }
         });
 
         $scope.load();
