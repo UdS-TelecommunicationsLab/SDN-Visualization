@@ -102,11 +102,20 @@ var __extends = this.__extends || function (d, b) {
         this.isStandalone = true;
     };
 
-
     /**
      * The Link contains two connected hosts and some statistics about the connection in between.
      */
     exports.Link = function (srcHost, srcPort, dstHost, dstPort, type) {
+        if(srcHost.id > dstHost.id) {
+            var tmpHost = srcHost;
+            srcHost = dstHost;
+            dstHost = tmpHost;
+
+            var tmpPort = srcPort;
+            srcPort = dstPort;
+            dstPort = tmpPort;
+        }
+
         this.id = srcHost.id + '.' + dstHost.id;
         this.active = true;
         this.srcHost = srcHost;
