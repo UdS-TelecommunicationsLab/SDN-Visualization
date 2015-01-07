@@ -59,9 +59,9 @@ var __extends = this.__extends || function (d, b) {
         self.flows = [];
 
         if (oldModel) {
-            var setInactive = function (d) {
-                return _.extend(d, {active: false});
-            };
+        var setInactive = function (d) {
+            return _.extend(d, {active: false});
+        };
             self.devices = _.cloneDeep(oldModel.devices).map(setInactive);
             self.links = _.cloneDeep(oldModel.links).map(setInactive);
         }
@@ -203,10 +203,11 @@ var __extends = this.__extends || function (d, b) {
      * The Client contains a connected interface as well as general information of devices.
      */
     exports.Client = (function (base) {
-        var client = function (id, name, gw, ip, port, deviceType, userName, url, location, purpose, color) {
+        var client = function (id, name, gw, ip, port, deviceType, userName, url, location, purpose, color, lastSeen) {
             base.call(this, id, name, userName, url, location, purpose, color);
             this.type = exports.Client.type;
             this.deviceType = deviceType;
+            this.lastSeen = lastSeen || new Date(0);
             this.interface = new exports.Interface(gw, ip, port);
         };
         __extends(client, base);

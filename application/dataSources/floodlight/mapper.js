@@ -77,7 +77,7 @@
             if (d.ipv4 && d.ipv4.length > 0) {
                 ip = d.ipv4[0];
             }
-            return new nvm.Client(id, name || id, gateway, ip, port, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color);
+            return new nvm.Client(id, name || id, gateway, ip, port, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color, d.lastSeen);
         },
         mapAll: function(rawData, sw) {
             var lclClients = [];
@@ -87,14 +87,15 @@
                 rawData.forEach(function (rawClient) {
                     var dst = _.find(sw, function (lclSwitch) {
                         if (rawClient && rawClient.attachmentPoint.length > 0) {
-                            return rawClient.attachmentPoint[0].switchDPID === lclSwitch.id && rawClient.attachmentPoint[0].port >= 0; // port >= 0 to make sure switch interfaces do not get displayed
+                            // port >= 0 to make sure switch control interface do not get displayed
+                            return rawClient.attachmentPoint[0].switchDPID === lclSwitch.id && rawClient.attachmentPoint[0].port != -2;
                         }
                         return false;
                     });
-                    if (dst) { 
+                    if (dst) {
                         var client = clients.map(rawClient);
                         lclClients.push(client);
-                        lclLinks.push(new nvm.Link(client, 0, dst, 0, "Ethernet"));
+                        lclLinks.push(new nvm.Link(client, 0, dst, rawClient.attachmentPoint[0].port, "Ethernet"));
                     }
                 });
 
@@ -280,17 +281,18 @@
                     var device = _.find(devices, function (lclDevice) { return lclDevice.id === deviceId; });
 
                     var sw = obj[deviceId];
+                    if(sw != null) {
+                        for (var j = 0; j < sw.length; j++) {
+                            var flow = flows.map(sw[j]);
+                            var flowId = flow.id;
+                            if (res[flowId] === undefined) {
+                                res[flowId] = flow;
+                            }
 
-                    for (var j = 0; j < sw.length; j++) {
-                        var flow = flows.map(sw[j]);
-                        var flowId = flow.id;
-                        if (res[flowId] === undefined) {
-                            res[flowId] = flow;
-                        }
-
-                        if (device) {
-                            device.activeFlows.push(flowId);
-                            res[flowId].path.push(device.id);
+                            if (device) {
+                                device.activeFlows.push(flowId);
+                                res[flowId].path.push(device.id);
+                            }
                         }
                     }
                 }

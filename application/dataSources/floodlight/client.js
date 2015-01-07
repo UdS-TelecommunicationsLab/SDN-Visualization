@@ -121,7 +121,7 @@
         } else {
             for(var deviceId in data) {
                 var device = _.find(model.devices, function(d) { return d.id === deviceId; });
-                if(device) {
+                if(device && data[deviceId] != null) {
                     device.updatePorts(mapper.ports.mapAll(data[deviceId], device));
                 }
             }
