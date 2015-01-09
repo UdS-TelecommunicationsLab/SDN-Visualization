@@ -32,6 +32,8 @@
         $scope.height = Math.max($(window).height() - 360, 400);
 
         $scope.styles = {
+            nodeSize: 16,
+            iconSize: 16,
             node: function (collection) {
                 return topology.defaultDeviceActiveStyle(topology.defaultShapeStyle(collection));
             },

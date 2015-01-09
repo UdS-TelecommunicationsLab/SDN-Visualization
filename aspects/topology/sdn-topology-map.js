@@ -46,6 +46,8 @@
                 var isMapCreated = false;
                 var isDataInitialized = false;
 
+                var defaults = _.cloneDeep(topology.defaultParameters);
+
                 $scope.loaded = false;
 
                 $scope.showHelp = function () {
@@ -70,7 +72,6 @@
 
                 var force = d3.layout.force()
                     .friction(.8)
-                    .charge(-1200)
                     .linkDistance(1)
                     .linkStrength(1)
                     .on("end", function () {
@@ -136,7 +137,7 @@
 
                 // Node and Link Styling
                 var styleNode = function (collection) {
-                    collection = collection.transition(topology.defaultParameters.animationDuration);
+                    collection = collection.transition(defaults.animationDuration);
                     if ($scope.styles && $scope.styles.node) {
                         collection = $scope.styles.node(collection);
                     } else {
@@ -146,7 +147,7 @@
                 };
 
                 var styleLink = function (collection) {
-                    collection = collection.transition(topology.defaultParameters.animationDuration);
+                    collection = collection.transition(defaults.animationDuration);
                     if ($scope.styles && $scope.styles.link) {
                         collection = $scope.styles.link(collection, linkStrengthMax);
                     } else {
@@ -192,8 +193,8 @@
 
                             var x = (type == "Node") ? d.x : ((d.source.x + d.target.x) / 2);
                             var y = (type == "Node") ? d.y : ((d.source.y + d.target.y) / 2);
-                            x += topology.defaultParameters.nodeRadius - tooltipWidth / 2;
-                            y += topology.defaultParameters.nodeRadius - tooltipHeight / 2;
+                            x += defaults.nodeSize - tooltipWidth / 2;
+                            y += defaults.nodeSize - tooltipHeight / 2;
 
                             tooltip
                                 .style("left", function () {
@@ -214,24 +215,24 @@
 
                     var groups = nodeSelection.enter().append("g")
                         .attr("class", "node")
-                        .attr("width", topology.defaultParameters.nodeRadius)
-                        .attr("height", topology.defaultParameters.nodeRadius)
+                        .attr("width", defaults.nodeSize)
+                        .attr("height", defaults.nodeSize)
                         .on("dblclick", function (d) {
                             d.fixed = !d.fixed;
                             if (d.fixed) {
                                 var rd = 3;
                                 d3.select(this).selectAll("circle").remove();
                                 styleNode(d3.select(this).insert("rect", "text")
-                                    .attr("x", -topology.defaultParameters.nodeRadius)
-                                    .attr("y", -topology.defaultParameters.nodeRadius)
+                                    .attr("x", -defaults.nodeSize)
+                                    .attr("y", -defaults.nodeSize)
                                     .attr("rx", rd)
                                     .attr("ry", rd)
-                                    .attr("width", topology.defaultParameters.nodeRadius * 2)
-                                    .attr("height", topology.defaultParameters.nodeRadius * 2));
+                                    .attr("width", defaults.nodeSize * 2)
+                                    .attr("height", defaults.nodeSize * 2));
                             } else {
                                 d3.select(this).selectAll("rect").remove();
                                 styleNode(d3.select(this).insert("circle", "text")
-                                    .attr("r", topology.defaultParameters.nodeRadius));
+                                    .attr("r", defaults.nodeSize));
                             }
 
                             d3.select(this).classed("fixed", d.fixed);
@@ -242,8 +243,8 @@
                         })
                         .call(force.drag);
 
-                    groups.append("circle").attr("r", topology.defaultParameters.nodeRadius);
-                    groups.append("text").attr("font-size", topology.defaultParameters.iconFontSize);
+                    groups.append("circle").attr("r", defaults.nodeSize);
+                    groups.append("text").attr("font-size", defaults.iconSize);
 
                     addTooltipToElement(groups, "Node");
 
@@ -397,6 +398,17 @@
                 };
 
                 var createTopologyMap = function () {
+                    if($scope.styles) {
+                        if($scope.styles.nodeSize) {
+                            defaults.nodeSize = $scope.styles.nodeSize;
+                        }
+                        if($scope.styles.iconSize) {
+                            defaults.iconSize = $scope.styles.iconSize;
+                        }
+                    }
+
+                    force.charge(defaults.nodeSize * -100 + 400)
+
                     mapNode = angular.element($scope.element).find(".map");
                     mapInner = angular.element($scope.element).find(".mapInner");
                     svg = d3.select(mapInner.get(0)).append("svg");

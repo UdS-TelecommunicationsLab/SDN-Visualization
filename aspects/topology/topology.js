@@ -31,9 +31,9 @@
     sdnViz.factory("topology", function (repository, packetLossRateFilter, delayFilter, deviceTypeIconFilter) {
         // Parameters
         var defaultParameters = {
-            nodeRadius: 16,
+            nodeSize: 10,
             animationDuration: 500,
-            iconFontSize: 16,
+            iconSize: 10,
             inactiveOpacity: 0.25
         };
 
@@ -41,7 +41,7 @@
 
         // Helpers
         var boundingBox = function (actualValue, maxValue) {
-            var minValue = defaultParameters.nodeRadius + 2;
+            var minValue = defaultParameters.nodeSize + 2;
             if (_.isNaN(actualValue)) {
                 return (maxValue - minValue) / 2;
             } else {
