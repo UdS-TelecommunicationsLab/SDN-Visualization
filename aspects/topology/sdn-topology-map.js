@@ -327,8 +327,8 @@
                         callback: function (event, message) {
                             if (isDataInitialized) {
                                 hideTopology();
-                                nodeCollection.splice(0, nodeCollection.length);
-                                linkCollection.splice(0, linkCollection.length);
+                                _.remove(linkCollection);
+                                _.remove(nodeCollection);
                                 isDataInitialized = false;
                             }
                             initializeData();
