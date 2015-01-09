@@ -28,7 +28,7 @@
 (function (sdnViz) {
     "use strict";
 
-    sdnViz.factory("topology", function (repository, packetLossRateFilter, delayFilter, deviceTypeIconFilter) {
+    sdnViz.factory("topology", function (repository, packetLossRateFilter, delayFilter, numberToFixedFilter, deviceTypeIconFilter) {
         // Parameters
         var defaultParameters = {
             nodeSize: 10,
@@ -139,7 +139,7 @@
 
                 var dr = tab.append("tr");
                 dr.append("th").html("Data Rate (T/R):");
-                dr.append("td").html(obj.link.drTx + " / " + obj.link.drRx + " kB/s");
+                dr.append("td").html(numberToFixedFilter(obj.link.drTx / 1000, 3) + " / " + numberToFixedFilter(obj.link.drRx / 1000, 3) + " kbps");
             }
         };
         defaultParameters.linkTooltip = createLinkTooltip;

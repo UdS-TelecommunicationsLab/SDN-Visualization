@@ -30,7 +30,7 @@
     sdnViz.filter("dataRate", function(numberToFixedFilter) {
         return function(input) {
             if (input !== undefined && input !== null)
-                return (numberToFixedFilter(input, 3)).toString() + " kB/s";
+                return (numberToFixedFilter(input / 1000, 3)).toString() + " kbps";
             return "UNK";
         };
     });

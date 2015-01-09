@@ -30,7 +30,7 @@
     sdnViz.filter("delay", function(numberToFixedFilter) {
         return function(input) {
             if (input !== null)
-                return (numberToFixedFilter(input * 1000, 3)).toString() + " ms";
+                return (numberToFixedFilter(input, 3)).toString() + " ms";
             return "UNK";
         };
     });

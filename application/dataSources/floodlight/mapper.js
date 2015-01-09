@@ -165,7 +165,6 @@
     var links = {
         mapAll: function(obj, devices) {
             var res = [];
-            var drMax = 0;
 
             var alreadyConnected = {};
 
@@ -193,13 +192,6 @@
 
                     if (srcHost && dstHost) {
                         var link = new nvm.Link(srcHost, lnk["src-port"], dstHost, lnk["dst-port"], "OpenFlow");
-                        //link.delay = parseFloat(lnk.delay);
-                        //link.plr = parseFloat(lnk.plr);
-                        //link.drTx = parseFloat(lnk.drTx);
-                        //link.drRx = parseFloat(lnk.drRx);
-
-                        //drMax = Math.max(drMax, Math.max(lnk.bw_tx, lnk.bw_rx));
-
                         alreadyConnected[src][dst] = true;
 
                         res.push(link);
@@ -207,7 +199,7 @@
                 });
             }
 
-            return { links: res, drMax: drMax };
+            return res;
         }
     };
     exports.links = links;

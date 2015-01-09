@@ -97,14 +97,93 @@
      * @param {Object} data JSON object containing the retrieved information.
      *
      */
+    var processDelay = function (data) {
+        if (data === null || data == undefined || data === {}) {
+            console.error("processDelay called without data");
+        } else {
+            data[0].delays.forEach(function(d) {
+                var link = _.find(model.links, function(q) {
+                    return (q.srcHost.id == d.srcdpid && q.dstHost.id == d.dstdpid) ||
+                        (q.dstHost.id == d.srcdpid && q.srcHost.id == d.dstdpid);
+                });
+                if(link) {
+                    link.delay = parseFloat(d.delayMS);
+                }
+            })
+        }
+
+        callback();
+    };
+
+    /**
+     * Manipulates the model object during execution.
+     *
+     * @param {Object} data JSON object containing the retrieved information.
+     *
+     */
+    var processPacketLoss = function (data) {
+        if (data === null || data == undefined || data === {}) {
+            console.error("processPacketLoss called without data");
+        } else {
+            data[0].packetLoss.forEach(function(d) {
+                var link = _.find(model.links, function(q) {
+                    return (q.srcHost.id == d.srcDpid && q.dstHost.id == d.dstDpid) ||
+                        (q.dstHost.id == d.srcDpid && q.srcHost.id == d.dstDpid);
+                });
+                if(link) {
+                    link.plr = Math.max(0, Math.min(1, 1 - (parseInt(d.dstPackets, 10) / parseInt(d.srcPackets, 10))));
+                }
+            });
+        }
+        callback();
+    };
+
+    /**
+     * Manipulates the model object during execution.
+     *
+     * @param {Object} data JSON object containing the retrieved information.
+     *
+     */
+    var processDataRate = function (data) {
+        if (data === null || data == undefined || data === {}) {
+            console.error("processDataRate called without data");
+        } else {
+            var drMax = 0;
+
+            data[0].datarate.forEach(function(d) {
+                var link = _.find(model.links, function(q) {
+                    return (q.srcHost.id == d.srcDpid && q.dstHost.id == d.dstDpid) ||
+                        (q.dstHost.id == d.srcDpid && q.srcHost.id == d.dstDpid);
+                });
+                if(link &&
+                    d.lastLookup.bytesTrans != null && d.nextToLastLookup.bytesTrans != null &&
+                    d.lastLookup.bytesRec != null && d.nextToLastLookup.bytesRec != null) {
+                    link.drTx = (d.lastLookup.bytesTrans - d.nextToLastLookup.bytesTrans) * 8 / (d.intervall / 1000);
+                    link.drRx = (d.lastLookup.bytesRec - d.nextToLastLookup.bytesRec) * 8 / (d.intervall / 1000);
+                    drMax = Math.max(link.drTx, Math.max(link.drRx, drMax));
+                }
+            });
+            model._internals.drMax = drMax;
+        }
+        callback();
+    };
+
+    /**
+     * Manipulates the model object during execution.
+     *
+     * @param {Object} data JSON object containing the retrieved information.
+     *
+     */
     var processLinks = function (data) {
         if (data == null) {
             console.error("processLinks called without data");
         } else {
-            var linkData = mapper.links.mapAll(data, model.devices);
-            model.addLinks(linkData.links);
-            model._internals.drMax = linkData.drMax;
+            model.addLinks(mapper.links.mapAll(data, model.devices));
         }
+
+        getResource(client.commands.get.delay, processDelay);
+        getResource(client.commands.get.packetLoss, processPacketLoss);
+        getResource(client.commands.get.dataRate, processDataRate);
 
         callback();
     };
@@ -185,7 +264,10 @@
             devices: "device/",
             links: "topology/links/json",
             flows: "core/switch/all/flow/json",
-            ports: "core/switch/all/port/json"
+            ports: "core/switch/all/port/json",
+            delay: "uds/statistics/delay/json",
+            packetLoss: "uds/statistics/packetLoss/json",
+            dataRate: "uds/statistics/dataRate/json",
         }
     };
 })(exports);
