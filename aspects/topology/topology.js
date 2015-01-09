@@ -103,15 +103,16 @@
         }
 
         // Tooltips
-        var createNodeTooltip = function (obj) {
+        var createNodeTooltip = function (obj, tooltip) {
             var html = "<div><strong>" + ((obj.id !== obj.device.name) ? obj.device.name : "Unknown Device") + "</strong> ";
             if (obj.device.type == sdn.Client.type)
                 html += "<span>(" + obj.device.interface.address + ")</span>";
             html += "<br /><code class='dp'>" + obj.id + "</code></div>";
-            return html;
+            tooltip.html(html);
         };
+        defaultParameters.nodeTooltip = createNodeTooltip;
 
-        var createLinkTooltip = function (tooltip, obj) {
+        var createLinkTooltip = function (obj, tooltip) {
             var div = tooltip.append("div");
             div.append("strong").html("Link");
             div.append("br");
@@ -141,6 +142,7 @@
                 dr.append("td").html(obj.link.drTx + " / " + obj.link.drRx + " kB/s");
             }
         };
+        defaultParameters.linkTooltip = createLinkTooltip;
 
         // ChangeSet
         var calculateLinkChangeSet = function (change, linkCollection) {

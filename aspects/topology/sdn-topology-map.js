@@ -181,9 +181,9 @@
                             tooltip.style("opacity", 0.9);
                             tooltip.html("");
                             if (type == "Node") {
-                                tooltip.html(topology.createNodeTooltip(obj));
+                                defaults.nodeTooltip(obj, tooltip)
                             } else if (type == "Link") {
-                                topology.createLinkTooltip(tooltip, obj);
+                                defaults.linkTooltip(obj, tooltip);
                             }
                         })
                         .on("mousemove", function (d) {
@@ -404,6 +404,12 @@
                         }
                         if($scope.styles.iconSize) {
                             defaults.iconSize = $scope.styles.iconSize;
+                        }
+                        if($scope.styles.nodeTooltip) {
+                            defaults.nodeTooltip = $scope.styles.nodeTooltip;
+                        }
+                        if($scope.styles.linkTooltip) {
+                            defaults.linkTooltip = $scope.styles.linkTooltip;
                         }
                     }
 
