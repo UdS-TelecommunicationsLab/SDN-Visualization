@@ -77,6 +77,11 @@
         }, callback);
     };
 
+    var handleNvmReset = function (message, callback) {
+        worker.send({reset: true});
+        callback({success: true});
+    };
+
     var registerHandles = function() {
         config.registerHandler(function(config) {
             nodeSockets.publishConfigUpdate(config, storage.getNVM().latestInteraction);
@@ -85,6 +90,7 @@
         connection.on("connection", function(socket) {
             socket.on("/interact/saveVizConfiguration", handleSaveVizConfiguration);
             socket.on("/interact/setLinkSpec", handleSetLinkSpec);
+            socket.on("/nvm/reset", handleNvmReset)
         });
     };
 

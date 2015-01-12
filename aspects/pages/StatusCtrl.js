@@ -27,12 +27,18 @@
 
 (function(sdnViz) {
     "use strict";
-    sdnViz.controller("StatusCtrl", function($scope, $window, repository) {
+    sdnViz.controller("StatusCtrl", function($scope, $window, repository, toastr, websockets) {
         $scope.data = repository.data;
         $scope.isInteracting = false;
 
         $scope.reload = function() {
             $window.location = "/status";
+        };
+
+        $scope.resetModel = function() {
+            websockets.publish("/nvm/reset", null, function() {
+                toastr.success("Successfully reset NVM.");
+            });
         };
     });
 })(window.sdnViz);

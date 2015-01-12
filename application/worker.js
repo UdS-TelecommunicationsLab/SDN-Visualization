@@ -35,6 +35,7 @@
     var pollingDelay = 1500; // in milliseconds
     var model = new nvm.NVM();
     var oldModel = model;
+    var reset = false;
 
     var finish = function (errorRaised) {
         if (!errorRaised) {
@@ -53,7 +54,13 @@
         process.send({ model: model, changes: changes });
 
         oldModel = model;
-        model = new nvm.NVM(oldModel.started, oldModel);
+        if(reset) {
+            DEBUG && console.log("Reset NVM.");
+            model = new nvm.NVM(model.started);
+            reset = false;
+        } else {
+            model = new nvm.NVM(oldModel.started, oldModel);
+        }
         model.latestInteraction = oldModel.latestInteraction;
         setTimeout(loadingProcess, pollingDelay);
     };
@@ -83,6 +90,11 @@
             dataSource.init(configuration.dataSource);
 
             loadingProcess();
+        }
+
+        if (m && m.reset) {
+            DEBUG && console.log("Received request to reset NVM.");
+            reset = true;
         }
 
         // updating latestInteraction information

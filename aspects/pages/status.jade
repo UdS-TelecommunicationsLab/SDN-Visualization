@@ -40,7 +40,14 @@ div#sdn-status
 							td Server CRC
 							td(colspan=2)
 								sdn-crc-box(crc="serverCRC")
-							
+			div.panel.panel-default
+				div.panel-heading
+					i.fa.fa-flash
+					| &nbsp;Actions
+				div.panel-body
+					button.btn.btn-danger(ng-click="resetModel()")
+						i.fa.fa-fw.fa-trash-o
+						| &nbsp;Invalidate Model
 		div.col-sm-5.col-md-8
 			div.panel.panel-default
 				div.panel-heading
