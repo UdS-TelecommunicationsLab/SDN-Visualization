@@ -43,11 +43,11 @@
         };
 
         $scope.highlightFlow = function (flow) {
-            messenger.publish("flowHighlight", flow);
+            messenger.publish("/topology/flow/highlight", flow);
         };
 
-        $scope.unhighlightFlow = function (flow) {
-            messenger.publish("flowUnhighlight", flow);
+        $scope.blurFlow = function (flow) {
+            messenger.publish("/topology/flow/blur", flow);
         };
     });
 })(window.sdnViz);

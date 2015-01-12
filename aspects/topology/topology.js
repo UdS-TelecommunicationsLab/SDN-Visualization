@@ -32,12 +32,16 @@
         // Parameters
         var defaultParameters = {
             nodeSize: 10,
-            animationDuration: 500,
+            animationDuration: 1000,
             iconSize: 10,
-            inactiveOpacity: 0.25
+            inactiveOpacity: 0.25,
+            colors: {
+                highlight: "#ffb800",
+                openFlowLink: "#006fa2",
+                cableLink: "#666",
+                unknownLink: "#444"
+            }
         };
-
-        var colors = {flowLink: "#ffb800", openFlowLink: "#006fa2", cableLink: "#666", unknownLink: "#444"};
 
         // Helpers
         var boundingBox = function (actualValue, maxValue) {
@@ -83,10 +87,9 @@
             collection
                 .style({
                     "stroke": function (d) {
-                        if (d.flowHighlight) return colors.flowLink;
-                        else if (d.type == "OpenFlow") return colors.openFlowLink;
-                        else if (d.type == "Ethernet") return colors.cableLink;
-                        else return colors.unknownLink;
+                        if (d.type == "OpenFlow") return defaultParameters.colors.openFlowLink;
+                        else if (d.type == "Ethernet") return defaultParameters.colors.cableLink;
+                        else return defaultParameters.colors.unknownLink;
                     },
                     "stroke-width": function (d) {
                         return Math.min((d.dr / (2 * linkStrengthMax) * 7 + 3), 10) + "px";
@@ -98,9 +101,9 @@
         var defaultTextStyle = function (collection) {
             collection.text(function (d) {
                 return deviceTypeIconFilter(d.device.deviceType);
-            })
+            });
             return collection;
-        }
+        };
 
         // Tooltips
         var createNodeTooltip = function (obj, tooltip) {
@@ -225,7 +228,6 @@
             boundingBox: boundingBox,
             calculateNodeChangeSet: calculateNodeChangeSet,
             calculateLinkChangeSet: calculateLinkChangeSet,
-            colors: colors,
             createLinkTooltip: createLinkTooltip,
             createNodeTooltip: createNodeTooltip,
             defaultDeviceActiveStyle: defaultDeviceActiveStyle,

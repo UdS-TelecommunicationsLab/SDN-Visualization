@@ -42,7 +42,7 @@
                 "height": "@",
                 "styles": "=",
                 "visibilityButton": "@",
-                "showInactive" : "@"
+                "showInactive": "@"
             },
             controller: function ($scope, $modal, router, repository, messenger, topology) {
                 var isMapCreated = false;
@@ -52,7 +52,7 @@
 
                 $scope.loaded = false;
 
-                $scope.$watch("showInactive", function() {
+                $scope.$watch("showInactive", function () {
                     if ($scope.showInactive != true && $scope.showInactive != "true") {
                         $scope.showInactive = false;
                     }
@@ -91,7 +91,7 @@
                 var force = d3.layout.force()
                     .friction(.8)
                     .linkDistance(1)
-                    .linkStrength(function(d) {
+                    .linkStrength(function (d) {
                         return ($scope.showInactive || d.link.active) ? 1 : 0;
                     })
                     .on("end", function () {
@@ -163,6 +163,12 @@
                     } else {
                         collection = topology.defaultShapeStyle(collection);
                     }
+                    collection = collection.filter(function (d) {
+                        return d.highlight;
+                    }).style({
+                        "stroke": defaults.colors.highlight,
+                        "fill": defaults.colors.highlight
+                    });
                     return collection;
                 };
 
@@ -173,6 +179,9 @@
                     } else {
                         collection = topology.defaultLinkStyle(collection, linkStrengthMax);
                     }
+                    collection = collection.filter(function (d) {
+                        return d.highlight;
+                    }).style("stroke", defaults.colors.highlight);
                     return collection;
                 };
 
@@ -309,7 +318,7 @@
                     }
 
                     if (change[objectDiff.token.changed] && change[objectDiff.token.value].flows && change[objectDiff.token.value].flows[objectDiff.token.changed]) {
-                        unhighlightAll();
+                        blurAll();
                     }
 
                     setMaxStrength($scope.data.nvm && $scope.data.nvm._internals.drMax);
@@ -365,19 +374,28 @@
                         callback: updateHandler
                     });
                     messenger.subscribe({
-                        topic: "flowHighlight",
-                        callback: function (event, flow) {
-                            linkCollection.forEach(function (d) {
-                                if (_.contains(flow.path, d.source.id) && _.contains(flow.path, d.target.id)) {
-                                    d.flowHighlight = true;
-                                }
-                            });
-                            redrawLinks();
-                        }
+                        topic: "/topology/device/highlight",
+                        callback: highlightDevice
                     });
                     messenger.subscribe({
-                        topic: "flowUnhighlight",
-                        callback: unhighlightAll
+                        topic: "/topology/device/blur",
+                        callback: blurAll
+                    });
+                    messenger.subscribe({
+                        topic: "/topology/link/highlight",
+                        callback: highlightLink
+                    });
+                    messenger.subscribe({
+                        topic: "/topology/link/blur",
+                        callback: blurAll
+                    });
+                    messenger.subscribe({
+                        topic: "/topology/flow/highlight",
+                        callback: highlightFlow
+                    });
+                    messenger.subscribe({
+                        topic: "/topology/flow/blur",
+                        callback: blurAll
                     })
                 };
 
@@ -416,10 +434,41 @@
                     }
                 };
 
-                var unhighlightAll = function () {
-                    linkCollection.forEach(function (d) {
-                        d.flowHighlight = false;
+                var highlightDevice = function (event, device) {
+                    nodeCollection.forEach(function (d) {
+                        if (d.id == device.id) {
+                            d.highlight = true;
+                        }
                     });
+                    redrawNodes();
+                };
+
+                var highlightLink = function (event, link) {
+                    linkCollection.forEach(function (d) {
+                        if (d.id == link.id) {
+                            d.highlight = true;
+                        }
+                    });
+                    redrawLinks();
+                };
+
+                var highlightFlow = function (event, flow) {
+                    linkCollection.forEach(function (d) {
+                        if (_.contains(flow.path, d.source.id) && _.contains(flow.path, d.target.id)) {
+                            d.highlight = true;
+                        }
+                    });
+                    redrawLinks();
+                };
+
+                var blurAll = function () {
+                    nodeCollection.forEach(function (d) {
+                        d.highlight = false;
+                    });
+                    linkCollection.forEach(function (d) {
+                        d.highlight = false;
+                    });
+                    redrawNodes();
                     redrawLinks();
                 };
 
