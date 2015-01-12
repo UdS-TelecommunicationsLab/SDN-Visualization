@@ -58,7 +58,7 @@
                                 onSuccess(res.data);
                         });
                     } else {
-                        toastr.error("Concurrent access");
+                        toastr.error("WebSockets: An error occurred.");
                         $rootScope.$apply(function() {
                             if (onError)
                                 onError(res);
