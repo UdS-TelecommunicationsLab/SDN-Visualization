@@ -40,7 +40,9 @@
             },
             scope: {
                 "height": "@",
-                "styles": "="
+                "styles": "=",
+                "visibilityButton": "@",
+                "showInactive" : "@"
             },
             controller: function ($scope, $modal, router, repository, messenger, topology) {
                 var isMapCreated = false;
@@ -49,6 +51,22 @@
                 var defaults = _.cloneDeep(topology.defaultParameters);
 
                 $scope.loaded = false;
+
+                $scope.$watch("showInactive", function() {
+                    if ($scope.showInactive != true && $scope.showInactive != "true") {
+                        $scope.showInactive = false;
+                    }
+                });
+                $scope.$watch("visibilityButton", function () {
+                    if ($scope.visibilityButton != true && $scope.visibilityButton != "true") {
+                        $scope.visibilityButton = false;
+                    }
+                });
+
+                $scope.toggleActiveNodeVisibility = function () {
+                    $scope.showInactive = !$scope.showInactive;
+                    restart();
+                };
 
                 $scope.showHelp = function () {
                     $modal.open({
@@ -73,7 +91,9 @@
                 var force = d3.layout.force()
                     .friction(.8)
                     .linkDistance(1)
-                    .linkStrength(1)
+                    .linkStrength(function(d) {
+                        return ($scope.showInactive || d.link.active) ? 1 : 0;
+                    })
                     .on("end", function () {
                         showTopology();
                     });
@@ -157,7 +177,10 @@
                 };
 
                 var redrawLinks = function () {
-                    linkSelection = linkSelection.data(linkCollection, function (d) {
+                    var visibleLinks = _.filter(linkCollection, function (d) {
+                        return $scope.showInactive || d.link.active;
+                    });
+                    linkSelection = linkSelection.data(visibleLinks, function (d) {
                         return d.id;
                     });
                     linkSelection.exit().remove();
@@ -208,7 +231,10 @@
                 };
 
                 var redrawNodes = function () {
-                    nodeSelection = nodeSelection.data(nodeCollection, function (d) {
+                    var visibleNodes = _.filter(nodeCollection, function (d) {
+                        return $scope.showInactive || d.device.active;
+                    });
+                    nodeSelection = nodeSelection.data(visibleNodes, function (d) {
                         return d.id;
                     });
                     nodeSelection.exit().remove();
@@ -398,17 +424,17 @@
                 };
 
                 var createTopologyMap = function () {
-                    if($scope.styles) {
-                        if($scope.styles.nodeSize) {
+                    if ($scope.styles) {
+                        if ($scope.styles.nodeSize) {
                             defaults.nodeSize = $scope.styles.nodeSize;
                         }
-                        if($scope.styles.iconSize) {
+                        if ($scope.styles.iconSize) {
                             defaults.iconSize = $scope.styles.iconSize;
                         }
-                        if($scope.styles.nodeTooltip) {
+                        if ($scope.styles.nodeTooltip) {
                             defaults.nodeTooltip = $scope.styles.nodeTooltip;
                         }
-                        if($scope.styles.linkTooltip) {
+                        if ($scope.styles.linkTooltip) {
                             defaults.linkTooltip = $scope.styles.linkTooltip;
                         }
                     }
