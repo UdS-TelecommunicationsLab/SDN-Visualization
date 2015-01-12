@@ -29,7 +29,7 @@
     "use strict";
     sdnViz.filter("countTypes", function() {
         return function(input, opt) {
-            return _.filter(input, function(d) { return d.type == opt; }).length;
+            return _.filter(input, function(d) { return d.type == opt && d.active; }).length;
         };
     });
 })(window.sdnViz);
