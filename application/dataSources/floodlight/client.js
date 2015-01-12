@@ -156,6 +156,7 @@
                         (q.dstHost.id == d.srcDpid && q.srcHost.id == d.dstDpid);
                 });
                 if(link &&
+                    d.lastLookup != null && d.nextToLastLookup != null &&
                     d.lastLookup.bytesTrans != null && d.nextToLastLookup.bytesTrans != null &&
                     d.lastLookup.bytesRec != null && d.nextToLastLookup.bytesRec != null) {
                     link.drTx = (d.lastLookup.bytesTrans - d.nextToLastLookup.bytesTrans) * 8 / (d.intervall / 1000);
