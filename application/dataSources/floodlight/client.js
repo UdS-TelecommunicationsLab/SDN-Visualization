@@ -59,9 +59,9 @@
      * @param {Object} data JSON object containing the retrieved information.
      *
      */
-    var processInfos = function (data) {
+    var processGeneral = function (data) {
         if (data === null || data == undefined || data === {}) {
-            console.error("processInfos called without data");
+            console.error("processGeneral called without data");
         } else {
             model.controller = mapper.controller.map(data);
             model.controller.started = started;
@@ -83,7 +83,7 @@
             model.addDevices(mapper.switches.mapAll(data));
         }
 
-        getResource(client.commands.get.devices, processDevices);
+        getResource(client.commands.get.hosts, processHosts);
         getResource(client.commands.get.flows, processFlows);
         getResource(client.commands.get.links, processLinks);
         getResource(client.commands.get.ports, processPorts);
@@ -232,9 +232,9 @@
      * @param {Object} data JSON object containing the retrieved information.
      *
      */
-    var processDevices = function (data) {
+    var processHosts = function (data) {
         if (data == null) {
-            console.error("processDevices called without data");
+            console.error("processHosts called without data");
         } else {
             var clientData = mapper.clients.mapAll(data, model.devices);
             model.addDevices(clientData.clients);
@@ -254,15 +254,15 @@
         call = cb;
         errorRaised = false;
 
-        getResource(client.commands.get.general, processInfos);
+        getResource(client.commands.get.general, processGeneral);
         getResource(client.commands.get.switches, processSwitches);
-    }
+    };
 
     client.commands = {
         get: {
             general: "core/controller/summary/json",
             switches: "core/controller/switches/json",
-            devices: "device/",
+            hosts: "device/",
             links: "topology/links/json",
             flows: "core/switch/all/flow/json",
             ports: "core/switch/all/port/json",

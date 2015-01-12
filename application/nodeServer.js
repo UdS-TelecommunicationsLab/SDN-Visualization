@@ -62,7 +62,7 @@
         nodeSockets.setWorker(worker);
         worker.send({ start: true });
 
-        console.log("Worker started");
+        console.log("Worker started.");
     };
 
     nodeServer.init = function(app) {
@@ -77,7 +77,7 @@
         }, app);
 
         server.listen(app.get("port"), function() {
-            console.log("Server listening on port " + app.get("port"));
+            console.log("Server listening on port " + app.get("port") + ".");
 
             startWorker();
             nodeSockets.bind(server);
