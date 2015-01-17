@@ -101,17 +101,18 @@
         if (data === null || data == undefined || data === {}) {
             console.error("processDelay called without data");
         } else {
-            data[0].delays.forEach(function(d) {
-                var link = _.find(model.links, function(q) {
-                    return (q.srcHost.id == d.srcdpid && q.dstHost.id == d.dstdpid) ||
-                        (q.dstHost.id == d.srcdpid && q.srcHost.id == d.dstdpid);
+            if(data.length > 0 && data[0] && data[0].delays) {
+                data[0].delays.forEach(function (d) {
+                    var link = _.find(model.links, function (q) {
+                        return (q.srcHost.id == d.srcdpid && q.dstHost.id == d.dstdpid) ||
+                            (q.dstHost.id == d.srcdpid && q.srcHost.id == d.dstdpid);
+                    });
+                    if (link) {
+                        link.delay = parseFloat(d.delayMS);
+                    }
                 });
-                if(link) {
-                    link.delay = parseFloat(d.delayMS);
-                }
-            })
+            }
         }
-
         callback();
     };
 
@@ -125,15 +126,17 @@
         if (data === null || data == undefined || data === {}) {
             console.error("processPacketLoss called without data");
         } else {
-            data[0].packetLoss.forEach(function(d) {
-                var link = _.find(model.links, function(q) {
-                    return (q.srcHost.id == d.srcDpid && q.dstHost.id == d.dstDpid) ||
-                        (q.dstHost.id == d.srcDpid && q.srcHost.id == d.dstDpid);
+            if(data.length > 0 && data[0] && data[0].packetLoss) {
+                data[0].packetLoss.forEach(function (d) {
+                    var link = _.find(model.links, function (q) {
+                        return (q.srcHost.id == d.srcDpid && q.dstHost.id == d.dstDpid) ||
+                            (q.dstHost.id == d.srcDpid && q.srcHost.id == d.dstDpid);
+                    });
+                    if (link) {
+                        link.plr = Math.max(0, Math.min(1, 1 - (parseInt(d.dstPackets, 10) / parseInt(d.srcPackets, 10))));
+                    }
                 });
-                if(link) {
-                    link.plr = Math.max(0, Math.min(1, 1 - (parseInt(d.dstPackets, 10) / parseInt(d.srcPackets, 10))));
-                }
-            });
+            }
         }
         callback();
     };
@@ -150,20 +153,22 @@
         } else {
             var drMax = 0;
 
-            data[0].datarate.forEach(function(d) {
-                var link = _.find(model.links, function(q) {
-                    return (q.srcHost.id == d.srcDpid && q.dstHost.id == d.dstDpid) ||
-                        (q.dstHost.id == d.srcDpid && q.srcHost.id == d.dstDpid);
+            if(data.length > 0 && data[0] && data[0].datarate) {
+                data[0].datarate.forEach(function(d) {
+                    var link = _.find(model.links, function(q) {
+                        return (q.srcHost.id == d.srcDpid && q.dstHost.id == d.dstDpid) ||
+                            (q.dstHost.id == d.srcDpid && q.srcHost.id == d.dstDpid);
+                    });
+                    if(link &&
+                        d.lastLookup != null && d.nextToLastLookup != null &&
+                        d.lastLookup.bytesTrans != null && d.nextToLastLookup.bytesTrans != null &&
+                        d.lastLookup.bytesRec != null && d.nextToLastLookup.bytesRec != null) {
+                        link.drTx = (d.lastLookup.bytesTrans - d.nextToLastLookup.bytesTrans) * 8 / (d.intervall / 1000);
+                        link.drRx = (d.lastLookup.bytesRec - d.nextToLastLookup.bytesRec) * 8 / (d.intervall / 1000);
+                        drMax = Math.max(link.drTx, Math.max(link.drRx, drMax));
+                    }
                 });
-                if(link &&
-                    d.lastLookup != null && d.nextToLastLookup != null &&
-                    d.lastLookup.bytesTrans != null && d.nextToLastLookup.bytesTrans != null &&
-                    d.lastLookup.bytesRec != null && d.nextToLastLookup.bytesRec != null) {
-                    link.drTx = (d.lastLookup.bytesTrans - d.nextToLastLookup.bytesTrans) * 8 / (d.intervall / 1000);
-                    link.drRx = (d.lastLookup.bytesRec - d.nextToLastLookup.bytesRec) * 8 / (d.intervall / 1000);
-                    drMax = Math.max(link.drTx, Math.max(link.drRx, drMax));
-                }
-            });
+            }
             model._internals.drMax = drMax;
         }
         callback();
