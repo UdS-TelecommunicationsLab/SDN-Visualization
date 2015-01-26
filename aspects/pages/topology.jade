@@ -19,20 +19,20 @@ div#sdn-topology
                             | &nbsp;
                             span Flows: {{ data.nvm.flows.length }}
                     i.fa.fa-globe
-                    | Topology
+                    | &nbsp;Topology
                 div.panel-body
                     sdn-topology-map(height="{{ height }}", styles="styles", visibility-button="true", show-inactive="true")
         div.col-sm-4.col-md-3
             div.panel.panel-default
                 div.panel-heading
                     i.fa.fa-random
-                    | Flows
+                    | &nbsp;Flows
                 div.table-responsive
                     table.table.table-condensed.table-striped
                         thead
                         tbody
                             tr(ng-repeat="flow in data.nvm.flows", ng-mouseenter="highlightFlow(flow)",ng-mouseleave="blurFlow(flow)")
-                                td(width="48px")
+                                td(width="24px")
                                     a(href="{{ '/detail/flow/' + flow.id }}")
                                         span(class="device Flow", ng-switch="flow.nw.protocol")
                                             strong(ng-switch-when="1") IC
@@ -42,7 +42,7 @@ div#sdn-topology
                                             strong(ng-switch-default="") {{ flow.nw.protocol }}
                                 td
                                     code.dp S: {{ flow.nw.src }}:{{ flow.tp.src }}
-                                    | <br>
+                                td
                                     code.dp D: {{ flow.nw.dst }}:{{ flow.tp.dst }}
                             tr(ng-show="data.nvm.flows.length == 0")
                                 td(colspan=2) No flows at the moment.
