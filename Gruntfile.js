@@ -95,7 +95,8 @@ module.exports = function(grunt) {
         concat: {
             options: {
                 banner: '<%= banner %>',
-                stripBanners: true
+                stripBanners: true,
+                sourceMap: true
             },
             dist: {
                 src: ['aspects/**/*.js'],
@@ -112,7 +113,10 @@ module.exports = function(grunt) {
         },
         uglify: {
             options: {
-                mangle: false
+                mangle: false,
+                sourceMap: true,
+                sourceMapIncludeSources: true,
+                sourceMapIn: "public/js/dist.js.map"
             },
             my_target: {
                 files: {

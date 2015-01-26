@@ -5,3 +5,4 @@ public/js/dist.min.js
 public/css/app.css
 lib/
 .idea/
+*.js.map
