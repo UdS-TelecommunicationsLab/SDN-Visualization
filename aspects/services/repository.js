@@ -73,13 +73,15 @@
             var res;
             if (_.isArray(obj)) {
                 res = [];
-                for (var b in obj) {
-                    res.push(copyCleanModel(obj[b]));
+                for (var i = 0; i < obj.length; i++) {
+                    res.push(copyCleanModel(obj[i]));
                 }
             } else if (_.isObject(obj)) {
                 res = {};
-                for (var a in obj) {
-                    if (a !== "$$hashKey") {
+                var keys = _.keys(obj);
+                for (var j = 0; j < keys.length; j++) {
+                    var a = keys[j];
+                    if(a !== "$$hashKey"){
                         res[a] = copyCleanModel(obj[a]);
                     }
                 }
