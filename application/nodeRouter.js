@@ -78,13 +78,12 @@
 
         app.get("/api/vizConfiguration", ensureLoggedIn(loginUrl), function(request, response) {
             response.json({
-                latestInteraction: storage.getNVM().latestInteraction,
                 configuration: config.getConfiguration()
             });
         });
 
         app.get("/api/exportVizConfiguration", ensureLoggedIn(loginUrl), function(request, response) {
-            var fileName = "OFVIZ_Configuration_" + moment(new Date()).format("YYYY_MM_DD_HH_mm_ss") + ".json";
+            var fileName = "SDN_VIZ_Configuration_" + moment(new Date()).format("YYYY_MM_DD_HH_mm_ss") + ".json";
             response.setHeader("Content-disposition", "attachment; filename=" + fileName + "");
             config.attachToResponse(response);
         });
