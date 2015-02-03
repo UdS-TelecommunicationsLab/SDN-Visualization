@@ -61,7 +61,6 @@
         } else {
             model = new nvm.NVM(oldModel.started, oldModel);
         }
-        model.latestInteraction = oldModel.latestInteraction;
         setTimeout(loadingProcess, pollingDelay);
     };
 
@@ -95,11 +94,6 @@
         if (m && m.reset) {
             DEBUG && console.log("Received request to reset NVM.");
             reset = true;
-        }
-
-        // updating latestInteraction information
-        if (m && m.latestInteraction) {
-            oldModel.latestInteraction = m.latestInteraction;
         }
     });
 })(false);

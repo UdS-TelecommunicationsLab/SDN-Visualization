@@ -49,7 +49,7 @@
                     }
                 }));
             }
-            return { item: device, connectedDevices: connectedDevices, latestInteraction: data.nvm.latestInteraction };
+            return { item: device, connectedDevices: connectedDevices };
         };
 
         var getLinkById = function(id) {
@@ -57,7 +57,7 @@
                 return e.id == id;
             });
 
-            return { item: link, latestInteraction: data.nvm.latestInteraction };
+            return { item: link };
         };
 
         var getFlowById = function(id) {
@@ -65,7 +65,7 @@
                 return e.id == id;
             });
 
-            return { item: flow, latestInteraction: data.nvm.latestInteraction };
+            return { item: flow };
         };
 
         // Change Management

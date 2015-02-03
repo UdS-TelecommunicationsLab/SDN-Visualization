@@ -41,7 +41,6 @@
                 if (data.item) {
                     scope.notFound = false;
                     scope.item = data.item;
-                    scope.latestInteraction = data.latestInteraction;
 
                     if (onLoadSuccessCallback)
                         onLoadSuccessCallback(data);

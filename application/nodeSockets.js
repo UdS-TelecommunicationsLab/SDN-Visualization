@@ -25,7 +25,7 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function(nodeSockets) {
+(function (nodeSockets) {
     "use strict";
     var config = require("./config"),
         io = require("socket.io"),
@@ -37,44 +37,29 @@
     var connection;
     var worker;
 
-    var checkAndExecute = function(localLatestInteraction, exec, fn) {
-        var serverInteraction = moment(storage.getNVM().latestInteraction);
-        var localInteraction = moment(localLatestInteraction);
-        if ((serverInteraction.valueOf()) <= (localInteraction.valueOf())) {
-            exec();
-            worker.send({ latestInteraction: moment.utc() });
-            fn({ success: true });
-        } else {
-            fn({ success: false, error: "Local model was not up to date." });
-        }
+    var handleSaveVizConfiguration = function (message, callback) {
+        // TODO: this method needs some kind of validity check for the sent configuration
+        config.saveConfiguration(message.configuration);
+        callback({ success: true });
     };
 
-    var handleSaveVizConfiguration = function(message, callback) {
-        checkAndExecute(message.latestInteraction, function() {
-            // this method needs some kind of validity check for the sent configuration
-            config.saveConfiguration(message.configuration);
-        }, callback);
-    };
+    var handleSetLinkSpec = function (message, callback) {
+        var srcNode = message.srcNode || "";
+        var dstNode = message.dstNode || "";
+        var user = message.user || "";
+        var iface = "eth" + message.iface;
+        var delay = message.delay || 0;
+        var loss = message.loss || 0;
 
-    var handleSetLinkSpec = function(message, callback) {
-        checkAndExecute(message.latestInteraction, function() {
-            var srcNode = message.srcNode || "";
-            var dstNode = message.dstNode || "";
-            var user = message.user || "";
-            var iface = "eth" + message.iface;
-            var delay = message.delay || 0;
-            var loss = message.loss || 0;
+        var errHandler = function (err) {
+            if (err) {
+                console.log(err);
+                publish("/error", err);
+            }
+        };
 
-            var errHandler = function(err) {
-                if (err) {
-                    console.log(err);
-                    publish("/error", err);
-                }
-            };
-
-            linkManipulation.manipulateLink(srcNode, user, iface, delay, loss, errHandler);
-            linkManipulation.manipulateLink(dstNode, user, iface, delay, loss, errHandler);
-        }, callback);
+        linkManipulation.manipulateLink(srcNode, user, iface, delay, loss, errHandler);
+        linkManipulation.manipulateLink(dstNode, user, iface, delay, loss, errHandler);
     };
 
     var handleNvmReset = function (message, callback) {
@@ -82,36 +67,36 @@
         callback({success: true});
     };
 
-    var registerHandles = function() {
-        config.registerHandler(function(config) {
-            nodeSockets.publishConfigUpdate(config, storage.getNVM().latestInteraction);
+    var registerHandles = function () {
+        config.registerHandler(function (config) {
+            nodeSockets.publishConfigUpdate(config);
         });
 
-        connection.on("connection", function(socket) {
+        connection.on("connection", function (socket) {
             socket.on("/interact/saveVizConfiguration", handleSaveVizConfiguration);
             socket.on("/interact/setLinkSpec", handleSetLinkSpec);
             socket.on("/nvm/reset", handleNvmReset)
         });
     };
 
-    nodeSockets.setWorker = function(lclWorker) {
+    nodeSockets.setWorker = function (lclWorker) {
         worker = lclWorker;
     };
 
-    var publish = function(channel, message) {
+    var publish = function (channel, message) {
         connection.emit(channel, message);
     };
 
-    nodeSockets.publishModelUpdate = function(changes, checksum) {
-        publish("/modelUpdate", { diff: msgpack.pack(changes, true), checksum: checksum });
+    nodeSockets.publishModelUpdate = function (changes, checksum) {
+        publish("/modelUpdate", {diff: msgpack.pack(changes, true), checksum: checksum});
     };
 
-    nodeSockets.publishConfigUpdate = function(configuration, latestInteraction) {
-        publish("/configUpdate", { configuration: configuration, latestInteraction: latestInteraction });
+    nodeSockets.publishConfigUpdate = function (configuration) {
+        publish("/configUpdate", {configuration: configuration});
     };
 
-    nodeSockets.bind = function(server) {
-        connection = io.listen(server, { log: false }).sockets;
+    nodeSockets.bind = function (server) {
+        connection = io.listen(server, {log: false}).sockets;
         registerHandles();
         console.log("Websockets initalized.");
     };

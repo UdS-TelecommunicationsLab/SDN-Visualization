@@ -42,7 +42,6 @@
 
         $scope.modifyLoss = function(loss) {
             websockets.publish("/interact/setLinkSpec", {
-                latestInteraction: repository.data.nvm.latestInteraction,
                 loss: loss,
                 user: $scope.item.srcHost.userName,
                 srcNode: $scope.item.srcHost.url,
@@ -63,7 +62,6 @@
 
         $scope.modifyDelay = function(delay) {
             websockets.publish("/interact/setLinkSpec", {
-                latestInteraction: repository.data.nvm.latestInteraction,
                 delay: delay,
                 user: $scope.item.srcHost.userName,
                 srcNode: $scope.item.srcHost.url,

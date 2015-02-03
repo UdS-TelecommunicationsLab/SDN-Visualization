@@ -49,7 +49,6 @@ var __extends = this.__extends || function (d, b) {
     exports.NVM = function (startDate, oldModel) {
         var self = this;
         self.started = startDate || (new Date());
-        self.latestInteraction = new Date();
         self.latestUpdate = new Date();
 
         self.controller = new exports.Controller(new Date());
