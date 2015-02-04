@@ -7,8 +7,8 @@ block header
         | {{ item.id }}
 
 block body
-    div(ng-repeat="item in item.entries")
-        h1 {{ item.deviceId }}
+    div(ng-repeat="entry in item.entries")
+        h1 {{ entry.deviceId }}
         div.row
             div.col-md-4
                 h2 Data Link Layer
@@ -18,43 +18,47 @@ block body
                             tr
                                 th Source:
                                 td
-                                    a(href="{{ '/detail/device/' +  item.dl.src }}")
-                                        code.dp {{ item.dl.src }}
+                                    a(href="{{ '/detail/device/' +  entry.dl.src }}")
+                                        code.dp {{ entry.dl.src }}
                             tr
                                 th Destination:
                                 td
-                                    a(href="{{ '/detail/device/' +  item.dl.dst }}")
-                                        code.dp {{ item.dl.dst }}
+                                    a(href="{{ '/detail/device/' +  entry.dl.dst }}")
+                                        code.dp {{ entry.dl.dst }}
                             tr
                                 th Type:
-                                td {{ item.dl.type | ethernetFrameType }}
+                                td {{ entry.dl.type | ethernetFrameType }}
                             tr
                                 th VLAN:
-                                td {{ item.dl.vlan }} / {{ item.dl.vlanPriority }}
+                                td {{ entry.dl.vlan }} / {{ entry.dl.vlanPriority }}
             div.col-md-4
                 h2 Network Layer&nbsp;
-                    span.label.label-success {{ item.nw.protocol | networkProtocol }}
+                    span.label.label-success {{ entry.nw.protocol | networkProtocol }}
                 div.table-responsive
                     table.table.table-bordered.table-condensed.table-striped
                         tbody
                             tr
                                 th Source:
-                                td {{ item.nw.src }}
+                                td {{ entry.nw.src }}
                             tr
                                 th Destination:
-                                td {{ item.nw.dst }}
+                                td {{ entry.nw.dst }}
                             tr
                                 th Type of Service:
-                                td {{ item.nw.typeOfService }}
+                                td {{ entry.nw.typeOfService }}
             div.col-md-4.sdn-flow
                 h2 Transport Layer&nbsp;
-                    span.label.label-default(ng-show="item.nw.protocol == 6 || item.nw.protocol == 17") {{ min(item.tp.src, item.tp.dst) | serviceName:item.nw.protocol }}
+                    span.label.label-default(ng-show="entry.nw.protocol == 6 || entry.nw.protocol == 17") {{ min(entry.tp.src, entry.tp.dst) | serviceName:item.protocol }}
                 div.table-responsive
                     table.table.table-bordered.table-condensed.table-striped
                         tbody
                             tr
                                 th Source:
-                                td {{ item.tp.src }}
+                                td {{ entry.tp.src }}
                             tr
                                 th Destination:
-                                td {{ item.tp.dst }}
+                                td {{ entry.tp.dst }}
+        div
+            div(ng-repeat="action in entry.actions") {{ action }}
+
+        hr

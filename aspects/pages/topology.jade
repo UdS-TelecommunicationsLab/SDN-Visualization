@@ -27,7 +27,7 @@ div#sdn-topology
                 div.panel-heading
                     i.fa.fa-random
                     | &nbsp;Flows
-                div.table-responsive
+                div.table-responsive.sdn-flow-table
                     table.table.table-condensed.table-striped
                         thead
                         tbody
@@ -37,9 +37,6 @@ div#sdn-topology
                                 td
                                     code.dp D: {{ flow.destination }}
                                 td
-                                    a.sdn-flow.pull-right(href="{{ '/detail/flow/' + flow.id }}")
-                                        span.label.label-default
-                                            strong {{ flow.protocol | networkProtocol }}
-                                            strong(ng-show="flow.service") &nbsp;({{ flow.service | serviceName:flow.protocol }})
+                                    sdn-flow-label(flow="flow")
                             tr(ng-show="data.nvm.flows.length == 0")
                                 td(colspan=2) No flows at the moment.

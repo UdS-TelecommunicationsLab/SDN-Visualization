@@ -14,7 +14,7 @@ div
 			tbody
 				tr(ng-repeat="link in data.nvm.links | srcOrDstId:deviceFilter")
 					td
-						a.btn.btn-default.btn-sm(href="{{ '/detail/link/' + link.id }}") Details
+						a.btn.btn-default.btn-xs(href="{{ '/detail/link/' + link.id }}") Details
 					td
 						sdn-ui-on-off-label(field="link.active")
 					td 

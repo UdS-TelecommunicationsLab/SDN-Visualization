@@ -115,7 +115,7 @@ var __extends = this.__extends || function (d, b) {
             dstPort = tmpPort;
         }
 
-        this.id = srcHost.id + '.' + dstHost.id;
+        this.id = srcHost.id + '-' + srcPort + '.' + dstHost.id + "-" + dstPort;
         this.active = true;
         this.srcHost = srcHost;
         this.srcPort = srcPort;
@@ -240,13 +240,15 @@ var __extends = this.__extends || function (d, b) {
     /**
      * The Flow contains information on all layers from data link over network to transport layer.
      */
-    exports.Flow = function () {
-        this.id = 0;
+    exports.Flow = function (id) {
+        this.id = id || 0;
         this.entries = [];
         this.source = "UNK";
         this.destination = "UNK";
         this.service = 0;
         this.protocol = "UNK";
+        this.label = "UNK";
+        this.links = [];
     };
 
     /**
