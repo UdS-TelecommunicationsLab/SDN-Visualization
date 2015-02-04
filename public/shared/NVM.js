@@ -241,8 +241,18 @@ var __extends = this.__extends || function (d, b) {
      * The Flow contains information on all layers from data link over network to transport layer.
      */
     exports.Flow = function () {
-        this.id = "";
+        this.id = 0;
+        this.entries = [];
+        this.source = "UNK";
+        this.destination = "UNK";
+        this.service = 0;
+        this.protocol = "UNK";
+    };
 
+    /**
+     * The FlowEntry contains information on the match and the associated actions.
+     */
+    exports.FlowEntry = function() {
         // Data Link Layer
         this.dl = {
             src: "00:00:00:00:00:00", // MAC address
@@ -263,10 +273,10 @@ var __extends = this.__extends || function (d, b) {
         // Transport Layer
         this.tp = {
             src: 0, // Port
-            dst: 0, // Port
+            dst: 0 // Port
         };
 
-        this.path = []; // list of NodeIDs from src to dst
+        this.actions = [];
     };
 
 })((typeof process === 'undefined' || !process.versions) ? window.sdn = window.sdn || {} : exports,

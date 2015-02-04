@@ -30,6 +30,8 @@
     sdnViz.controller("DetailFlowCtrl", function(DetailView, $scope, $routeParams, repository) {
         DetailView.init($scope, $routeParams.id, repository.getFlowById);
 
+        $scope.min = Math.min;
+
         $scope.load();
     });
 })(window.sdnViz);

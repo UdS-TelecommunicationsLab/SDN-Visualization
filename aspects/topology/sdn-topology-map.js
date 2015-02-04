@@ -57,6 +57,7 @@
                     $scope.showInactive = !($scope.showInactive != true && $scope.showInactive != "true");
                     restart();
                 });
+
                 $scope.$watch("visibilityButton", function () {
                     $scope.visibilityButton = !($scope.visibilityButton != true && $scope.visibilityButton != "true");
                 });
@@ -109,9 +110,10 @@
                         return "translate(" + topology.boundingBox(d.x, w) + "," + topology.boundingBox(d.y, h) + ")";
                     });
 
-                    linkSelection.attr("x1", function (d) {
-                        return topology.boundingBox(d.source.x, w);
-                    })
+                    linkSelection
+                        .attr("x1", function (d) {
+                            return topology.boundingBox(d.source.x, w);
+                        })
                         .attr("y1", function (d) {
                             return topology.boundingBox(d.source.y, h);
                         })
@@ -457,8 +459,10 @@
                 };
 
                 var highlightFlow = function (event, flow) {
+                    console.log(flow);
+                    var path = _.map(flow.entries, function(d) { return d.deviceId; });
                     linkCollection.forEach(function (d) {
-                        if (_.contains(flow.path, d.source.id) && _.contains(flow.path, d.target.id)) {
+                        if (_.contains(path, d.source.id) && _.contains(path, d.target.id)) {
                             d.highlight = true;
                         }
                     });
@@ -492,7 +496,7 @@
                         }
                     }
 
-                    force.charge(defaults.nodeSize * -100 + 400)
+                    force.charge(defaults.nodeSize * -100 + 400);
 
                     mapNode = angular.element($scope.element).find(".map");
                     mapInner = angular.element($scope.element).find(".mapInner");

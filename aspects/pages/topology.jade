@@ -32,13 +32,14 @@ div#sdn-topology
                         thead
                         tbody
                             tr(ng-repeat="flow in data.nvm.flows", ng-mouseenter="highlightFlow(flow)",ng-mouseleave="blurFlow(flow)")
-                                td(width="24px")
-                                    a(href="{{ '/detail/flow/' + flow.id }}")
-                                        span(class="device Flow", ng-switch="flow.nw.protocol")
-                                            strong(ng-switch-default="") {{ flow.nw.protocol | networkProtocol }}
                                 td
-                                    code.dp S: {{ flow.nw.src }}:{{ flow.tp.src }}
+                                    code.dp S: {{ flow.source }}
                                 td
-                                    code.dp D: {{ flow.nw.dst }}:{{ flow.tp.dst }}
+                                    code.dp D: {{ flow.destination }}
+                                td
+                                    a.sdn-flow.pull-right(href="{{ '/detail/flow/' + flow.id }}")
+                                        span.label.label-default
+                                            strong {{ flow.protocol | networkProtocol }}
+                                            strong(ng-show="flow.service") &nbsp;({{ flow.service | serviceName:flow.protocol }})
                             tr(ng-show="data.nvm.flows.length == 0")
                                 td(colspan=2) No flows at the moment.

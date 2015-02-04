@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2013 - 2015 Saarland University
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,63 +25,14 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function (exports) {
+(function(sdnViz) {
     "use strict";
-
-    exports.nodeTypes = {
-        Anonymous: "Anonymous",
-        AccessPoint: "AccessPoint",
-        Camera: "Camera",
-        Car: "Car",
-        Cloud: "Cloud",
-        Dashboard: "Dashboard",
-        Database: "Database",
-        Display: "Display",
-        Earphone: "Earphone",
-        Factory: "Factory",
-        Flag: "Flag",
-        Health: "Health",
-        Home: "Home",
-        Monitoring: "Monitoring",
-        Node: "Node",
-        Pad: "Pad",
-        PC: "PC",
-        Person: "Person",
-        Phone: "Phone",
-        Position: "Position",
-        Power: "Power",
-        Printer: "Printer",
-        Road: "Road",
-        Robot: "Robot",
-        Server: "Server",
-        Shield: "Shield",
-        Ship: "Ship",
-        Shipment: "Shipment",
-        Shop: "Shop",
-        Subway: "Subway",
-        Train: "Train",
-        University: "University",
-        Finland: "Finland",
-        Unknown: "Unknown"
-    };
-
-    // http://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml
-    exports.networkProtocols = {
-        1: "ICMP",
-        2: "IGMP",
-        6: "TCP",
-        17: "UDP"
-    };
-
-    exports.serviceNames = {
-        6: {
-            22: "SSH",
-            23: "Telnet",
-            80: "HTTP"
-        },
-        17: {
-
-        }
-    };
-
-})((typeof process === 'undefined' || !process.versions) ? window.sdn = window.sdn || {} : exports);
+    sdnViz.filter("serviceName", function() {
+        return function(input, protocol) {
+            if (protocol !== 6 && protocol !== 17) {
+                return input;
+            }
+            return sdn.serviceNames[protocol][input] || input;
+        };
+    });
+})(window.sdnViz);

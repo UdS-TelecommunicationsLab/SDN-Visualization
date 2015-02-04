@@ -220,11 +220,10 @@
     };
     exports.ports = ports;
 
-    // Mapping Flows
-    var flows = {
-        map: function(obj) {
-            var flow = new nvm.Flow();
-
+    var flowEntries = {
+        map: function(obj, deviceId) {
+            var flowEntry = new nvm.FlowEntry();
+            flowEntry.deviceId = deviceId;
             flow.dl.src = "00:00:" + obj.match.eth_src;
             flow.dl.dst = "00:00:" + obj.match.eth_dst;
             flow.dl.type = parseInt(obj.match.eth_type);
@@ -239,33 +238,37 @@
             flow.tp.src = parseInt(obj.match.tcp_src || obj.match.udp_src || 0, 10);
             flow.tp.dst = parseInt(obj.match.tcp_dst || obj.match.udp_src || 0, 10);
 
-            flow.path.push(flow.dl.src);
-            flow.path.push(flow.dl.dst);
+            flowEntry.actions = obj.actions;
 
-            flow.id = crypt.flowId(flow);
+            return flowEntry;
+        }
+    };
 
-            flow.actions = obj.actions;
-
-            return flow;
-        },
+    // Mapping Flows
+    var flows = {
         mapAll: function(obj, devices) {
             var res = {};
             if (obj) {
                 for (var deviceId in obj) {
-                    var device = _.find(devices, function (lclDevice) { return lclDevice.id === deviceId; });
-
                     var flowList = obj[deviceId].flows;
                     if(flowList != null) {
                         for (var j = 0; j < flowList.length; j++) {
-                            var flow = flows.map(flowList[j]);
-                            var flowId = flow.id;
-                            if (res[flowId] === undefined) {
-                                res[flowId] = flow;
+                            var flowObj = flowList[j];
+                            var flowId = flowObj.cookie;
+                            if(flowId < 0) {
+                                flowId += Math.pow(2,63);
                             }
 
+                            if (res[flowId] === undefined) {
+                                var f = new nvm.Flow();
+                                f.id = flowId;
+                                res[flowId] = f;
+                            }
+                            res[flowId].entries.push(flowEntries.map(flowObj, deviceId));
+
+                            var device = _.find(devices, function (lclDevice) { return lclDevice.id === deviceId; });
                             if (device) {
                                 device.activeFlows.push(flowId);
-                                res[flowId].path.push(device.id);
                             }
                         }
                     }
@@ -273,8 +276,48 @@
             }
 
             var result = [];
-            for (var i in res) {
-                result.push(res[i]);
+            for (var m in res) {
+                var flow = res[m];
+
+                var sources = [];
+                var destinations = [];
+                var protocols = [];
+                var services = [];
+
+                for (var k = 0; k < flow.entries.length; k++){
+                    var entry = flow.entries[k];
+                    sources.push(entry.nw.src);
+                    destinations.push(entry.nw.dst);
+                    protocols.push(entry.nw.protocol);
+                    services.push(entry.tp.src);
+                    services.push(entry.tp.dst);
+                }
+
+                var src = _.unique(sources);
+                if(src.length == 1) {
+                    flow.source = src[0];
+                }
+
+                var dst = _.unique(destinations);
+                if(dst.length == 1) {
+                    flow.destination = dst[0];
+                }
+
+                var protocol = _.unique(protocols);
+                if(protocol.length == 1) {
+                    flow.protocol = protocol[0];
+
+                    if(flow.protocol == 6 || flow.protocol == 17) {
+                        var service = _.unique(services);
+                        if(service.length == 1) {
+                            flow.service = service[0];
+                        } else if (service.length == 2) {
+                            flow.service = Math.min(service[0], service[1]);
+                        }
+                    }
+                }
+
+                result.push(flow);
             }
 
             return result;

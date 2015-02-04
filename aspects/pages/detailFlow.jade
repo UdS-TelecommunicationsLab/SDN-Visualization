@@ -1,57 +1,60 @@
 ﻿extend detail
 block header
-	span(class="device Flow")
-		i.fa.fa-random
-	span Flow: 
-	code.dp
-		| {{ item.id }}
+    span(class="device Flow")
+        i.fa.fa-random
+    span Flow:
+    code.dp
+        | {{ item.id }}
 
 block body
-	div.row
-		div.col-md-4
-			h2 Data Link Layer
-			div.table-responsive
-				table.table.table-bordered.table-condensed.table-striped
-					tbody
-						tr
-							th Source:
-							td
-								a(href="{{ '/detail/device/' +  item.dl.src }}")
-									code.dp {{ item.dl.src }}
-						tr
-							th Destination:
-							td
-								a(href="{{ '/detail/device/' +  item.dl.dst }}")
-									code.dp {{ item.dl.dst }}
-						tr
-							th Type:
-							td {{ item.dl.type | ethernetFrameType }}
-						tr
-							th VLAN:
-							td {{ item.dl.vlan }} / {{ item.dl.vlanPriority }}
-		div.col-md-4
-			h2 Network Layer 
-				span.label.label-success {{ item.nw.protocol | networkProtocol }}
-			div.table-responsive
-				table.table.table-bordered.table-condensed.table-striped
-					tbody
-						tr
-							th Source:
-							td {{ item.nw.src }}
-						tr
-							th Destination:
-							td {{ item.nw.dst }}
-						tr
-							th Type of Service:
-							td {{ item.nw.typeOfService }}
-		div.col-md-4
-			h2 Transport Layer
-			div.table-responsive
-				table.table.table-bordered.table-condensed.table-striped
-					tbody
-						tr
-							th Source:
-							td {{ item.tp.src }}
-						tr
-							th Destination:
-							td {{ item.tp.dst }}
+    div(ng-repeat="item in item.entries")
+        h1 {{ item.deviceId }}
+        div.row
+            div.col-md-4
+                h2 Data Link Layer
+                div.table-responsive
+                    table.table.table-bordered.table-condensed.table-striped
+                        tbody
+                            tr
+                                th Source:
+                                td
+                                    a(href="{{ '/detail/device/' +  item.dl.src }}")
+                                        code.dp {{ item.dl.src }}
+                            tr
+                                th Destination:
+                                td
+                                    a(href="{{ '/detail/device/' +  item.dl.dst }}")
+                                        code.dp {{ item.dl.dst }}
+                            tr
+                                th Type:
+                                td {{ item.dl.type | ethernetFrameType }}
+                            tr
+                                th VLAN:
+                                td {{ item.dl.vlan }} / {{ item.dl.vlanPriority }}
+            div.col-md-4
+                h2 Network Layer&nbsp;
+                    span.label.label-success {{ item.nw.protocol | networkProtocol }}
+                div.table-responsive
+                    table.table.table-bordered.table-condensed.table-striped
+                        tbody
+                            tr
+                                th Source:
+                                td {{ item.nw.src }}
+                            tr
+                                th Destination:
+                                td {{ item.nw.dst }}
+                            tr
+                                th Type of Service:
+                                td {{ item.nw.typeOfService }}
+            div.col-md-4.sdn-flow
+                h2 Transport Layer&nbsp;
+                    span.label.label-default(ng-show="item.nw.protocol == 6 || item.nw.protocol == 17") {{ min(item.tp.src, item.tp.dst) | serviceName:item.nw.protocol }}
+                div.table-responsive
+                    table.table.table-bordered.table-condensed.table-striped
+                        tbody
+                            tr
+                                th Source:
+                                td {{ item.tp.src }}
+                            tr
+                                th Destination:
+                                td {{ item.tp.dst }}
