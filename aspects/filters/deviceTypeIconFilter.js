@@ -30,6 +30,8 @@
     sdnViz.filter("deviceTypeIcon", function() {
         return function(device) {
             switch (device) {
+            case sdn.nodeTypes.Anonymous:
+                return "\uf21b"; // fa-user-secret
             case sdn.nodeTypes.AccessPoint:
                 return "\uf012"; // fa-signal
             case sdn.nodeTypes.Camera:
@@ -38,6 +40,10 @@
                 return "\uf1b9"; // fa-automobile
             case sdn.nodeTypes.Cloud:
                 return "\uf0c2"; // fa-cloud
+            case sdn.nodeTypes.Dashboard:
+                return "\uf0e4"; // fa-tachometer
+            case sdn.nodeTypes.Database:
+                return "\uf1c0"; // fa-database
             case sdn.nodeTypes.Display:
                 return "\uf108"; // fa-desktop
             case sdn.nodeTypes.Earphone:
@@ -52,12 +58,16 @@
                 return "\uf0fe"; // fa-plus-square 
             case sdn.nodeTypes.Home:
                 return "\uf015"; // fa-home
+            case sdn.nodeTypes.Monitoring:
+                return "\uf21e"; // fa-heartbeat
             case sdn.nodeTypes.Node:
                 return "\uf1e0"; // fa-share-alt
             case sdn.nodeTypes.Pad:
                 return "\uf10a"; // fa-tablet
             case sdn.nodeTypes.PC:
                 return "\uf109"; // fa-laptop
+            case sdn.nodeTypes.Person:
+                return "\uf183"; // fa-male
             case sdn.nodeTypes.Phone:
                 return "\uf10b"; // fa-mobile
             case sdn.nodeTypes.Position:
@@ -68,14 +78,24 @@
                 return "\uf02f"; // fa-print
             case sdn.nodeTypes.Road:
                 return "\uf018"; // fa-road
+            case sdn.nodeTypes.Robot:
+                return "\uf17b"; // fa-android
             case sdn.nodeTypes.Server:
-                return "\uf1c0"; // fa-database
+                return "\uf233"; // fa-server
             case sdn.nodeTypes.Shield:
                 return "\uf132"; // fa-shield
+            case sdn.nodeTypes.Ship:
+                return "\uf21a"; // fa-ship
             case sdn.nodeTypes.Shipment:
                 return "\uf0d1"; // fa-truck
             case sdn.nodeTypes.Shop:
                 return "\uf07a"; // fa-shop
+            case sdn.nodeTypes.Subway:
+                return "\uf239"; // fa-subway
+            case sdn.nodeTypes.Train:
+                return "\uf238"; // fa-train
+            case sdn.nodeTypes.University:
+                return "\uf19d"; // fa-graduation-cap
             case sdn.nodeTypes.Unknown:
                 return "\uf059"; // fa-question-circle
             }

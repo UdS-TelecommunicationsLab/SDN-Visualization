@@ -43,7 +43,7 @@
 			div.col-md-10
 				select.input-sm.form-control(style="width: 120px",ng-model="item.type", ng-options="value for value in types")
 				span(class="device", style="background-color: {{ item.color }}")
-					i.fa {{ item.type | deviceTypeIcon }}
+					i.fa.fa-fw {{ item.type | deviceTypeIcon }}
 				input.input-sm.form-control.colorpickerBox(style="width: 80px", colorpicker="hex", type="text", ng-model="item.color")
 
 		div.form-group
