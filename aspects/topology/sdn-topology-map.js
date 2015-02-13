@@ -45,6 +45,7 @@
                 "showInactive": "@"
             },
             controller: function ($scope, $modal, router, repository, messenger, topology) {
+                $scope.showInactive = false;
                 var isMapCreated = false;
                 var isDataInitialized = false;
 
@@ -53,19 +54,15 @@
                 $scope.loaded = false;
 
                 $scope.$watch("showInactive", function () {
-                    if ($scope.showInactive != true && $scope.showInactive != "true") {
-                        $scope.showInactive = false;
-                    }
+                    $scope.showInactive = !($scope.showInactive != true && $scope.showInactive != "true");
+                    restart();
                 });
                 $scope.$watch("visibilityButton", function () {
-                    if ($scope.visibilityButton != true && $scope.visibilityButton != "true") {
-                        $scope.visibilityButton = false;
-                    }
+                    $scope.visibilityButton = !($scope.visibilityButton != true && $scope.visibilityButton != "true");
                 });
 
                 $scope.toggleActiveNodeVisibility = function () {
                     $scope.showInactive = !$scope.showInactive;
-                    restart();
                 };
 
                 $scope.showHelp = function () {
@@ -350,9 +347,6 @@
 
                     if (nodeChangeSet.changed || linkChangeSet.changed) {
                         restart();
-                    } else if (linkChangeSet.linkChanged || nodeChangeSet.nodeChanged) {
-                        redrawLinks();
-                        redrawNodes();
                     }
                 };
 
