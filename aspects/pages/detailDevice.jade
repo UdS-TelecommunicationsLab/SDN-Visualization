@@ -11,6 +11,8 @@ block body
                 | ID:
                 code.dp {{ item.id }}
             p(ng-show="item.userName") User Name: {{ item.userName }}
+            p(ng-show="item") Internet Addresses:&nbsp;
+                span(ng-repeat="addr in item.internetAddresses") {{ addr }}{{$last ? '': ','}}
             p(ng-show="item") Connected since: {{ item.connectedSince | formatDate }}
             p(ng-show="item.url")
                 | Link:
@@ -26,16 +28,6 @@ block body
                 span {{ item.location }}
             p Purpose:
                 span {{ item.purpose }}
-        div.col-sm-6(ng-show="item.type == 'Client'")
-            h2 Client
-            div(ng-show="item.interface != undefined")
-                div.row
-                    div.col-md-6.col-lg-6 Gateway:&nbsp;
-                        code.dp
-                            a(href="{{ ' /detail/device/' + item.interface.gw}}") {{ item.interface.gw }}
-                    div.col-md-6.col-lg-4 IP: {{ item.interface.address }}
-                    div.col-md-6.col-lg-2 Port: {{ item.interface.port }}
-
         div.col-sm-6(ng-show="item.type == 'Switch'")
             h2 Switch
             table.table.table-condensed.table-bordered.table-striped
@@ -51,9 +43,6 @@ block body
                 tr
                     td Actions
                     td(colspan=2) {{ item.actions }}
-                tr
-                    td Address
-                    td(colspan=2) {{ item.internetAddress }}
     hr
     div
         h2 Ports

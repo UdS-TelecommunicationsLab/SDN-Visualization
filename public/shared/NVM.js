@@ -192,6 +192,7 @@ var __extends = this.__extends || function (d, b) {
         self.url = url || "";
         self.color = color || "#444444";
         self.activeFlows = [];
+        self.internetAddresses = [];
         self.ports = {};
 
         self.updatePorts = function(ports) {
@@ -213,12 +214,11 @@ var __extends = this.__extends || function (d, b) {
      * The Client contains a connected interface as well as general information of devices.
      */
     exports.Client = (function (base) {
-        var client = function (id, name, gw, ip, port, deviceType, userName, url, location, purpose, color, lastSeen) {
+        var client = function (id, name, deviceType, userName, url, location, purpose, color, lastSeen) {
             base.call(this, id, name, userName, url, location, purpose, color);
             this.type = exports.Client.type;
             this.deviceType = deviceType;
             this.lastSeen = lastSeen || new Date(0);
-            this.interface = new exports.Interface(gw, ip, port);
         };
         __extends(client, base);
         return client;
@@ -236,7 +236,7 @@ var __extends = this.__extends || function (d, b) {
             this.deviceType = deviceType || "Node";
             this.connectedSince = new Date(connectedSince);
             this.description = {};
-            this.internetAddress = inetAddress;
+            this.internetAddresses = [inetAddress];
             this.capabilities = [];
             this.actions = [];
             this.attributes = [];

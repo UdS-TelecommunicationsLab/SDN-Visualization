@@ -183,25 +183,27 @@
                 };
 
                 var redrawLinks = function () {
-                    var visibleLinks = _.filter(linkCollection, function (d) {
-                        return $scope.showInactive || d.link.active;
-                    });
-                    linkSelection = linkSelection.data(visibleLinks, function (d) {
-                        return d.id;
-                    });
-                    linkSelection.exit().remove();
-
-                    var linkElements = linkSelection.enter().insert("line", ".node");
-                    linkSelection
-                        .attr("class", function (d) {
-                            return "link " + d.type;
-                        })
-                        .on("contextmenu", function (d) {
-                            router.navigate("/detail/link/" + d.id);
-                            d3.event.preventDefault();
+                    if (linkSelection) {
+                        var visibleLinks = _.filter(linkCollection, function (d) {
+                            return $scope.showInactive || d.link.active;
                         });
-                    styleLink(linkSelection);
-                    addTooltipToElement(linkElements, "Link");
+
+                        linkSelection = linkSelection.data(visibleLinks, function (d) {
+                            return d.id;
+                        });
+                        linkSelection.exit().remove();
+                        var linkElements = linkSelection.enter().insert("line", ".node");
+                        linkSelection
+                            .attr("class", function (d) {
+                                return "link " + d.type;
+                            })
+                            .on("contextmenu", function (d) {
+                                router.navigate("/detail/link/" + d.id);
+                                d3.event.preventDefault();
+                            });
+                        styleLink(linkSelection);
+                        addTooltipToElement(linkElements, "Link");
+                    }
                 };
 
                 var addTooltipToElement = function (items, type) {
@@ -237,62 +239,64 @@
                 };
 
                 var redrawNodes = function () {
-                    var visibleNodes = _.filter(nodeCollection, function (d) {
-                        return $scope.showInactive || d.device.active;
-                    });
-                    nodeSelection = nodeSelection.data(visibleNodes, function (d) {
-                        return d.id;
-                    });
-                    nodeSelection.exit().remove();
+                    if (nodeSelection) {
+                        var visibleNodes = _.filter(nodeCollection, function (d) {
+                            return $scope.showInactive || d.device.active;
+                        });
+                        nodeSelection = nodeSelection.data(visibleNodes, function (d) {
+                            return d.id;
+                        });
+                        nodeSelection.exit().remove();
 
-                    var groups = nodeSelection.enter().append("g")
-                        .attr("class", "node")
-                        .attr("width", defaults.nodeSize)
-                        .attr("height", defaults.nodeSize)
-                        .on("dblclick", function (d) {
-                            d.fixed = !d.fixed;
-                            if (d.fixed) {
-                                var rd = 3;
-                                d3.select(this).selectAll("circle").remove();
-                                styleNode(d3.select(this).insert("rect", "text")
-                                    .attr("x", -defaults.nodeSize)
-                                    .attr("y", -defaults.nodeSize)
-                                    .attr("rx", rd)
-                                    .attr("ry", rd)
-                                    .attr("width", defaults.nodeSize * 2)
-                                    .attr("height", defaults.nodeSize * 2));
-                            } else {
-                                d3.select(this).selectAll("rect").remove();
-                                styleNode(d3.select(this).insert("circle", "text")
-                                    .attr("r", defaults.nodeSize));
-                            }
+                        var groups = nodeSelection.enter().append("g")
+                            .attr("class", "node")
+                            .attr("width", defaults.nodeSize)
+                            .attr("height", defaults.nodeSize)
+                            .on("dblclick", function (d) {
+                                d.fixed = !d.fixed;
+                                if (d.fixed) {
+                                    var rd = 3;
+                                    d3.select(this).selectAll("circle").remove();
+                                    styleNode(d3.select(this).insert("rect", "text")
+                                        .attr("x", -defaults.nodeSize)
+                                        .attr("y", -defaults.nodeSize)
+                                        .attr("rx", rd)
+                                        .attr("ry", rd)
+                                        .attr("width", defaults.nodeSize * 2)
+                                        .attr("height", defaults.nodeSize * 2));
+                                } else {
+                                    d3.select(this).selectAll("rect").remove();
+                                    styleNode(d3.select(this).insert("circle", "text")
+                                        .attr("r", defaults.nodeSize));
+                                }
 
-                            d3.select(this).classed("fixed", d.fixed);
-                            force.start();
-                        }).on("contextmenu", function (d) {
-                            router.navigate("/detail/device/" + d.id);
-                            d3.event.preventDefault();
-                        })
-                        .call(force.drag);
+                                d3.select(this).classed("fixed", d.fixed);
+                                force.start();
+                            }).on("contextmenu", function (d) {
+                                router.navigate("/detail/device/" + d.id);
+                                d3.event.preventDefault();
+                            })
+                            .call(force.drag);
 
-                    groups.append("circle").attr("r", defaults.nodeSize);
-                    groups.append("text").attr("font-size", defaults.iconSize);
+                        groups.append("circle").attr("r", defaults.nodeSize);
+                        groups.append("text").attr("font-size", defaults.iconSize);
 
-                    addTooltipToElement(groups, "Node");
+                        addTooltipToElement(groups, "Node");
 
-                    var t = svg.selectAll(".node");
-                    styleNode(t.selectAll("circle"));
-                    styleNode(t.selectAll("rect"));
+                        var t = svg.selectAll(".node");
+                        styleNode(t.selectAll("circle"));
+                        styleNode(t.selectAll("rect"));
 
-                    var texts = t.selectAll("text");
-                    if ($scope.styles && $scope.styles.text) {
-                        $scope.styles.text(texts);
-                    } else {
-                        topology.defaultTextStyle(texts);
-                    }
+                        var texts = t.selectAll("text");
+                        if ($scope.styles && $scope.styles.text) {
+                            $scope.styles.text(texts);
+                        } else {
+                            topology.defaultTextStyle(texts);
+                        }
 
-                    if (nodeCollection.length == 0) {
-                        hideTopology();
+                        if (nodeCollection.length == 0) {
+                            hideTopology();
+                        }
                     }
                 };
 

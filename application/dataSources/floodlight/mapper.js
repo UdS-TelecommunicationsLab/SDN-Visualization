@@ -65,19 +65,9 @@
             } else {
                 url = "";
             }
-            var gateway = undefined;
-            var port = undefined;
-
-            var attachmentPoints = d.attachmentPoint;
-            if (attachmentPoints.length > 0) {
-                gateway = attachmentPoints[0].switchDPID;
-                port = attachmentPoints[0].port;
-            }
-            var ip = "UNK";
-            if (d.ipv4 && d.ipv4.length > 0) {
-                ip = d.ipv4[0];
-            }
-            return new nvm.Client(id, name || id, gateway, ip, port, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color, d.lastSeen);
+            var client = new nvm.Client(id, name || id, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color, d.lastSeen);
+            client.internetAddresses = d.ipv4;
+            return client;
         },
         mapAll: function(rawData, sw) {
             var lclClients = [];
