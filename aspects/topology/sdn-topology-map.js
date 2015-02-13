@@ -44,7 +44,7 @@
                 "visibilityButton": "@",
                 "showInactive": "@"
             },
-            controller: function ($scope, $modal, router, repository, messenger, topology) {
+            controller: function ($scope, $modal, router, repository, messenger, topology, websockets) {
                 $scope.showInactive = false;
                 var isMapCreated = false;
                 var isDataInitialized = false;
@@ -63,6 +63,12 @@
 
                 $scope.toggleActiveNodeVisibility = function () {
                     $scope.showInactive = !$scope.showInactive;
+                };
+
+                $scope.resetModel = function() {
+                    websockets.publish("/nvm/reset", null, function() {
+                        toastr.success("Successfully reset NVM.");
+                    });
                 };
 
                 $scope.showHelp = function () {

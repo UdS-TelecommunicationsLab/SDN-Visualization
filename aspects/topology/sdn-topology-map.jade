@@ -4,6 +4,9 @@ div.sdn-topology-map
                                       tooltip="{{ (showInactive) ? 'Hide Inactive' : 'Show Inactive' }}", tooltip-placement="bottom")
             i.fa.fa-fw(ng-class="{ 'fa-toggle-on': showInactive, 'fa-toggle-off': !showInactive }")
         | &nbsp;
+        button.btn.btn-default.btn-xs(ng-click="resetModel()", tooltip="Reset Model", tooltip-placement="bottom")
+            i.fa.fa-fw.fa-trash-o
+        | &nbsp;
         button.btn.btn-default.btn-xs(ng-click="showHelp()", tooltip="Help", tooltip-placement="bottom")
             i.fa.fa-fw.fa-question
     div.map
