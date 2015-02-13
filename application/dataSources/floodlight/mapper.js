@@ -109,7 +109,7 @@
     // Mapping Switches
     var switches = {
         map: function(obj) {
-            var device = common.getDeviceEntry(obj.dpid);
+            var device = common.getDeviceEntry(obj.switchDPID);
             var node = device.node;
             var url = (node && node.url) || "";
             var name = common.getName(device);
@@ -118,7 +118,7 @@
             } else {
                 url = "";
             }
-            var sw = new nvm.Switch(obj.dpid, name || obj.dpid,
+            var sw = new nvm.Switch(obj.switchDPID, name || obj.switchDPID,
                 node && node.type,
                 node && node.userName,
                 url,
@@ -126,25 +126,8 @@
                 node && node.purpose,
                 node && node.color,
                 obj.connectedSince,
-                obj.description,
-                obj.capabilities,
-                obj.actions,
-                obj.inetAddress,
-                obj.attributes);
+                obj.inetAddress.split(":")[0].substr(1));
 
-            for (var i = 0; i < obj.ports.length; i++) {
-                var port = obj.ports[i];
-                var p = new nvm.Port(port.portNumber);
-                p.hardwareAddress = port.hardwareAddress;
-                p.name = port.name;
-                p.config = port.config;
-                p.state = port.state;
-                p.currentFeatures = port.currentFeatures;
-                p.advertisedFeatures = port.advertisedFeatures;
-                p.supportedFeatures = port.supportedFeatures;
-                p.peerFeatures = port.peerFeatures;
-                sw.ports[port.portNumber] = p;
-            }
             return sw;
         },
         mapAll: function(obj) {
@@ -207,6 +190,16 @@
     var ports = {
         map: function(obj, existingPort) {
             var port = (existingPort !== undefined) ? existingPort : new nvm.Port(obj.portNumber);
+
+            port.hardwareAddress = obj.hardwareAddress;
+            port.name = obj.name;
+            port.config = obj.config;
+            port.state = obj.state;
+            port.currentFeatures = obj.currentFeatures;
+            port.advertisedFeatures = obj.advertisedFeatures;
+            port.supportedFeatures = obj.supportedFeatures;
+            port.peerFeatures = obj.peerFeatures;
+
             port.receivePackets = obj.receivePackets;
             port.transmitPackets = obj.transmitPackets;
 
@@ -228,7 +221,6 @@
         },
         mapAll: function(obj, device) {
             var allPorts = {};
-
             for(var i = 0; i < obj.length; i++) {
                 var p = obj[i];
                 allPorts[p.portNumber] = ports.map(p, device.ports[p.portNumber]);

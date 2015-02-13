@@ -197,7 +197,9 @@ var __extends = this.__extends || function (d, b) {
         self.updatePorts = function(ports) {
             for(var portNumber in ports) {
                 if (self.ports[portNumber] !== undefined) {
-                    self.ports[portNumber] = _.extend(self.ports[portNumber], ports[portNumber]);
+                    self.ports[portNumber] = _.assign(self.ports[portNumber], ports[portNumber], function(value, other) {
+                        return typeof other == 'undefined' ? value : other;
+                    });
                 } else {
                     self.ports[portNumber] = ports[portNumber];
                 }
@@ -228,16 +230,16 @@ var __extends = this.__extends || function (d, b) {
      * The Switch primarily extends Device. It does not contain specific fields.
      */
     exports.Switch = (function (base) {
-        var lclSwitch = function (id, name, deviceType, userName, url, location, purpose, color, connectedSince, description, capabilities, actions, inetAddress, attributes) {
+        var lclSwitch = function (id, name, deviceType, userName, url, location, purpose, color, connectedSince, inetAddress) {
             base.call(this, id, name, userName, url, location, purpose, color);
             this.type = exports.Switch.type;
             this.deviceType = deviceType || "Node";
             this.connectedSince = new Date(connectedSince);
-            this.description = description;
-            this.capabilities = capabilities;
-            this.actions = actions;
+            this.description = {};
             this.internetAddress = inetAddress;
-            this.attributes = attributes;
+            this.capabilities = [];
+            this.actions = [];
+            this.attributes = [];
         };
         __extends(lclSwitch, base);
         return lclSwitch;

@@ -1,142 +1,139 @@
 extend detail
 block header
-	sdn-device-type-icon(device="item")
-	span Device:
-	code.dp {{ item.name }}
+    sdn-device-type-icon(device="item")
+    span Device:
+    code.dp {{ item.name }}
 block body
-	div.row
-		div.col-sm-3
-			h2 General
-			p
-				| ID:
-				code.dp {{ item.id }}
-			p(ng-show="item.userName") User Name: {{ item.userName }}
-			p(ng-show="item") Connected since: {{ item.connectedSince | formatDate }}
-			p(ng-show="item.url")
-				| Link:
-				a(href="{{ 'http://' + item.url }}",target="_blank") {{ item.url | lowercase }}
+    div.row
+        div.col-sm-3
+            h2 General
+            p
+                | ID:
+                code.dp {{ item.id }}
+            p(ng-show="item.userName") User Name: {{ item.userName }}
+            p(ng-show="item") Connected since: {{ item.connectedSince | formatDate }}
+            p(ng-show="item.url")
+                | Link:
+                a(href="{{ 'http://' + item.url }}",target="_blank") {{ item.url | lowercase }}
 
-		div.col-sm-3
-			p.pull-right
-					a.btn.btn-default(href="{{ '/configuration/addDevice/' + item.id }}")
-						i.fa.fa-cog
-						|  Change
-			h2 Device
-			p Location:
-				span {{ item.location }}
-			p Purpose:
-				span {{ item.purpose }}
-		div.col-sm-6(ng-show="item.type == 'Client'")
-			h2 Client
-			div(ng-show="item.interface != undefined")
-				div.row
-					div.col-md-6.col-lg-6 Gateway:&nbsp;
-						code.dp
-							a(href="{{ ' /detail/device/' + item.interface.gw}}") {{ item.interface.gw }}
-					div.col-md-6.col-lg-4 IP: {{ item.interface.address }}
-					div.col-md-6.col-lg-2 Port: {{ item.interface.port }}
+        div.col-sm-3
+            p.pull-right
+                a.btn.btn-default(href="{{ '/configuration/addDevice/' + item.id }}")
+                    i.fa.fa-cog
+                    |  Change
+            h2 Device
+            p Location:
+                span {{ item.location }}
+            p Purpose:
+                span {{ item.purpose }}
+        div.col-sm-6(ng-show="item.type == 'Client'")
+            h2 Client
+            div(ng-show="item.interface != undefined")
+                div.row
+                    div.col-md-6.col-lg-6 Gateway:&nbsp;
+                        code.dp
+                            a(href="{{ ' /detail/device/' + item.interface.gw}}") {{ item.interface.gw }}
+                    div.col-md-6.col-lg-4 IP: {{ item.interface.address }}
+                    div.col-md-6.col-lg-2 Port: {{ item.interface.port }}
 
-		div.col-sm-6(ng-show="item.type == 'Switch'")
-			h2 Switch
-			table.table.table-condensed.table-bordered.table-striped
-				tr
-					td Description
-					td(colspan=2) {{ item.description.hardware }}, {{ item.description.software }} by {{ item.description.manufacturer }}
-						// TODO: missing serialNum, datapath
-				tr
-					td Capabilities
-					td(colspan=2) {{ item.capabilities }}
-				tr
-					td Actions
-					td(colspan=2) {{ item.actions }}
-				tr
-					td Address
-					td(colspan=2) {{ item.internetAddress }}
-				tr
-					td(rowspan="{{ attributeCount }}") Attributes
-				tr(ng-repeat="(k,v) in item.attributes")
-					td {{ k }}
-					td {{ v }}
-	hr
-	div
-		h2 Ports
-		div.table-responsive
-			table.table.table-condensed.table-bordered.table-striped
-				thead
-					tr
-						th(rowspan=2,width="10px") #
-						th(rowspan=2,width="40px") Name
-						th(rowspan=2,width="140px") Address
-						th(rowspan=2) Connected Device
-						th(rowspan=2,width="60px") C | S
-							sdn-help-tooltip(tooltip="Config / State")
-						th(colspan=4) Features
-						th(colspan=2) Packets
-						th(colspan=2) Bytes
-						th(colspan=2) Dropped
-						th(colspan=5) Errors
-						th(rowspan=2) Coll
-							sdn-help-tooltip(tooltip="Collisions")
-					tr
-						th(width="20px") C
-							sdn-help-tooltip(tooltip="Current")
-						th(width="20px") A
-							sdn-help-tooltip(tooltip="Advertised")
-						th(width="20px") S
-							sdn-help-tooltip(tooltip="Supported")
-						th(width="20px") P
-							sdn-help-tooltip(tooltip="Peer")
-						th(width="80px") Rx
-							sdn-help-tooltip(tooltip="Receive")
-						th(width="80px") Tx
-							sdn-help-tooltip(tooltip="Transmit")
-						th(width="80px") Rx
-							sdn-help-tooltip(tooltip="Receive")
-						th(width="80px") Tx
-							sdn-help-tooltip(tooltip="Transmit")
-						th(width="40px") Rx
-							sdn-help-tooltip(tooltip="Receive")
-						th(width="40px") Tx
-							sdn-help-tooltip(tooltip="Transmit")
+        div.col-sm-6(ng-show="item.type == 'Switch'")
+            h2 Switch
+            table.table.table-condensed.table-bordered.table-striped
+                tr
+                    td Description
+                    td(colspan=2) {{ item.description.hardwareDescription }},
+                        |  {{ item.description.softwareDescription }} by {{ item.description.manufacturerDescription }}
+                        |  ({{ item.description.version }})
+                        // TODO: missing serialNum, datapath
+                tr
+                    td Capabilities
+                    td(colspan=2) {{ item.capabilities }}
+                tr
+                    td Actions
+                    td(colspan=2) {{ item.actions }}
+                tr
+                    td Address
+                    td(colspan=2) {{ item.internetAddress }}
+    hr
+    div
+        h2 Ports
+        div.table-responsive
+            table.table.table-condensed.table-bordered.table-striped
+                thead
+                    tr
+                        th(rowspan=2,width="10px") #
+                        th(rowspan=2,width="40px") Name
+                        th(rowspan=2,width="140px") Address
+                        th(rowspan=2) Connected Device
+                        th(rowspan=2,width="60px") C | S
+                            sdn-help-tooltip(tooltip="Config / State")
+                        th(colspan=4) Features
+                        th(colspan=2) Packets
+                        th(colspan=2) Bytes
+                        th(colspan=2) Dropped
+                        th(colspan=5) Errors
+                        th(rowspan=2) Coll
+                            sdn-help-tooltip(tooltip="Collisions")
+                    tr
+                        th(width="20px") C
+                            sdn-help-tooltip(tooltip="Current")
+                        th(width="20px") A
+                            sdn-help-tooltip(tooltip="Advertised")
+                        th(width="20px") S
+                            sdn-help-tooltip(tooltip="Supported")
+                        th(width="20px") P
+                            sdn-help-tooltip(tooltip="Peer")
+                        th(width="80px") Rx
+                            sdn-help-tooltip(tooltip="Receive")
+                        th(width="80px") Tx
+                            sdn-help-tooltip(tooltip="Transmit")
+                        th(width="80px") Rx
+                            sdn-help-tooltip(tooltip="Receive")
+                        th(width="80px") Tx
+                            sdn-help-tooltip(tooltip="Transmit")
+                        th(width="40px") Rx
+                            sdn-help-tooltip(tooltip="Receive")
+                        th(width="40px") Tx
+                            sdn-help-tooltip(tooltip="Transmit")
 
-						th(width="40px") Rx
-							sdn-help-tooltip(tooltip="Receive")
-						th(width="40px") Tx
-							sdn-help-tooltip(tooltip="Transmit")
-						th(width="40px") F
-							sdn-help-tooltip(tooltip="Frame")
-						th(width="40px") O
-							sdn-help-tooltip(tooltip="Overrun")
-						th(width="40px") C
-							sdn-help-tooltip(tooltip="CRC")
-				tbody
-					tr(ng-repeat="(port, device) in connectedDevices | orderBy:'name' ")
-						td {{ port }}
-						td {{ item.ports[port].name }}
-						td
-							code.dp {{ item.ports[port].hardwareAddress }}
-						td
-							a(href="{{ '/detail/device/' + device.id }}")
-								sdn-device-type-icon(device="device")
-								code.dp {{ device.name }}
-						td {{ item.ports[port].config }} | {{ item.ports[port].state }}
-						td {{ item.ports[port].currentFeatures }}
-						td {{ item.ports[port].advertisedFeatures }}
-						td {{ item.ports[port].supportedFeatures }}
-						td {{ item.ports[port].peerFeatures }}
-						td.decimal {{ item.ports[port].receivePackets | decimal }}
-						td.decimal {{ item.ports[port].transmitPackets | decimal }}
+                        th(width="40px") Rx
+                            sdn-help-tooltip(tooltip="Receive")
+                        th(width="40px") Tx
+                            sdn-help-tooltip(tooltip="Transmit")
+                        th(width="40px") F
+                            sdn-help-tooltip(tooltip="Frame")
+                        th(width="40px") O
+                            sdn-help-tooltip(tooltip="Overrun")
+                        th(width="40px") C
+                            sdn-help-tooltip(tooltip="CRC")
+                tbody
+                    tr(ng-repeat="(port, device) in connectedDevices | orderBy:'name' ")
+                        td {{ port }}
+                        td {{ item.ports[port].name }}
+                        td
+                            code.dp {{ item.ports[port].hardwareAddress }}
+                        td
+                            a(href="{{ '/detail/device/' + device.id }}")
+                                sdn-device-type-icon(device="device")
+                                code.dp {{ device.name }}
+                        td {{ item.ports[port].config || 'U' }} | {{ item.ports[port].state || 'U' }}
+                        td {{ item.ports[port].currentFeatures | decimal  }}
+                        td {{ item.ports[port].advertisedFeatures | decimal  }}
+                        td {{ item.ports[port].supportedFeatures | decimal  }}
+                        td {{ item.ports[port].peerFeatures | decimal  }}
+                        td.decimal {{ item.ports[port].receivePackets | decimal }}
+                        td.decimal {{ item.ports[port].transmitPackets | decimal }}
 
-						td.decimal {{ item.ports[port].receiveBytes | decimal }}
-						td.decimal {{ item.ports[port].transmitBytes | decimal }}
+                        td.decimal {{ item.ports[port].receiveBytes | decimal }}
+                        td.decimal {{ item.ports[port].transmitBytes | decimal }}
 
-						td.decimal {{ item.ports[port].receiveDropped | decimal }}
-						td.decimal {{ item.ports[port].transmitDropped | decimal }}
+                        td.decimal {{ item.ports[port].receiveDropped | decimal }}
+                        td.decimal {{ item.ports[port].transmitDropped | decimal }}
 
-						td.decimal {{ item.ports[port].receiveErrors | decimal }}
-						td.decimal {{ item.ports[port].transmitErrors | decimal }}
-						td.decimal {{ item.ports[port].receiveFrameErrors | decimal }}
-						td.decimal {{ item.ports[port].receiveOverrunErrors | decimal }}
-						td.decimal {{ item.ports[port].receiveCRCErrors | decimal }}
+                        td.decimal {{ item.ports[port].receiveErrors | decimal }}
+                        td.decimal {{ item.ports[port].transmitErrors | decimal }}
+                        td.decimal {{ item.ports[port].receiveFrameErrors | decimal }}
+                        td.decimal {{ item.ports[port].receiveOverrunErrors | decimal }}
+                        td.decimal {{ item.ports[port].receiveCRCErrors | decimal }}
 
-						td.decimal {{ item.ports[port].collisions | decimal }}
+                        td.decimal {{ item.ports[port].collisions | decimal }}
