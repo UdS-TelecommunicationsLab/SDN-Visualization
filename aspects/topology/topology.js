@@ -149,7 +149,7 @@
 
         // ChangeSet
         var calculateLinkChangeSet = function (change, linkCollection) {
-            var linkChangeSet = {add: [], remove: [], changed: false, linkChanged: false};
+            var linkChangeSet = {add: [], remove: [], changed: false};
             var localLinks = (change[objectDiff.token.value].links && change[objectDiff.token.value].links[objectDiff.token.value]) || [];
             for (var linkIndex in localLinks) {
                 var linkChange = localLinks[linkIndex];
@@ -166,7 +166,7 @@
                             dr: (localLink.drTx + localLink.drRx)
                         });
                     } else if (linkChange[objectDiff.token.changed] === objectDiff.token.object) {
-                        linkChangeSet.linkChanged = true;
+                        linkChangeSet.changed = true;
                         var changedLink = _.find(linkCollection, function (lclL) {
                             return lclL.id == linkChange[objectDiff.token.value].id[objectDiff.token.value];
                         });
@@ -188,7 +188,7 @@
         };
 
         var calculateNodeChangeSet = function (change, nodeCollection) {
-            var nodeChangeSet = {add: [], remove: [], changed: false, nodeChanged: false};
+            var nodeChangeSet = {add: [], remove: [], changed: false };
             var localDevices = (change[objectDiff.token.value].devices && change[objectDiff.token.value].devices[objectDiff.token.value]) || [];
             for (var deviceIndex in localDevices) {
                 var nodeChange = localDevices[deviceIndex];
@@ -203,7 +203,7 @@
                             y: 0
                         });
                     } else if (nodeChange[objectDiff.token.changed] === objectDiff.token.object) {
-                        nodeChangeSet.nodeChanged = true;
+                        nodeChangeSet.changed = true;
                         var changedNode = _.find(nodeCollection, function (lclN) {
                             return lclN.id == nodeChange[objectDiff.token.value].id[objectDiff.token.value];
                         });
