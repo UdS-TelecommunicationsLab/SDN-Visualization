@@ -31,7 +31,7 @@
     var crypt = CryptoJS || require("../../application/cryptojs").CryptoJS; // Load dependency in case we are on the server side.
 
     exports.hashCode = function(obj) {
-        return crypt.SHA1(JSON.stringify(obj)).toString(crypt.enc.Base64);
+        return crypt.MD5(JSON.stringify(obj)).toString(crypt.enc.Base64);
     };
 
     exports.flowId = function(obj) {

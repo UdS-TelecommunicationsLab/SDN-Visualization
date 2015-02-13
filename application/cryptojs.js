@@ -31,7 +31,7 @@
 
     var fs = require('fs');
 
-    var filedata = fs.readFileSync('./lib/cryptojslib/rollups/sha1.js', 'utf8');
+    var filedata = fs.readFileSync('./lib/cryptojslib/rollups/md5.js', 'utf8');
 
     eval(filedata); // puts all functionality into the field CryptoJS
 
