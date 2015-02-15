@@ -225,19 +225,19 @@
         map: function(obj) {
             var flow = new nvm.Flow();
 
-            flow.dl.src = "00:00:" + obj.match.dataLayerSource;
-            flow.dl.dst = "00:00:" + obj.match.dataLayerDestination;
-            flow.dl.type = parseInt(obj.match.dataLayerType.replace(/0x/g, ""), 16);
-            flow.dl.vlan = parseInt(obj.match.dataLayerVirtualLan, 10);
-            flow.dl.vlanPriority = parseInt(obj.match.dataLayerVirtualLanPriorityCodePoint, 10);
+            flow.dl.src = "00:00:" + obj.match.eth_src;
+            flow.dl.dst = "00:00:" + obj.match.eth_dst;
+            flow.dl.type = parseInt(obj.match.eth_type);
+            flow.dl.vlan = parseInt(obj.match.eth_vlan_vid, 10);
+            // TODO: flow.dl.vlanPriority = parseInt(obj.match.dataLayerVirtualLanPriorityCodePoint, 10);
 
-            flow.nw.src = obj.match.networkSource;
-            flow.nw.dst = obj.match.networkDestination;
-            flow.nw.protocol = parseInt(obj.match.networkProtocol, 10);
-            flow.nw.typeOfService = parseInt(obj.match.networkTypeOfService, 10);
+            flow.nw.src = obj.match.ipv4_src || obj.match.arp_spa;
+            flow.nw.dst = obj.match.ipv4_dst || obj.match.arp_tpa;
+            flow.nw.protocol = parseInt(obj.match.ip_proto || ((obj.match.arp_opcode) ? 1 : 0), 10);
+            // TODO: flow.nw.typeOfService = parseInt(obj.match.networkTypeOfService, 10);
 
-            flow.tp.src = parseInt(obj.match.transportSource, 10);
-            flow.tp.dst = parseInt(obj.match.transportDestination, 10);
+            flow.tp.src = parseInt(obj.match.tcp_src || obj.match.udp_src || 0, 10);
+            flow.tp.dst = parseInt(obj.match.tcp_dst || obj.match.udp_src || 0, 10);
 
             flow.path.push(flow.dl.src);
             flow.path.push(flow.dl.dst);
@@ -254,10 +254,10 @@
                 for (var deviceId in obj) {
                     var device = _.find(devices, function (lclDevice) { return lclDevice.id === deviceId; });
 
-                    var sw = obj[deviceId];
-                    if(sw != null) {
-                        for (var j = 0; j < sw.length; j++) {
-                            var flow = flows.map(sw[j]);
+                    var flowList = obj[deviceId].flows;
+                    if(flowList != null) {
+                        for (var j = 0; j < flowList.length; j++) {
+                            var flow = flows.map(flowList[j]);
                             var flowId = flow.id;
                             if (res[flowId] === undefined) {
                                 res[flowId] = flow;
