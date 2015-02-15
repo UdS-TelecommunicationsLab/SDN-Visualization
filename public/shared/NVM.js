@@ -130,16 +130,6 @@ var __extends = this.__extends || function (d, b) {
 
 
     /**
-     * The Interface encapsulates information on the connected switch, port and the configured IP address.
-     */
-    exports.Interface = function (gw, address, port) {
-        this.gw = gw;
-        this.address = address;
-        this.port = port;
-    };
-
-
-    /**
      * The Port represents a physical port on a switch, which has some associated statistics.
      */
     exports.Port = function (portNumber) {
