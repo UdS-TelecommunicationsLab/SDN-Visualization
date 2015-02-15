@@ -45,7 +45,7 @@
             if (call)
                 call(errorRaised);
         }
-    }
+    };
 
     var handleError = function (e) {
         console.log(e);
@@ -76,6 +76,60 @@
      * @param {Object} data JSON object containing the retrieved information.
      *
      */
+    var processFeatures = function (data) {
+        if (data === null || data == undefined || data === {}) {
+            console.error("processDesc called without data");
+        } else {
+            for(var deviceId in data) {
+                var device = _.find(model.devices, function(d) { return d.id === deviceId; });
+                var deviceObj = data[deviceId];
+                if(device && deviceObj != null) {
+                    device.capabilities = deviceObj.capabilities;
+                    device.actions = deviceObj.actions;
+                    if(deviceObj.portDesc) {
+                        var ports = {};
+                        for (var i = 0; i < deviceObj.portDesc.length; i++) {
+                            var port = deviceObj.portDesc[i];
+                            if(port) {
+                                ports[port.portNumber] = mapper.ports.map(port);
+                            }
+                        }
+                        device.updatePorts(ports);
+                    }
+                }
+            }
+        }
+
+        callback();
+    };
+
+    /**
+     * Manipulates the model object during execution.
+     *
+     * @param {Object} data JSON object containing the retrieved information.
+     *
+     */
+    var processDesc = function (data) {
+        if (data === null || data == undefined || data === {}) {
+            console.error("processDesc called without data");
+        } else {
+            for(var deviceId in data) {
+                var device = _.find(model.devices, function(d) { return d.id === deviceId; });
+                if(device && data[deviceId] != null) {
+                    device.description = data[deviceId].desc;
+                }
+            }
+        }
+
+        callback();
+    };
+
+    /**
+     * Manipulates the model object during execution.
+     *
+     * @param {Object} data JSON object containing the retrieved information.
+     *
+     */
     var processSwitches = function (data) {
         if (data === null || data == undefined || data === {}) {
             console.error("processSwitches called without data");
@@ -87,6 +141,7 @@
         getResource(client.commands.get.flows, processFlows);
         getResource(client.commands.get.links, processLinks);
         getResource(client.commands.get.ports, processPorts);
+        getResource(client.commands.get.desc, processDesc);
 
         callback();
     };
@@ -207,10 +262,16 @@
             for(var deviceId in data) {
                 var device = _.find(model.devices, function(d) { return d.id === deviceId; });
                 if(device && data[deviceId] != null) {
-                    device.updatePorts(mapper.ports.mapAll(data[deviceId], device));
+                    if(data[deviceId].port)
+                    {
+                        var ports = mapper.ports.mapAll(data[deviceId].port, device);
+                        device.updatePorts(ports);
+                    }
                 }
             }
         }
+
+        getResource(client.commands.get.features, processFeatures);
 
         callback();
     };
@@ -271,9 +332,11 @@
             links: "topology/links/json",
             flows: "core/switch/all/flow/json",
             ports: "core/switch/all/port/json",
+            desc: "core/switch/all/desc/json",
+            features: "core/switch/all/features/json",
             delay: "uds/statistics/delay/json",
             packetLoss: "uds/statistics/packetLoss/json",
-            dataRate: "uds/statistics/dataRate/json",
+            dataRate: "uds/statistics/dataRate/json"
         }
     };
 })(exports);

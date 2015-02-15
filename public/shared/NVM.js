@@ -130,16 +130,6 @@ var __extends = this.__extends || function (d, b) {
 
 
     /**
-     * The Interface encapsulates information on the connected switch, port and the configured IP address.
-     */
-    exports.Interface = function (gw, address, port) {
-        this.gw = gw;
-        this.address = address;
-        this.port = port;
-    };
-
-
-    /**
      * The Port represents a physical port on a switch, which has some associated statistics.
      */
     exports.Port = function (portNumber) {
@@ -192,12 +182,15 @@ var __extends = this.__extends || function (d, b) {
         self.url = url || "";
         self.color = color || "#444444";
         self.activeFlows = [];
+        self.internetAddresses = [];
         self.ports = {};
 
         self.updatePorts = function(ports) {
             for(var portNumber in ports) {
                 if (self.ports[portNumber] !== undefined) {
-                    self.ports[portNumber] = _.extend(self.ports[portNumber], ports[portNumber]);
+                    self.ports[portNumber] = _.assign(self.ports[portNumber], ports[portNumber], function(value, other) {
+                        return typeof other == 'undefined' ? value : other;
+                    });
                 } else {
                     self.ports[portNumber] = ports[portNumber];
                 }
@@ -211,12 +204,11 @@ var __extends = this.__extends || function (d, b) {
      * The Client contains a connected interface as well as general information of devices.
      */
     exports.Client = (function (base) {
-        var client = function (id, name, gw, ip, port, deviceType, userName, url, location, purpose, color, lastSeen) {
+        var client = function (id, name, deviceType, userName, url, location, purpose, color, lastSeen) {
             base.call(this, id, name, userName, url, location, purpose, color);
             this.type = exports.Client.type;
             this.deviceType = deviceType;
             this.lastSeen = lastSeen || new Date(0);
-            this.interface = new exports.Interface(gw, ip, port);
         };
         __extends(client, base);
         return client;
@@ -228,16 +220,16 @@ var __extends = this.__extends || function (d, b) {
      * The Switch primarily extends Device. It does not contain specific fields.
      */
     exports.Switch = (function (base) {
-        var lclSwitch = function (id, name, deviceType, userName, url, location, purpose, color, connectedSince, description, capabilities, actions, inetAddress, attributes) {
+        var lclSwitch = function (id, name, deviceType, userName, url, location, purpose, color, connectedSince, inetAddress) {
             base.call(this, id, name, userName, url, location, purpose, color);
             this.type = exports.Switch.type;
             this.deviceType = deviceType || "Node";
             this.connectedSince = new Date(connectedSince);
-            this.description = description;
-            this.capabilities = capabilities;
-            this.actions = actions;
-            this.internetAddress = inetAddress;
-            this.attributes = attributes;
+            this.description = {};
+            this.internetAddresses = [inetAddress];
+            this.capabilities = [];
+            this.actions = [];
+            this.attributes = [];
         };
         __extends(lclSwitch, base);
         return lclSwitch;

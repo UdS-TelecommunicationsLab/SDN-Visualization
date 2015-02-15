@@ -108,8 +108,7 @@
         // Tooltips
         var createNodeTooltip = function (obj, tooltip) {
             var html = "<div><strong>" + ((obj.id !== obj.device.name) ? obj.device.name : "Unknown Device") + "</strong> ";
-            if (obj.device.type == sdn.Client.type)
-                html += "<span>(" + obj.device.interface.address + ")</span>";
+            html += "<span>(" + obj.device.internetAddresses + ")</span>";
             html += "<br /><code class='dp'>" + obj.id + "</code></div>";
             tooltip.html(html);
         };

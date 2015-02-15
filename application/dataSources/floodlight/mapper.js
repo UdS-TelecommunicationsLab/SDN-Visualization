@@ -65,19 +65,9 @@
             } else {
                 url = "";
             }
-            var gateway = undefined;
-            var port = undefined;
-
-            var attachmentPoints = d.attachmentPoint;
-            if (attachmentPoints.length > 0) {
-                gateway = attachmentPoints[0].switchDPID;
-                port = attachmentPoints[0].port;
-            }
-            var ip = "UNK";
-            if (d.ipv4 && d.ipv4.length > 0) {
-                ip = d.ipv4[0];
-            }
-            return new nvm.Client(id, name || id, gateway, ip, port, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color, d.lastSeen);
+            var client = new nvm.Client(id, name || id, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color, d.lastSeen);
+            client.internetAddresses = d.ipv4;
+            return client;
         },
         mapAll: function(rawData, sw) {
             var lclClients = [];
@@ -109,7 +99,7 @@
     // Mapping Switches
     var switches = {
         map: function(obj) {
-            var device = common.getDeviceEntry(obj.dpid);
+            var device = common.getDeviceEntry(obj.switchDPID);
             var node = device.node;
             var url = (node && node.url) || "";
             var name = common.getName(device);
@@ -118,7 +108,7 @@
             } else {
                 url = "";
             }
-            var sw = new nvm.Switch(obj.dpid, name || obj.dpid,
+            var sw = new nvm.Switch(obj.switchDPID, name || obj.switchDPID,
                 node && node.type,
                 node && node.userName,
                 url,
@@ -126,25 +116,8 @@
                 node && node.purpose,
                 node && node.color,
                 obj.connectedSince,
-                obj.description,
-                obj.capabilities,
-                obj.actions,
-                obj.inetAddress,
-                obj.attributes);
+                obj.inetAddress.split(":")[0].substr(1));
 
-            for (var i = 0; i < obj.ports.length; i++) {
-                var port = obj.ports[i];
-                var p = new nvm.Port(port.portNumber);
-                p.hardwareAddress = port.hardwareAddress;
-                p.name = port.name;
-                p.config = port.config;
-                p.state = port.state;
-                p.currentFeatures = port.currentFeatures;
-                p.advertisedFeatures = port.advertisedFeatures;
-                p.supportedFeatures = port.supportedFeatures;
-                p.peerFeatures = port.peerFeatures;
-                sw.ports[port.portNumber] = p;
-            }
             return sw;
         },
         mapAll: function(obj) {
@@ -207,6 +180,16 @@
     var ports = {
         map: function(obj, existingPort) {
             var port = (existingPort !== undefined) ? existingPort : new nvm.Port(obj.portNumber);
+
+            port.hardwareAddress = obj.hardwareAddress;
+            port.name = obj.name;
+            port.config = obj.config;
+            port.state = obj.state;
+            port.currentFeatures = obj.currentFeatures;
+            port.advertisedFeatures = obj.advertisedFeatures;
+            port.supportedFeatures = obj.supportedFeatures;
+            port.peerFeatures = obj.peerFeatures;
+
             port.receivePackets = obj.receivePackets;
             port.transmitPackets = obj.transmitPackets;
 
@@ -228,7 +211,6 @@
         },
         mapAll: function(obj, device) {
             var allPorts = {};
-
             for(var i = 0; i < obj.length; i++) {
                 var p = obj[i];
                 allPorts[p.portNumber] = ports.map(p, device.ports[p.portNumber]);
@@ -243,19 +225,19 @@
         map: function(obj) {
             var flow = new nvm.Flow();
 
-            flow.dl.src = "00:00:" + obj.match.dataLayerSource;
-            flow.dl.dst = "00:00:" + obj.match.dataLayerDestination;
-            flow.dl.type = parseInt(obj.match.dataLayerType.replace(/0x/g, ""), 16);
-            flow.dl.vlan = parseInt(obj.match.dataLayerVirtualLan, 10);
-            flow.dl.vlanPriority = parseInt(obj.match.dataLayerVirtualLanPriorityCodePoint, 10);
+            flow.dl.src = "00:00:" + obj.match.eth_src;
+            flow.dl.dst = "00:00:" + obj.match.eth_dst;
+            flow.dl.type = parseInt(obj.match.eth_type);
+            flow.dl.vlan = parseInt(obj.match.eth_vlan_vid, 10);
+            // TODO: flow.dl.vlanPriority = parseInt(obj.match.dataLayerVirtualLanPriorityCodePoint, 10);
 
-            flow.nw.src = obj.match.networkSource;
-            flow.nw.dst = obj.match.networkDestination;
-            flow.nw.protocol = parseInt(obj.match.networkProtocol, 10);
-            flow.nw.typeOfService = parseInt(obj.match.networkTypeOfService, 10);
+            flow.nw.src = obj.match.ipv4_src || obj.match.arp_spa;
+            flow.nw.dst = obj.match.ipv4_dst || obj.match.arp_tpa;
+            flow.nw.protocol = parseInt(obj.match.ip_proto || ((obj.match.arp_opcode) ? 1 : 0), 10);
+            // TODO: flow.nw.typeOfService = parseInt(obj.match.networkTypeOfService, 10);
 
-            flow.tp.src = parseInt(obj.match.transportSource, 10);
-            flow.tp.dst = parseInt(obj.match.transportDestination, 10);
+            flow.tp.src = parseInt(obj.match.tcp_src || obj.match.udp_src || 0, 10);
+            flow.tp.dst = parseInt(obj.match.tcp_dst || obj.match.udp_src || 0, 10);
 
             flow.path.push(flow.dl.src);
             flow.path.push(flow.dl.dst);
@@ -272,10 +254,10 @@
                 for (var deviceId in obj) {
                     var device = _.find(devices, function (lclDevice) { return lclDevice.id === deviceId; });
 
-                    var sw = obj[deviceId];
-                    if(sw != null) {
-                        for (var j = 0; j < sw.length; j++) {
-                            var flow = flows.map(sw[j]);
+                    var flowList = obj[deviceId].flows;
+                    if(flowList != null) {
+                        for (var j = 0; j < flowList.length; j++) {
+                            var flow = flows.map(flowList[j]);
                             var flowId = flow.id;
                             if (res[flowId] === undefined) {
                                 res[flowId] = flow;
