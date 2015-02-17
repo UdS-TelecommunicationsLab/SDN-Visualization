@@ -231,9 +231,15 @@
             flowEntry.dl.vlan = parseInt(obj.match.eth_vlan_vid, 10);
             // TODO: flow.dl.vlanPriority = parseInt(obj.match.dataLayerVirtualLanPriorityCodePoint, 10);
 
-            flowEntry.nw.src = obj.match.ipv4_src || obj.match.arp_spa;
-            flowEntry.nw.dst = obj.match.ipv4_dst || obj.match.arp_tpa;
-            flowEntry.nw.protocol = parseInt(obj.match.ip_proto || ((obj.match.arp_opcode) ? 1 : 0), 10);
+            if(obj.match.arp_opcode) {
+                flowEntry.nw.src = obj.match.arp_spa;
+                flowEntry.nw.dst = obj.match.arp_tpa;
+                flowEntry.nw.protocol = 1;
+            } else {
+                flowEntry.nw.src = obj.match.ipv4_src;
+                flowEntry.nw.dst = obj.match.ipv4_dst;
+                flowEntry.nw.protocol = parseInt(obj.match.ip_proto, 10);
+            }
             // TODO: flow.nw.typeOfService = parseInt(obj.match.networkTypeOfService, 10);
 
             flowEntry.tp.src = parseInt(obj.match.tcp_src || obj.match.udp_src || 0, 10);
