@@ -13,6 +13,7 @@ block body
             p(ng-show="item.userName") User Name: {{ item.userName }}
             p(ng-show="item", ng-show="item.internetAddresses.length > 0") Internet Addresses:&nbsp;
                 span(ng-repeat="addr in item.internetAddresses") {{ addr }}{{$last ? '': ','}}
+            p(ng-show="item", ng-show="item.controllerAddress") Controller: {{ item.controllerAddress }}
             p(ng-show="item") Connected since: {{ item.connectedSince | formatDate }}
             p(ng-show="item.url")
                 | Link:
