@@ -220,13 +220,12 @@ var __extends = this.__extends || function (d, b) {
      * The Switch primarily extends Device. It does not contain specific fields.
      */
     exports.Switch = (function (base) {
-        var lclSwitch = function (id, name, deviceType, userName, url, location, purpose, color, connectedSince, inetAddress) {
+        var lclSwitch = function (id, name, deviceType, userName, url, location, purpose, color, connectedSince) {
             base.call(this, id, name, userName, url, location, purpose, color);
             this.type = exports.Switch.type;
             this.deviceType = deviceType || "Node";
             this.connectedSince = new Date(connectedSince);
             this.description = {};
-            this.internetAddresses = [inetAddress];
             this.capabilities = [];
             this.actions = [];
             this.attributes = [];

@@ -115,8 +115,7 @@
                 node && node.location,
                 node && node.purpose,
                 node && node.color,
-                obj.connectedSince,
-                obj.inetAddress.split(":")[0].substr(1));
+                obj.connectedSince);
 
             return sw;
         },
