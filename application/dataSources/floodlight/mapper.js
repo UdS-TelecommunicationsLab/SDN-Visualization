@@ -25,7 +25,7 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function() {
+(function () {
     "use strict";
     var _ = require("lodash"),
         common = require("../common"),
@@ -36,7 +36,7 @@
 
     // Mapping Controller
     var controller = {
-        map: function(obj) {
+        map: function (obj) {
             var configuration = config.getConfiguration();
 
             var ctrl = new nvm.Controller("Floodlight");
@@ -54,7 +54,7 @@
 
     // Mapping Clients
     var clients = {
-        map: function(d) {
+        map: function (d) {
             var id = "00:00:" + d.mac[0];
             var device = common.getDeviceEntry(id);
             var node = device.node;
@@ -69,7 +69,7 @@
             client.internetAddresses = d.ipv4;
             return client;
         },
-        mapAll: function(rawData, sw) {
+        mapAll: function (rawData, sw) {
             var lclClients = [];
             var lclLinks = [];
 
@@ -91,14 +91,14 @@
 
             }
 
-            return { clients: lclClients, links: lclLinks };
+            return {clients: lclClients, links: lclLinks};
         }
     };
     exports.clients = clients;
 
     // Mapping Switches
     var switches = {
-        map: function(obj) {
+        map: function (obj) {
             var device = common.getDeviceEntry(obj.switchDPID);
             var node = device.node;
             var url = (node && node.url) || "";
@@ -120,7 +120,7 @@
 
             return sw;
         },
-        mapAll: function(obj) {
+        mapAll: function (obj) {
             var res = [];
 
             if (obj) {
@@ -136,13 +136,13 @@
 
     // Mapping Links
     var links = {
-        mapAll: function(obj, devices) {
+        mapAll: function (obj, devices) {
             var res = [];
 
             var alreadyConnected = {};
 
             if (obj && Array.isArray(obj)) {
-                obj.forEach(function(lnk) {
+                obj.forEach(function (lnk) {
                     var src = lnk["src-switch"];
                     var dst = lnk["dst-switch"];
 
@@ -182,7 +182,7 @@
     exports.links = links;
 
     var ports = {
-        map: function(obj, existingPort) {
+        map: function (obj, existingPort) {
             var port = (existingPort !== undefined) ? existingPort : new nvm.Port(obj.portNumber);
 
             port.hardwareAddress = obj.hardwareAddress;
@@ -213,9 +213,9 @@
             port.collisions = obj.collisions;
             return port;
         },
-        mapAll: function(obj, device) {
+        mapAll: function (obj, device) {
             var allPorts = {};
-            for(var i = 0; i < obj.length; i++) {
+            for (var i = 0; i < obj.length; i++) {
                 var p = obj[i];
                 allPorts[p.portNumber] = ports.map(p, device.ports[p.portNumber]);
             }
@@ -226,7 +226,7 @@
 
     // Mapping Flows
     var flows = {
-        map: function(obj, deviceId) {
+        map: function (obj, deviceId) {
             var flowEntry = new nvm.FlowEntry();
             flowEntry.deviceId = deviceId;
             flowEntry.dl.src = "00:00:" + obj.match.eth_src;
@@ -235,7 +235,7 @@
             flowEntry.dl.vlan = parseInt(obj.match.eth_vlan_vid, 10);
             // TODO: flow.dl.vlanPriority = parseInt(obj.match.dataLayerVirtualLanPriorityCodePoint, 10);
 
-            if(obj.match.arp_opcode) {
+            if (obj.match.arp_opcode) {
                 flowEntry.nw.src = obj.match.arp_spa;
                 flowEntry.nw.dst = obj.match.arp_tpa;
                 flowEntry.nw.protocol = 0;
@@ -244,33 +244,35 @@
                 flowEntry.nw.dst = obj.match.ipv4_dst;
                 flowEntry.nw.protocol = parseInt(obj.match.ip_proto, 10);
             }
-            // TODO: flow.nw.typeOfService = parseInt(obj.match.networkTypeOfService, 10);
+            flowEntry.nw.typeOfService = parseInt(obj.match.ip_dscp, 10);
 
             flowEntry.tp.src = parseInt(obj.match.tcp_src || obj.match.udp_src || 0, 10);
             flowEntry.tp.dst = parseInt(obj.match.tcp_dst || obj.match.udp_src || 0, 10);
 
-            flowEntry.actions = obj.actions;
+            flowEntry.actions = _.cloneDeep(obj.actions);
 
             return flowEntry;
         },
-        mapAll: function(rawObject, devices, links) {
+        mapAll: function (rawObject, devices, links) {
             var flowByCookie = {};
             if (rawObject) {
                 for (var deviceId in rawObject) {
                     var switchFlows = rawObject[deviceId].flows;
-                    if(switchFlows != null) {
+                    if (switchFlows != null) {
                         for (var j = 0; j < switchFlows.length; j++) {
                             var flowObj = switchFlows[j];
-                            var flowId = flowObj.cookie;
-                            if(flowId < 0) {
-                                flowId += Math.pow(2,63);
+                            var flowId = parseInt(flowObj.cookie, 10);
+                            if (flowId < 0) {
+                                flowId += Math.pow(2, 63);
                             }
                             if (flowByCookie[flowId] === undefined) {
                                 flowByCookie[flowId] = new nvm.Flow(flowId);
                             }
                             flowByCookie[flowId].entries.push(flows.map(flowObj, deviceId));
 
-                            var device = _.find(devices, function (lclDevice) { return lclDevice.id === deviceId; });
+                            var device = _.find(devices, function (lclDevice) {
+                                return lclDevice.id === deviceId;
+                            });
                             if (device) {
                                 device.activeFlows.push(flowId);
                             }
@@ -288,7 +290,7 @@
                 var protocols = [];
                 var services = [];
 
-                for (var k = 0; k < flow.entries.length; k++){
+                for (var k = 0; k < flow.entries.length; k++) {
                     var entry = flow.entries[k];
                     sources.push(entry.nw.src);
                     destinations.push(entry.nw.dst);
@@ -296,10 +298,10 @@
                     services.push(entry.tp.src);
                     services.push(entry.tp.dst);
 
-                    for(var q = 0; q < entry.actions.length; q++) {
+                    for (var q = 0; q < entry.actions.length; q++) {
                         var action = entry.actions[q];
-                        if(action.type = "OUTPUT") {
-                            var link = _.find(links, function(d) {
+                        if (action.type = "OUTPUT") {
+                            var link = _.find(links, function (d) {
                                 return (d.srcHost.id === entry.deviceId && d.srcPort === action.port) || (d.dstHost.id === entry.deviceId && d.dstPort === action.port);
                             });
                             flow.links.push({
@@ -318,22 +320,19 @@
                 }
 
                 var src = _.unique(sources);
-                if(src.length == 1) {
-                    flow.source = src[0];
-                }
-
                 var dst = _.unique(destinations);
-                if(dst.length == 1) {
+                if (src.length == 1 && dst.length == 1 || (src.length == 2 && dst.length == 2 &&_.difference(src, dst).length == 0)) {
+                    flow.source = src[0];
                     flow.destination = dst[0];
                 }
 
                 var protocol = _.unique(protocols);
-                if(protocol.length == 1) {
+                if (protocol.length == 1) {
                     flow.protocol = protocol[0];
 
-                    if(flow.protocol == 6 || flow.protocol == 17) {
+                    if (flow.protocol == 6 || flow.protocol == 17) {
                         var service = _.unique(services);
-                        if(service.length == 1) {
+                        if (service.length == 1) {
                             flow.service = service[0];
                         } else if (service.length == 2) {
                             flow.service = Math.min(service[0], service[1]);
