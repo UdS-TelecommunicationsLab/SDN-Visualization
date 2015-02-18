@@ -67,6 +67,7 @@
 
     // http://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml
     exports.networkProtocols = {
+        0: "ARP",
         1: "ICMP",
         2: "IGMP",
         6: "TCP",

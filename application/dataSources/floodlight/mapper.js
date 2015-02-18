@@ -160,8 +160,12 @@
                         return;
                     }
 
-                    var srcHost = _.find(devices, function(d) { return d.id === src; });
-                    var dstHost = _.find(devices, function(d) { return d.id === dst; });
+                    var srcHost = _.find(devices, function (d) {
+                        return d.id === src;
+                    });
+                    var dstHost = _.find(devices, function (d) {
+                        return d.id === dst;
+                    });
 
                     if (srcHost && dstHost) {
                         var link = new nvm.Link(srcHost, lnk["src-port"], dstHost, lnk["dst-port"], "OpenFlow");
@@ -234,7 +238,7 @@
             if(obj.match.arp_opcode) {
                 flowEntry.nw.src = obj.match.arp_spa;
                 flowEntry.nw.dst = obj.match.arp_tpa;
-                flowEntry.nw.protocol = 1;
+                flowEntry.nw.protocol = 0;
             } else {
                 flowEntry.nw.src = obj.match.ipv4_src;
                 flowEntry.nw.dst = obj.match.ipv4_dst;
