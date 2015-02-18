@@ -290,6 +290,7 @@
                 var protocols = [];
                 var services = [];
 
+                var sinks = [];
                 for (var k = 0; k < flow.entries.length; k++) {
                     var entry = flow.entries[k];
                     sources.push(entry.nw.src);
@@ -298,16 +299,28 @@
                     services.push(entry.tp.src);
                     services.push(entry.tp.dst);
 
-                    for (var q = 0; q < entry.actions.length; q++) {
-                        var action = entry.actions[q];
-                        if (action.type = "OUTPUT") {
+                    for (var action in entry.actions) {
+                        var port = parseInt(entry.actions[action], 10);
+                        if (action == "output") {
                             var link = _.find(links, function (d) {
-                                return (d.srcHost.id === entry.deviceId && d.srcPort === action.port) || (d.dstHost.id === entry.deviceId && d.dstPort === action.port);
+                                return (d.srcHost.id === entry.deviceId && d.srcPort === port) || (d.dstHost.id === entry.deviceId && d.dstPort === port);
                             });
-                            flow.links.push({
-                                link: link,
-                                direction: "forward"
-                            });
+                            if(link) {
+                                flow.links.push({
+                                    link: link,
+                                    direction: "forward"
+                                });
+                                if (link.srcHost.type === nvm.Client.type) {
+                                    var fe = new nvm.FlowEntry();
+                                    fe.deviceId = link.srcHost.id;
+                                    sinks.push(fe);
+                                }
+                                if (link.dstHost.type === nvm.Client.type) {
+                                    var fe = new FlowEntry();
+                                    fe.deviceId = link.dstHost.id;
+                                    sinks.push(fe);
+                                }
+                            }
                         } else {
                             // TODO: handle other actions
                             console.log(action);
@@ -317,6 +330,7 @@
                     if (entry.actions.length == 0) {
                         // TODO: handle implicit drop action
                     }
+                    flow.sinks = sinks;
                 }
 
                 var src = _.unique(sources);
@@ -339,6 +353,9 @@
                         }
                     }
                 }
+
+                flow.entries = _.union(flow.entries, flow.sinks);
+                delete flow.sinks;
 
                 result.push(flow);
             }

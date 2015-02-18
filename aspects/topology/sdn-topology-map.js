@@ -66,8 +66,8 @@
                     $scope.showInactive = !$scope.showInactive;
                 };
 
-                $scope.resetModel = function() {
-                    websockets.publish("/nvm/reset", null, function() {
+                $scope.resetModel = function () {
+                    websockets.publish("/nvm/reset", null, function () {
                         toastr.success("Successfully reset NVM.");
                     });
                 };
@@ -168,12 +168,15 @@
                     } else {
                         collection = topology.defaultShapeStyle(collection);
                     }
-                    collection = collection.filter(function (d) {
+                    collection.filter(function (d) {
                         return d.highlight;
                     }).style({
                         "stroke": defaults.colors.highlight,
                         "fill": defaults.colors.highlight
                     });
+                    collection.filter(function (d) {
+                        return d.blur === true;
+                    }).style("opacity", defaults.blurOpacity);
                     return collection;
                 };
 
@@ -184,17 +187,18 @@
                     } else {
                         collection = topology.defaultLinkStyle(collection, linkStrengthMax);
                     }
-                    collection = collection.filter(function (d) {
+                    collection.filter(function (d) {
                         return d.highlight;
                     }).style({
                         "stroke": defaults.colors.highlight,
-                        "marker-end": function(d) {
+                        "marker-end": function (d) {
                             // TODO: evaluate direction
                             return "url(#arrow)";
                         }
                     });
-
-
+                    collection.filter(function (d) {
+                        return d.blur === true;
+                    }).style("opacity", defaults.blurOpacity);
 
                     return collection;
                 };
@@ -336,7 +340,7 @@
                     }
 
                     if (change[objectDiff.token.changed] && change[objectDiff.token.value].flows && change[objectDiff.token.value].flows[objectDiff.token.changed]) {
-                        blurAll();
+                        resetAll();
                     }
 
                     setMaxStrength($scope.data.nvm && $scope.data.nvm._internals.drMax);
@@ -394,7 +398,7 @@
                     });
                     messenger.subscribe({
                         topic: "/topology/device/blur",
-                        callback: blurAll
+                        callback: resetAll
                     });
                     messenger.subscribe({
                         topic: "/topology/link/highlight",
@@ -402,7 +406,7 @@
                     });
                     messenger.subscribe({
                         topic: "/topology/link/blur",
-                        callback: blurAll
+                        callback: resetAll
                     });
                     messenger.subscribe({
                         topic: "/topology/flow/highlight",
@@ -410,7 +414,7 @@
                     });
                     messenger.subscribe({
                         topic: "/topology/flow/blur",
-                        callback: blurAll
+                        callback: resetAll
                     })
                 };
 
@@ -469,22 +473,37 @@
 
                 var highlightFlow = function (event, flow) {
                     linkCollection.forEach(function (d) {
-                        var lnk = _.find(flow.links, function(dd) { return d.link.id == dd.link.id; });
+                        var lnk = _.find(flow.links, function (dd) {
+                            return d.link.id == dd.link.id;
+                        });
                         if (lnk) {
                             d.highlight = true;
                             d.direction = lnk.direction;
+                        } else {
+                            d.blur = true;
+                        }
+                    });
+                    nodeCollection.forEach(function (d) {
+                        var dvc = _.find(flow.entries, function (dd) {
+                            return d.device.id == dd.deviceId;
+                        });
+                        if (!dvc) {
+                            d.blur = true;
                         }
                     });
                     redrawLinks();
+                    redrawNodes();
                 };
 
-                var blurAll = function () {
+                var resetAll = function () {
                     nodeCollection.forEach(function (d) {
                         d.highlight = false;
+                        d.blur = false;
                     });
                     linkCollection.forEach(function (d) {
                         d.highlight = false;
                         d.direction = "";
+                        d.blur = false;
                     });
                     redrawNodes();
                     redrawLinks();
