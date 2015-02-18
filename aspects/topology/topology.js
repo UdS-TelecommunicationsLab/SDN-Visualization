@@ -35,6 +35,7 @@
             animationDuration: 1000,
             iconSize: 10,
             inactiveOpacity: 0.25,
+            blurOpacity: 0.125,
             colors: {
                 highlight: "#ffb800",
                 openFlowLink: "#006fa2",

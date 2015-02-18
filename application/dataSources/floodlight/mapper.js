@@ -25,7 +25,7 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function() {
+(function () {
     "use strict";
     var _ = require("lodash"),
         common = require("../common"),
@@ -36,7 +36,7 @@
 
     // Mapping Controller
     var controller = {
-        map: function(obj) {
+        map: function (obj) {
             var configuration = config.getConfiguration();
 
             var ctrl = new nvm.Controller("Floodlight");
@@ -54,7 +54,7 @@
 
     // Mapping Clients
     var clients = {
-        map: function(d) {
+        map: function (d) {
             var id = "00:00:" + d.mac[0];
             var device = common.getDeviceEntry(id);
             var node = device.node;
@@ -69,7 +69,7 @@
             client.internetAddresses = d.ipv4;
             return client;
         },
-        mapAll: function(rawData, sw) {
+        mapAll: function (rawData, sw) {
             var lclClients = [];
             var lclLinks = [];
 
@@ -85,20 +85,20 @@
                     if (dst) {
                         var client = clients.map(rawClient);
                         lclClients.push(client);
-                        lclLinks.push(new nvm.Link(client, 0, dst, rawClient.attachmentPoint[0].port, "Ethernet"));
+                        lclLinks.push(new nvm.Link(client, 1, dst, rawClient.attachmentPoint[0].port, "Ethernet"));
                     }
                 });
 
             }
 
-            return { clients: lclClients, links: lclLinks };
+            return {clients: lclClients, links: lclLinks};
         }
     };
     exports.clients = clients;
 
     // Mapping Switches
     var switches = {
-        map: function(obj) {
+        map: function (obj) {
             var device = common.getDeviceEntry(obj.switchDPID);
             var node = device.node;
             var url = (node && node.url) || "";
@@ -120,7 +120,7 @@
 
             return sw;
         },
-        mapAll: function(obj) {
+        mapAll: function (obj) {
             var res = [];
 
             if (obj) {
@@ -136,13 +136,13 @@
 
     // Mapping Links
     var links = {
-        mapAll: function(obj, devices) {
+        mapAll: function (obj, devices) {
             var res = [];
 
             var alreadyConnected = {};
 
             if (obj && Array.isArray(obj)) {
-                obj.forEach(function(lnk) {
+                obj.forEach(function (lnk) {
                     var src = lnk["src-switch"];
                     var dst = lnk["dst-switch"];
 
@@ -160,8 +160,12 @@
                         return;
                     }
 
-                    var srcHost = _.find(devices, function(d) { return d.id === src; });
-                    var dstHost = _.find(devices, function(d) { return d.id === dst; });
+                    var srcHost = _.find(devices, function (d) {
+                        return d.id === src;
+                    });
+                    var dstHost = _.find(devices, function (d) {
+                        return d.id === dst;
+                    });
 
                     if (srcHost && dstHost) {
                         var link = new nvm.Link(srcHost, lnk["src-port"], dstHost, lnk["dst-port"], "OpenFlow");
@@ -178,7 +182,7 @@
     exports.links = links;
 
     var ports = {
-        map: function(obj, existingPort) {
+        map: function (obj, existingPort) {
             var port = (existingPort !== undefined) ? existingPort : new nvm.Port(obj.portNumber);
 
             port.hardwareAddress = obj.hardwareAddress;
@@ -209,9 +213,9 @@
             port.collisions = obj.collisions;
             return port;
         },
-        mapAll: function(obj, device) {
+        mapAll: function (obj, device) {
             var allPorts = {};
-            for(var i = 0; i < obj.length; i++) {
+            for (var i = 0; i < obj.length; i++) {
                 var p = obj[i];
                 allPorts[p.portNumber] = ports.map(p, device.ports[p.portNumber]);
             }
@@ -222,50 +226,55 @@
 
     // Mapping Flows
     var flows = {
-        map: function(obj) {
-            var flow = new nvm.Flow();
-
-            flow.dl.src = "00:00:" + obj.match.eth_src;
-            flow.dl.dst = "00:00:" + obj.match.eth_dst;
-            flow.dl.type = parseInt(obj.match.eth_type);
-            flow.dl.vlan = parseInt(obj.match.eth_vlan_vid, 10);
+        map: function (obj, deviceId) {
+            var flowEntry = new nvm.FlowEntry();
+            flowEntry.deviceId = deviceId;
+            flowEntry.dl.src = "00:00:" + obj.match.eth_src;
+            flowEntry.dl.dst = "00:00:" + obj.match.eth_dst;
+            flowEntry.dl.type = parseInt(obj.match.eth_type);
+            flowEntry.dl.vlan = parseInt(obj.match.eth_vlan_vid, 10);
             // TODO: flow.dl.vlanPriority = parseInt(obj.match.dataLayerVirtualLanPriorityCodePoint, 10);
 
-            flow.nw.src = obj.match.ipv4_src || obj.match.arp_spa;
-            flow.nw.dst = obj.match.ipv4_dst || obj.match.arp_tpa;
-            flow.nw.protocol = parseInt(obj.match.ip_proto || ((obj.match.arp_opcode) ? 1 : 0), 10);
-            // TODO: flow.nw.typeOfService = parseInt(obj.match.networkTypeOfService, 10);
+            if (obj.match.arp_opcode) {
+                flowEntry.nw.src = obj.match.arp_spa;
+                flowEntry.nw.dst = obj.match.arp_tpa;
+                flowEntry.nw.protocol = 0;
+            } else {
+                flowEntry.nw.src = obj.match.ipv4_src;
+                flowEntry.nw.dst = obj.match.ipv4_dst;
+                flowEntry.nw.protocol = parseInt(obj.match.ip_proto, 10);
+            }
+            flowEntry.nw.typeOfService = parseInt(obj.match.ip_dscp, 10);
 
-            flow.tp.src = parseInt(obj.match.tcp_src || obj.match.udp_src || 0, 10);
-            flow.tp.dst = parseInt(obj.match.tcp_dst || obj.match.udp_src || 0, 10);
+            flowEntry.tp.src = parseInt(obj.match.tcp_src || obj.match.udp_src || 0, 10);
+            flowEntry.tp.dst = parseInt(obj.match.tcp_dst || obj.match.udp_src || 0, 10);
 
-            flow.path.push(flow.dl.src);
-            flow.path.push(flow.dl.dst);
+            flowEntry.actions = _.cloneDeep(obj.actions);
 
-            flow.id = crypt.flowId(flow);
-
-            flow.actions = obj.actions;
-
-            return flow;
+            return flowEntry;
         },
-        mapAll: function(obj, devices) {
-            var res = {};
-            if (obj) {
-                for (var deviceId in obj) {
-                    var device = _.find(devices, function (lclDevice) { return lclDevice.id === deviceId; });
-
-                    var flowList = obj[deviceId].flows;
-                    if(flowList != null) {
-                        for (var j = 0; j < flowList.length; j++) {
-                            var flow = flows.map(flowList[j]);
-                            var flowId = flow.id;
-                            if (res[flowId] === undefined) {
-                                res[flowId] = flow;
+        mapAll: function (rawObject, devices, links) {
+            var flowByCookie = {};
+            if (rawObject) {
+                for (var deviceId in rawObject) {
+                    var switchFlows = rawObject[deviceId].flows;
+                    if (switchFlows != null) {
+                        for (var j = 0; j < switchFlows.length; j++) {
+                            var flowObj = switchFlows[j];
+                            var flowId = parseInt(flowObj.cookie, 10);
+                            if (flowId < 0) {
+                                flowId += Math.pow(2, 63);
                             }
+                            if (flowByCookie[flowId] === undefined) {
+                                flowByCookie[flowId] = new nvm.Flow(flowId);
+                            }
+                            flowByCookie[flowId].entries.push(flows.map(flowObj, deviceId));
 
+                            var device = _.find(devices, function (lclDevice) {
+                                return lclDevice.id === deviceId;
+                            });
                             if (device) {
                                 device.activeFlows.push(flowId);
-                                res[flowId].path.push(device.id);
                             }
                         }
                     }
@@ -273,8 +282,84 @@
             }
 
             var result = [];
-            for (var i in res) {
-                result.push(res[i]);
+            for (var m in flowByCookie) {
+                var flow = flowByCookie[m];
+
+                var sources = [];
+                var destinations = [];
+                var protocols = [];
+                var services = [];
+
+                var endpoints = [];
+                for (var k = 0; k < flow.entries.length; k++) {
+                    var entry = flow.entries[k];
+                    sources.push(entry.nw.src);
+                    destinations.push(entry.nw.dst);
+                    protocols.push(entry.nw.protocol);
+                    services.push(entry.tp.src);
+                    services.push(entry.tp.dst);
+
+                    for (var action in entry.actions) {
+                        var port = parseInt(entry.actions[action], 10);
+                        if (action == "output") {
+                            var link = _.find(links, function (d) {
+                                return (d.srcHost.id === entry.deviceId && d.srcPort === port) || (d.dstHost.id === entry.deviceId && d.dstPort === port);
+                            });
+                            if(link) {
+                                flow.links.push({
+                                    linkId: link.id,
+                                    direction: "forward"
+                                });
+                                if (link.srcHost.type === nvm.Client.type) {
+                                    var fe = new nvm.FlowEntry();
+                                    fe.deviceId = link.srcHost.id;
+                                    fe.actions = { endpoint: true };
+                                    endpoints.push(fe);
+                                }
+                                if (link.dstHost.type === nvm.Client.type) {
+                                    var fe = new FlowEntry();
+                                    fe.deviceId = link.dstHost.id;
+                                    fe.actions = { endpoint: true };
+                                    endpoints.push(fe);
+                                }
+                            }
+                        } else {
+                            // TODO: handle other actions
+                            console.log(action);
+                        }
+                    }
+
+                    if (entry.actions.length == 0) {
+                        // TODO: handle implicit drop action
+                    }
+                    flow.endpoints = endpoints;
+                }
+
+                var src = _.unique(sources);
+                var dst = _.unique(destinations);
+                if (src.length == 1 && dst.length == 1 || (src.length == 2 && dst.length == 2 &&_.difference(src, dst).length == 0)) {
+                    flow.source = src[0];
+                    flow.destination = dst[0];
+                }
+
+                var protocol = _.unique(protocols);
+                if (protocol.length == 1) {
+                    flow.protocol = protocol[0];
+
+                    if (flow.protocol == 6 || flow.protocol == 17) {
+                        var service = _.unique(services);
+                        if (service.length == 1) {
+                            flow.service = service[0];
+                        } else if (service.length == 2) {
+                            flow.service = Math.min(service[0], service[1]);
+                        }
+                    }
+                }
+
+                flow.entries = _.union(flow.entries, flow.endpoints);
+                delete flow.endpoints;
+
+                result.push(flow);
             }
 
             return result;

@@ -57,6 +57,7 @@
                     $scope.showInactive = !($scope.showInactive != true && $scope.showInactive != "true");
                     restart();
                 });
+
                 $scope.$watch("visibilityButton", function () {
                     $scope.visibilityButton = !($scope.visibilityButton != true && $scope.visibilityButton != "true");
                 });
@@ -65,8 +66,8 @@
                     $scope.showInactive = !$scope.showInactive;
                 };
 
-                $scope.resetModel = function() {
-                    websockets.publish("/nvm/reset", null, function() {
+                $scope.resetModel = function () {
+                    websockets.publish("/nvm/reset", null, function () {
                         toastr.success("Successfully reset NVM.");
                     });
                 };
@@ -109,9 +110,10 @@
                         return "translate(" + topology.boundingBox(d.x, w) + "," + topology.boundingBox(d.y, h) + ")";
                     });
 
-                    linkSelection.attr("x1", function (d) {
-                        return topology.boundingBox(d.source.x, w);
-                    })
+                    linkSelection
+                        .attr("x1", function (d) {
+                            return topology.boundingBox(d.source.x, w);
+                        })
                         .attr("y1", function (d) {
                             return topology.boundingBox(d.source.y, h);
                         })
@@ -166,12 +168,15 @@
                     } else {
                         collection = topology.defaultShapeStyle(collection);
                     }
-                    collection = collection.filter(function (d) {
+                    collection.filter(function (d) {
                         return d.highlight;
                     }).style({
                         "stroke": defaults.colors.highlight,
                         "fill": defaults.colors.highlight
                     });
+                    collection.filter(function (d) {
+                        return d.blur === true;
+                    }).style("opacity", defaults.blurOpacity);
                     return collection;
                 };
 
@@ -182,9 +187,14 @@
                     } else {
                         collection = topology.defaultLinkStyle(collection, linkStrengthMax);
                     }
-                    collection = collection.filter(function (d) {
+                    collection.filter(function (d) {
                         return d.highlight;
-                    }).style("stroke", defaults.colors.highlight);
+                    }).style({
+                        "stroke": defaults.colors.highlight});
+                    collection.filter(function (d) {
+                        return d.blur === true;
+                    }).style("opacity", defaults.blurOpacity);
+
                     return collection;
                 };
 
@@ -325,7 +335,7 @@
                     }
 
                     if (change[objectDiff.token.changed] && change[objectDiff.token.value].flows && change[objectDiff.token.value].flows[objectDiff.token.changed]) {
-                        blurAll();
+                        resetAll();
                     }
 
                     setMaxStrength($scope.data.nvm && $scope.data.nvm._internals.drMax);
@@ -383,7 +393,7 @@
                     });
                     messenger.subscribe({
                         topic: "/topology/device/blur",
-                        callback: blurAll
+                        callback: resetAll
                     });
                     messenger.subscribe({
                         topic: "/topology/link/highlight",
@@ -391,7 +401,7 @@
                     });
                     messenger.subscribe({
                         topic: "/topology/link/blur",
-                        callback: blurAll
+                        callback: resetAll
                     });
                     messenger.subscribe({
                         topic: "/topology/flow/highlight",
@@ -399,7 +409,7 @@
                     });
                     messenger.subscribe({
                         topic: "/topology/flow/blur",
-                        callback: blurAll
+                        callback: resetAll
                     })
                 };
 
@@ -458,19 +468,37 @@
 
                 var highlightFlow = function (event, flow) {
                     linkCollection.forEach(function (d) {
-                        if (_.contains(flow.path, d.source.id) && _.contains(flow.path, d.target.id)) {
+                        var lnk = _.find(flow.links, function (dd) {
+                            return d.link.id == dd.linkId;
+                        });
+                        if (lnk) {
                             d.highlight = true;
+                            d.direction = lnk.direction;
+                        } else {
+                            d.blur = true;
+                        }
+                    });
+                    nodeCollection.forEach(function (d) {
+                        var dvc = _.find(flow.entries, function (dd) {
+                            return d.device.id == dd.deviceId;
+                        });
+                        if (!dvc) {
+                            d.blur = true;
                         }
                     });
                     redrawLinks();
+                    redrawNodes();
                 };
 
-                var blurAll = function () {
+                var resetAll = function () {
                     nodeCollection.forEach(function (d) {
                         d.highlight = false;
+                        d.blur = false;
                     });
                     linkCollection.forEach(function (d) {
                         d.highlight = false;
+                        d.direction = "";
+                        d.blur = false;
                     });
                     redrawNodes();
                     redrawLinks();
@@ -492,7 +520,7 @@
                         }
                     }
 
-                    force.charge(defaults.nodeSize * -100 + 400)
+                    force.charge(defaults.nodeSize * -80 + 400);
 
                     mapNode = angular.element($scope.element).find(".map");
                     mapInner = angular.element($scope.element).find(".mapInner");

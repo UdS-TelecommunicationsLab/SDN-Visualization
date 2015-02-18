@@ -138,7 +138,6 @@
         }
 
         getResource(client.commands.get.hosts, processHosts);
-        getResource(client.commands.get.flows, processFlows);
         getResource(client.commands.get.links, processLinks);
         getResource(client.commands.get.ports, processPorts);
         getResource(client.commands.get.desc, processDesc);
@@ -242,6 +241,7 @@
             model.addLinks(mapper.links.mapAll(data, model.devices));
         }
 
+        getResource(client.commands.get.flows, processFlows);
         getResource(client.commands.get.delay, processDelay);
         getResource(client.commands.get.packetLoss, processPacketLoss);
         getResource(client.commands.get.dataRate, processDataRate);
@@ -286,7 +286,7 @@
         if (data == null) {
             console.error("processFlows called without data");
         } else {
-            model.flows = mapper.flows.mapAll(data, model.devices);
+            model.flows = mapper.flows.mapAll(data, model.devices, model.links);
         }
 
         callback();

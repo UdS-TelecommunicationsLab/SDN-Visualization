@@ -67,10 +67,23 @@
 
     // http://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml
     exports.networkProtocols = {
+        0: "ARP",
         1: "ICMP",
         2: "IGMP",
         6: "TCP",
-        17: "UDP",
+        17: "UDP"
+    };
+
+    exports.serviceNames = {
+        6: {
+            22: "SSH",
+            23: "Telnet",
+            80: "HTTP",
+            443: "HTTPS",
+        },
+        17: {
+
+        }
     };
 
 })((typeof process === 'undefined' || !process.versions) ? window.sdn = window.sdn || {} : exports);

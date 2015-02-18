@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2013 - 2015 Saarland University
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,11 +27,12 @@
 
 (function(sdnViz) {
     "use strict";
-    sdnViz.controller("DetailFlowCtrl", function(DetailView, $scope, $routeParams, repository) {
-        DetailView.init($scope, $routeParams.id, repository.getFlowById);
-
-        $scope.min = Math.min;
-
-        $scope.load();
+    sdnViz.filter("serviceName", function() {
+        return function(input, protocol) {
+            if (protocol !== 6 && protocol !== 17) {
+                return input;
+            }
+            return sdn.serviceNames[protocol][input] || input;
+        };
     });
 })(window.sdnViz);

@@ -27,11 +27,14 @@
 
 (function(sdnViz) {
     "use strict";
-    sdnViz.controller("DetailFlowCtrl", function(DetailView, $scope, $routeParams, repository) {
-        DetailView.init($scope, $routeParams.id, repository.getFlowById);
-
-        $scope.min = Math.min;
-
-        $scope.load();
+    sdnViz.directive("sdnFlowLabel", function() {
+        return {
+            restrict: "E",
+            replace: true,
+            templateUrl: "/templates/controls/sdn-flow-label",
+            scope: {
+                flow: "="
+            }
+        };
     });
 })(window.sdnViz);
