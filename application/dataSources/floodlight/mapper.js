@@ -317,7 +317,7 @@
                                     endpoints.push(fe);
                                 }
                                 if (link.dstHost.type === nvm.Client.type) {
-                                    var fe = new FlowEntry();
+                                    var fe = new nvm.FlowEntry();
                                     fe.deviceId = link.dstHost.id;
                                     fe.actions = { endpoint: true };
                                     endpoints.push(fe);
