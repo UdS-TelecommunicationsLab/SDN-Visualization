@@ -108,7 +108,12 @@
         // Tooltips
         var createNodeTooltip = function (obj, tooltip) {
             var html = "<div><strong>" + ((obj.id !== obj.device.name) ? obj.device.name : "Unknown Device") + "</strong> ";
-            html += "<span>(" + obj.device.internetAddresses + ")</span>";
+            if (obj.device.internetAddresses.length > 0) {
+                html += "<span>(" + obj.device.internetAddresses + ")</span>";
+            }
+            if(obj.device.controllerAddress) {
+                html += "<br/><small>Controller: " + obj.device.controllerAddress + "</small>";
+            }
             html += "<br /><code class='dp'>" + obj.id + "</code></div>";
             tooltip.html(html);
         };
@@ -187,7 +192,7 @@
         };
 
         var calculateNodeChangeSet = function (change, nodeCollection) {
-            var nodeChangeSet = {add: [], remove: [], changed: false };
+            var nodeChangeSet = {add: [], remove: [], changed: false};
             var localDevices = (change[objectDiff.token.value].devices && change[objectDiff.token.value].devices[objectDiff.token.value]) || [];
             for (var deviceIndex in localDevices) {
                 var nodeChange = localDevices[deviceIndex];

@@ -226,10 +226,10 @@ var __extends = this.__extends || function (d, b) {
             this.deviceType = deviceType || "Node";
             this.connectedSince = new Date(connectedSince);
             this.description = {};
-            this.internetAddresses = [inetAddress];
             this.capabilities = [];
             this.actions = [];
             this.attributes = [];
+            this.controllerAddress = inetAddress || "UNK";
         };
         __extends(lclSwitch, base);
         return lclSwitch;
