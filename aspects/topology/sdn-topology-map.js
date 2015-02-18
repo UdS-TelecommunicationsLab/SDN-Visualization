@@ -190,12 +190,7 @@
                     collection.filter(function (d) {
                         return d.highlight;
                     }).style({
-                        "stroke": defaults.colors.highlight,
-                        "marker-end": function (d) {
-                            // TODO: evaluate direction
-                            return "url(#arrow)";
-                        }
-                    });
+                        "stroke": defaults.colors.highlight});
                     collection.filter(function (d) {
                         return d.blur === true;
                     }).style("opacity", defaults.blurOpacity);
@@ -530,8 +525,6 @@
                     mapNode = angular.element($scope.element).find(".map");
                     mapInner = angular.element($scope.element).find(".mapInner");
                     svg = d3.select(mapInner.get(0)).append("svg");
-                    svg.append("defs")
-                        .html('<marker id="arrow" viewBox="0 -5 10 10" refX="15" refY="-1.5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,-5L10,0L0,5"></path></marker>');
 
                     tooltip = d3.select(mapNode.get(0)).append("div").attr("class", "topology-tooltip").style("opacity", 0);
 
