@@ -474,7 +474,7 @@
                 var highlightFlow = function (event, flow) {
                     linkCollection.forEach(function (d) {
                         var lnk = _.find(flow.links, function (dd) {
-                            return d.link.id == dd.link.id;
+                            return d.link.id == dd.linkId;
                         });
                         if (lnk) {
                             d.highlight = true;

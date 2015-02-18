@@ -290,7 +290,7 @@
                 var protocols = [];
                 var services = [];
 
-                var sinks = [];
+                var endpoints = [];
                 for (var k = 0; k < flow.entries.length; k++) {
                     var entry = flow.entries[k];
                     sources.push(entry.nw.src);
@@ -307,18 +307,20 @@
                             });
                             if(link) {
                                 flow.links.push({
-                                    link: link,
+                                    linkId: link.id,
                                     direction: "forward"
                                 });
                                 if (link.srcHost.type === nvm.Client.type) {
                                     var fe = new nvm.FlowEntry();
                                     fe.deviceId = link.srcHost.id;
-                                    sinks.push(fe);
+                                    fe.actions = { endpoint: true };
+                                    endpoints.push(fe);
                                 }
                                 if (link.dstHost.type === nvm.Client.type) {
                                     var fe = new FlowEntry();
                                     fe.deviceId = link.dstHost.id;
-                                    sinks.push(fe);
+                                    fe.actions = { endpoint: true };
+                                    endpoints.push(fe);
                                 }
                             }
                         } else {
@@ -330,7 +332,7 @@
                     if (entry.actions.length == 0) {
                         // TODO: handle implicit drop action
                     }
-                    flow.sinks = sinks;
+                    flow.endpoints = endpoints;
                 }
 
                 var src = _.unique(sources);
@@ -354,8 +356,8 @@
                     }
                 }
 
-                flow.entries = _.union(flow.entries, flow.sinks);
-                delete flow.sinks;
+                flow.entries = _.union(flow.entries, flow.endpoints);
+                delete flow.endpoints;
 
                 result.push(flow);
             }
