@@ -28,13 +28,8 @@
 (function(sdnViz) {
     "use strict";
     sdnViz.controller("StatisticsCtrl", function($scope, repository) {
-        $scope.deviceFilter = "";
         $scope.isClientVisible = true;
         $scope.isNodeVisible = true;
-
-        $scope.clearFilter = function() {
-            $scope.deviceFilter = "";
-        };
 
         $scope.data = repository.data;
     });

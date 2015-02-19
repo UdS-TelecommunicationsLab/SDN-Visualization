@@ -27,7 +27,15 @@
 
 (function(sdnViz) {
     "use strict";
-    sdnViz.controller("NavCtrl", function($scope, $window) {
+    sdnViz.controller("NavCtrl", function($scope, $window, $rootScope, repository) {
+        $rootScope.deviceFilter = "";
+
+        $scope.data = repository.data;
+
+        $rootScope.clearDeviceFilter = function() {
+            $rootScope.deviceFilter = "";
+        };
+
         $scope.logout = function() {
             $window.location = "/logout";
         };

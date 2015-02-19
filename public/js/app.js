@@ -35,8 +35,20 @@ sdnViz.config(function($routeProvider, $locationProvider) {
             templateUrl: "templates/pages/topology",
             controller: "TopologyCtrl"
         }).
-        when("/statistics", {
-            templateUrl: "templates/pages/statistics",
+        when("/statistics/overview", {
+            templateUrl: "templates/statistics/overview",
+            controller: "StatisticsCtrl"
+        }).
+        when("/statistics/devices", {
+            templateUrl: "templates/statistics/devices",
+            controller: "StatisticsCtrl"
+        }).
+        when("/statistics/links", {
+            templateUrl: "templates/statistics/links",
+            controller: "StatisticsCtrl"
+        }).
+        when("/statistics/flows", {
+            templateUrl: "templates/statistics/flows",
             controller: "StatisticsCtrl"
         }).
         when("/documentation", {

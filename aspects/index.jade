@@ -5,9 +5,29 @@ block nav
         li
             a(href="/topology", tooltip="Topology", tooltip-placement="bottom")
                 i.fa.fa-globe
-        li
-            a(href="/statistics", tooltip="Statistics", tooltip-placement="bottom")
+        li.dropdown
+            a.dropdown-toggle(href="", data-toggle="dropdown", role="button", aria-expanded="false", tooltip="Statistics", tooltip-placement="bottom")
                 i.fa.fa-signal
+                | &nbsp;
+                span.caret
+            ul.dropdown-menu
+                li
+                    a(href="/statistics/overview")
+                        i.fa.fa-fw.fa-tachometer
+                        | &nbsp;Overview
+
+                li
+                    a(href="/statistics/devices")
+                        i.fa.fa-fw.fa-hdd-o
+                        | &nbsp;Devices ({{ data.nvm.devices.length }})
+                li
+                    a(href="/statistics/links")
+                        i.fa.fa-fw.fa-link
+                        | &nbsp;Links ({{ data.nvm.links.length }})
+                li
+                    a(href="/statistics/flows")
+                        i.fa.fa-fw.fa-random
+                        | &nbsp;Flows ({{ data.nvm.flows.length }})
         li
             a(href="/configuration", tooltip="Configuration", tooltip-placement="bottom")
                 i.fa.fa-cog
@@ -20,7 +40,17 @@ block nav
         li
             a(ng-click="logout()", tooltip="Logout", tooltip-placement="bottom")
                 i.fa.fa-sign-out
-    ul(class="nav navbar-nav",style="margin-right: 100px;").pull-right
+
+    form.navbar-form.navbar-left(role="search")
+        div.form-group
+            div.div.btn-group
+                div.input-group(style="width:350px")
+                    input.form-control(type="text", ng-model="deviceFilter", placeholder="filter name, mac or datapath")
+                    span.input-group-btn
+                        button.btn.btn-default(type="button",ng-click="clearDeviceFilter()",ng-disabled="deviceFilter == ''")
+                            i.fa.fa-times
+
+    ul(class="nav navbar-nav",style="margin-left: 20px;")
         li(ng-cloak, ng-class="{ ok: totalStatus, error: !totalStatus}")
             a(href="/status", ng-show="totalStatus", tooltip="Everything is fine.", tooltip-placement="bottom")
                 i.fa.fa-check-square
