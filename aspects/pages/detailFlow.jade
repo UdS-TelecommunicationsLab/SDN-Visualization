@@ -9,38 +9,45 @@ block header
 block body
     p.sdn-flow
         strong Parameters:&nbsp;
-        code.dp S: {{ item.source }}
+        code.dp Source (S): {{ item.source }}
         | &nbsp;
-        code.dp D: {{ item.destination }}
+        code.dp Destination (D): {{ item.destination }}
         | &nbsp;
         span.label.label-success {{ item.protocol | networkProtocol }}
         | &nbsp;
-        span.label.label-default {{ item.service | serviceName:item.protocol }}
-        | &nbsp;
-        | {{ item.label }}
+        span.label.label-default(ng-show="item.protocol == 6 || item.protocol == 17") {{ item.service | serviceName:item.protocol }}
 
     div.table-responsive
         table.table.table-condensed.table-striped.table-bordered
             thead
                 tr
                     th(rowspan="3") Device
-                    th(rowspan="3") Actions
+                    th(rowspan="3") Operation
+                        sdn-help-tooltip(tooltip="e.g. from | to")
                     th(colspan="3") Layers
                 tr
                     th Data
                     th Network
                     th Transport
-            tbody
-                tr(ng-repeat="entry in item.entries")
+            tbody(ng-repeat="device in item.devices")
+                tr(ng-repeat="entry in device.entries")
+                    td(ng-show="$first", rowspan="{{ device.entries.length }}")
+                        a(href="{{ '/detail/device/' + device.item.id }}")
+                            sdn-device-type-icon(device="device.item")
+                            code.dp {{ device.item.name }}
                     td
-                        a(href="{{ '/detail/device/' + entry.deviceId }}")
-                            code.dp {{ entry.deviceId }}
-                    td
-                        div(ng-show="entry.actions.endpoint") Endpoint
+                        span(ng-show="entry.actions.endpoint")
+                            i.fa.fa-fw.fa-arrow-circle-o-down
+                            | &nbsp;Endpoint&nbsp;
                         div(ng-repeat="(key, action) in entry.actions", ng-hide="entry.actions.endpoint")
-                            div(ng-switch="key")
-                                div(ng-switch-when="output") Output ({{ action }})
-                                div(ng-switch-default) {{ key }} : {{ action }}
+                            span(ng-switch="key")
+                                span(ng-switch-when="output")
+                                    i.fa.fa-fw.fa-arrow-circle-o-right
+                                    | &nbsp;{{ entry.in_port }} | {{ action }}&nbsp;
+                                span(ng-switch-when="drop")
+                                    i.fa.fa-fw.fa-trash
+                                    | &nbsp;Drop
+                                span(ng-switch-default) {{ key }} : {{ action }}&nbsp;
 
                     td
                         div(ng-hide="entry.actions.endpoint")

@@ -32,6 +32,24 @@
 
         $scope.min = Math.min;
 
+        $scope.$watch("item.entries", function(d) {
+            var entries = {};
+
+            for(var i = 0; i < $scope.item.entries.length; i++) {
+                var entry = $scope.item.entries[i];
+                console.log(entry);
+                if(typeof(entries[entry.deviceId]) === "undefined") {
+                    entries[entry.deviceId] = {
+                        item: repository.getDeviceById(entry.deviceId).item,
+                        entries: []
+                    };
+                }
+                entries[entry.deviceId].entries.push(entry);
+            }
+
+            $scope.item.devices = _.map(entries, function(d) { return d; });
+        }, true);
+
         $scope.load();
     });
 })(window.sdnViz);

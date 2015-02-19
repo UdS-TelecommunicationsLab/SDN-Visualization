@@ -229,10 +229,11 @@
         map: function (obj, deviceId) {
             var flowEntry = new nvm.FlowEntry();
             flowEntry.deviceId = deviceId;
+            flowEntry.in_port = parseInt(obj.match.in_port, 10);
             flowEntry.dl.src = "00:00:" + obj.match.eth_src;
             flowEntry.dl.dst = "00:00:" + obj.match.eth_dst;
             flowEntry.dl.type = parseInt(obj.match.eth_type);
-            flowEntry.dl.vlan = parseInt(obj.match.eth_vlan_vid, 10);
+            flowEntry.dl.vlan = parseInt(obj.match.eth_vlan_vid, 10) || 0;
             // TODO: flow.dl.vlanPriority = parseInt(obj.match.dataLayerVirtualLanPriorityCodePoint, 10);
 
             if (obj.match.arp_opcode) {
@@ -311,16 +312,10 @@
                                     direction: "forward"
                                 });
                                 if (link.srcHost.type === nvm.Client.type) {
-                                    var fe = new nvm.FlowEntry();
-                                    fe.deviceId = link.srcHost.id;
-                                    fe.actions = { endpoint: true };
-                                    endpoints.push(fe);
+                                    endpoints.push(link.srcHost.id);
                                 }
                                 if (link.dstHost.type === nvm.Client.type) {
-                                    var fe = new nvm.FlowEntry();
-                                    fe.deviceId = link.dstHost.id;
-                                    fe.actions = { endpoint: true };
-                                    endpoints.push(fe);
+                                    endpoints.push(link.dstHost.id);
                                 }
                             }
                         } else {
@@ -330,9 +325,36 @@
                     }
 
                     if (entry.actions.length == 0) {
-                        // TODO: handle implicit drop action
+                        entry.actions["drop"] = true;
+                    } else {
+                        var sourceLinks = _.filter(links, function (d) {
+                            return (d.srcHost.id === entry.deviceId && d.srcPort === entry.in_port && d.dstHost.type === nvm.Client.type);
+                        });
+                        for (var i = 0; i < sourceLinks.length; i++) {
+                            flow.links.push({
+                                linkId: sourceLinks[i].id,
+                                direction: "forward" // TODO: properly set direction
+                            });
+                            endpoints.push(sourceLinks[i].dstHost.id);
+                        }
+
+                        var destinationLinks = _.filter(links, function (d) {
+                            return (d.dstHost.id === entry.deviceId && d.dstPort === entry.in_port && d.srcHost.type === nvm.Client.type);
+                        });
+                        for (var j = 0; j < destinationLinks.length; j++) {
+                            flow.links.push({
+                                linkId: destinationLinks[i].id,
+                                direction: "forward" // TODO: properly set direction
+                            });
+                            endpoints.push(destinationLinks[j].srcHost.id);
+                        }
                     }
-                    flow.endpoints = endpoints;
+
+                    flow.endpoints = _.unique(endpoints).map(function(d) {
+                        var fe = new nvm.FlowEntry();
+                        fe.deviceId = d;
+                        fe.actions = { endpoint: true }; return fe;
+                    });
                 }
 
                 var src = _.unique(sources);
@@ -356,7 +378,7 @@
                     }
                 }
 
-                flow.entries = _.union(flow.entries, flow.endpoints);
+                flow.entries = _.sortBy(_.union(flow.entries, flow.endpoints), function(d) { return d.deviceId});
                 delete flow.endpoints;
 
                 result.push(flow);

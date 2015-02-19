@@ -256,6 +256,8 @@ var __extends = this.__extends || function (d, b) {
      */
     exports.FlowEntry = function() {
         // Data Link Layer
+        this.in_port = 0;
+
         this.dl = {
             src: "00:00:00:00:00:00", // MAC address
             dst: "00:00:00:00:00:00", // MAC address
