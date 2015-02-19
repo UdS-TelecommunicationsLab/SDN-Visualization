@@ -1,45 +1,50 @@
 !!!
 html(ng-app="sdn-visualization",xlink="http://www.w3.org/1999/xlink")
-	head
-		meta(charset="utf8")
-		meta(name="viewport", content="width=device-width, initial-scale=1.0")
-		base(href="/")
-		title SDN Visualization
-		link(rel="stylesheet", href="/lib/bootstrap/dist/css/bootstrap.css")
-		link(rel="stylesheet", href="/lib/angular-bootstrap-colorpicker/css/colorpicker.css")
-		link(rel="stylesheet", href="/lib/toastr/toastr.min.css")
-		link(rel="stylesheet", href="/lib/fontawesome/css/font-awesome.min.css")
-		link(rel="stylesheet", href="/css/app.css")
-	body
-		a(class="sr-only",href="#content")
-			Skip navigation
-		header#sdn-nav.navbar.navbar-inverse.navbar-fixed-top(role="banner")
-			div.container-fluid
-				div.navbar-header
-					a.navbar-brand(href="/") SDN-Viz
-				nav(class="navbar-collapse collapse")
-					block nav			
-			
-		div#content
-			div.container-fluid
-				block body
-				hr
-				div#sdn-copyright
-					p SDN-Visualization (
-						span(ng-cloak)
-							| v
-							span(sdn-app-version)
-							| .
-						| ) - Created by&nbsp;
-						a(href="http://www.nt.uni-saarland.de/",target="_blank") Telecommunications Lab
-						|  /&nbsp;
-						a(href="http://www.intel-vci.uni-saarland.de",target="_blank") Intel Visual Computing Institute
-						|  at&nbsp;
-						a(href="http://www.uni-saarland.de",target="_blank") Saarland University
-						|  - Licensed under&nbsp;
-						a(href="http://opensource.org/licenses/MIT",target="_blank") MIT
-					a.uds(href="http://www.uni-saarland.de/", target="_blank") Saarland University
-					br
+    head
+        meta(charset="utf8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        base(href="/")
+        title SDN Visualization
+        link(rel="stylesheet", href="/lib/bootstrap/dist/css/bootstrap.css")
+        link(rel="stylesheet", href="/lib/angular-bootstrap-colorpicker/css/colorpicker.css")
+        link(rel="stylesheet", href="/lib/toastr/toastr.min.css")
+        link(rel="stylesheet", href="/lib/fontawesome/css/font-awesome.min.css")
+        link(rel="stylesheet", href="/css/app.css")
+    body
+        a(class="sr-only",href="#content")
+            Skip navigation
+        header#sdn-nav.navbar.navbar-inverse.navbar-fixed-top(role="banner")
+            div.container-fluid
+                div.navbar-header
+                    a.navbar-brand(href="/") SDN-Viz
+                nav(class="navbar-collapse collapse")
+                    block nav
 
+        div#content
+            div.container-fluid
+                block body
+                hr
+                div#sdn-copyright
+                    p SDN-Visualization (
+                        span(ng-cloak)
+                            | v
+                            span(sdn-app-version)
+                            | .
+                        | ) - Created by&nbsp;
+                        a(href="http://www.nt.uni-saarland.de/",target="_blank") Telecommunications Lab
+                        |  /&nbsp;
+                        a(href="http://www.intel-vci.uni-saarland.de",target="_blank") Intel Visual Computing Institute
+                        |  at&nbsp;
+                        a(href="http://www.uni-saarland.de",target="_blank") Saarland University
+                        |  - Licensed under&nbsp;
+                        a(href="http://opensource.org/licenses/MIT",target="_blank") MIT
+                    a.uds(href="http://www.uni-saarland.de/", target="_blank") Saarland University
+                    br
 
-		block scripts
+        block scripts
+        a(href="https://github.com/UdS-TelecommunicationsLab/SDN-Visualization", target="_blank")
+            img(style="position: absolute; top: 0; right: 0; border: 0; z-index: 2000",
+                src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67",
+                alt="Fork me on GitHub",
+                data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png")
+
