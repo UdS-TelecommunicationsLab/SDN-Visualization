@@ -255,9 +255,9 @@ var __extends = this.__extends || function (d, b) {
      * The FlowEntry contains information on the match and the associated actions.
      */
     exports.FlowEntry = function() {
-        // Data Link Layer
-        this.in_port = 0;
+        this.inPort = 0;
 
+        // Data Link Layer
         this.dl = {
             src: "00:00:00:00:00:00", // MAC address
             dst: "00:00:00:00:00:00", // MAC address
@@ -279,6 +279,13 @@ var __extends = this.__extends || function (d, b) {
             src: 0, // Port
             dst: 0 // Port
         };
+
+        this.packetCount = 0;
+        this.byteCount = 0;
+        this.durationSeconds = 0;
+        this.priority = 0;
+        this.idleTimeoutSeconds = 0;
+        this.hardTimeoutSeconds = 0;
 
         this.actions = [];
     };

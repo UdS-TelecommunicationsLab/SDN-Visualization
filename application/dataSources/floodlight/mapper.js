@@ -229,7 +229,15 @@
         map: function (obj, deviceId) {
             var flowEntry = new nvm.FlowEntry();
             flowEntry.deviceId = deviceId;
-            flowEntry.in_port = parseInt(obj.match.in_port, 10);
+            flowEntry.inPort = parseInt(obj.match.in_port, 10);
+
+            flowEntry.packetCount = parseInt(obj.packetCount, 10);
+            flowEntry.byteCount = parseInt(obj.byteCount, 10);
+            flowEntry.durationSeconds = parseInt(obj.durationSeconds, 10);
+            flowEntry.priority = parseInt(obj.priority, 10);
+            flowEntry.idleTimeoutSeconds = parseInt(obj.idleTimeoutSec, 10);
+            flowEntry.hardTimeoutSeconds = parseInt(obj.hardTimeoutSec, 10);
+
             flowEntry.dl.src = "00:00:" + obj.match.eth_src;
             flowEntry.dl.dst = "00:00:" + obj.match.eth_dst;
             flowEntry.dl.type = parseInt(obj.match.eth_type);
@@ -328,7 +336,7 @@
                         entry.actions["drop"] = true;
                     } else {
                         var sourceLinks = _.filter(links, function (d) {
-                            return (d.srcHost.id === entry.deviceId && d.srcPort === entry.in_port && d.dstHost.type === nvm.Client.type);
+                            return (d.srcHost.id === entry.deviceId && d.srcPort === entry.inPort && d.dstHost.type === nvm.Client.type);
                         });
                         for (var i = 0; i < sourceLinks.length; i++) {
                             flow.links.push({
@@ -339,7 +347,7 @@
                         }
 
                         var destinationLinks = _.filter(links, function (d) {
-                            return (d.dstHost.id === entry.deviceId && d.dstPort === entry.in_port && d.srcHost.type === nvm.Client.type);
+                            return (d.dstHost.id === entry.deviceId && d.dstPort === entry.inPort && d.srcHost.type === nvm.Client.type);
                         });
                         for (var j = 0; j < destinationLinks.length; j++) {
                             flow.links.push({

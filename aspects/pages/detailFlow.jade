@@ -21,9 +21,11 @@ block body
         table.table.table-condensed.table-striped.table-bordered
             thead
                 tr
-                    th(rowspan="3") Device
-                    th(rowspan="3") Operation
+                    th(rowspan="2") Device
+                    th(rowspan="2") Operation
                         sdn-help-tooltip(tooltip="e.g. from | to")
+                    th(rowspan="2") Statistics
+                        sdn-help-tooltip(tooltip="Priority, Idle Timeout, Hard Timeout, Packet Count, Byte Count")
                     th(colspan="3") Layers
                 tr
                     th Data
@@ -36,19 +38,38 @@ block body
                             sdn-device-type-icon(device="device.item")
                             code.dp {{ device.item.name }}
                     td
-                        span(ng-show="entry.actions.endpoint")
+                        small(ng-show="entry.actions.endpoint")
                             i.fa.fa-fw.fa-arrow-circle-o-down
                             | &nbsp;Endpoint&nbsp;
                         div(ng-repeat="(key, action) in entry.actions", ng-hide="entry.actions.endpoint")
-                            span(ng-switch="key")
+                            small(ng-switch="key")
                                 span(ng-switch-when="output")
                                     i.fa.fa-fw.fa-arrow-circle-o-right
-                                    | &nbsp;{{ entry.in_port }} | {{ action }}&nbsp;
+                                    | &nbsp;{{ entry.inPort }} | {{ action }}&nbsp;
                                 span(ng-switch-when="drop")
                                     i.fa.fa-fw.fa-trash
                                     | &nbsp;Drop
                                 span(ng-switch-default) {{ key }} : {{ action }}&nbsp;
 
+                    td
+                        div(ng-hide="entry.actions.endpoint")
+                            div
+                                small(tooltip="Priority", tooltip-placement="top")
+                                    i.fa.fa-fw.fa-exclamation
+                                    | &nbsp;{{ entry.priority }} |
+                                small(tooltip="Idle Timeout", tooltip-placement="top")
+                                    i.fa.fa-fw.fa-clock-o
+                                    | &nbsp;{{ entry.idleTimeoutSeconds }}s |
+                                small(tooltip="Hard Timeout", tooltip-placement="top")
+                                    i.fa.fa-fw.fa-ban
+                                    | &nbsp;{{ entry.hardTimeoutSeconds }}s
+                            div
+                                small(tooltip="Packet Count", tooltip-placement="top")
+                                    i.fa.fa-fw.fa-cubes
+                                    | &nbsp;{{ entry.packetCount }} |
+                                small(tooltip="Byte Count", tooltip-placement="top")
+                                    i.fa.fa-fw.fa-cube
+                                    | &nbsp;{{ entry.byteCount }}
                     td
                         div(ng-hide="entry.actions.endpoint")
                             code.dp S:&nbsp;
