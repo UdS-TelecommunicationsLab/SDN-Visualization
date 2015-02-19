@@ -29,6 +29,7 @@
     "use strict";
     var dataSource = require("../application/dataSources/source"),
         config = require("./config"),
+        moment = require("moment"),
         objectDiff = require("../lib/objectDiff-enhanced/objectDiff"),
         nvm = require("../public/shared/NVM");
 
@@ -36,6 +37,7 @@
     var model = new nvm.NVM();
     var oldModel = model;
     var reset = false;
+    var started = new Date();
 
     var finish = function (errorRaised) {
         if (!errorRaised) {
@@ -55,13 +57,19 @@
 
         oldModel = model;
         if(reset) {
-            DEBUG && console.log("Reset NVM.");
+            DEBUG && console.log("[Worker] Reset NVM.");
             model = new nvm.NVM(model.started);
             reset = false;
         } else {
             model = new nvm.NVM(oldModel.started, oldModel);
         }
-        setTimeout(loadingProcess, pollingDelay);
+
+        var now = new Date();
+        var diffMs = (now.getTime() - started.getTime());
+        DEBUG && console.log("[Worker] Run finished on " + moment(now).format("dddd, MMMM Do YYYY, HH:mm:ss") + ". Took " + (diffMs/1000) + " seconds.");
+
+        var timeToWait = Math.max(pollingDelay - diffMs, 0);
+        setTimeout(loadingProcess, timeToWait);
     };
 
     var isAvailable = function () {
@@ -70,7 +78,8 @@
     };
 
     var loadingProcess = function() {
-        DEBUG && console.log("Worker run started.");
+        started = new Date();
+        DEBUG && console.log("[Worker] Run started on " + moment(started).format("dddd, MMMM Do YYYY, HH:mm:ss") + ".");
         try {
             if (isAvailable()) {
                 dataSource.getAllData(model, finish);
@@ -78,7 +87,7 @@
                 setTimeout(loadingProcess, pollingDelay);
             }
         } catch (e) {
-            DEBUG && console.log(e);
+            DEBUG && console.log("[Worker] " + e);
         }
     };
 
@@ -92,7 +101,7 @@
         }
 
         if (m && m.reset) {
-            DEBUG && console.log("Received request to reset NVM.");
+            DEBUG && console.log("[Worker] Received request to reset NVM.");
             reset = true;
         }
     });

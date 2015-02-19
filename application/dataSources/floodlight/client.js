@@ -25,7 +25,7 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
-(function (client) {
+(function (client, DEBUG) {
     "use strict";
     var mapper = require("./mapper"),
         _ = require("lodash"),
@@ -311,8 +311,16 @@
     };
 
     var getResource = function (cmd, cb) {
+        var callback = cb;
+        if(DEBUG) {
+            var now = new Date();
+            callback = function(d) {
+                console.log("[Worker] " + cmd + " took " + ((new Date().getTime() - now.getTime()) / 1000) + " seconds.");
+                cb(d);
+            };
+        }
         resourceCount++;
-        intf.getInformation(cmd, cb, handleError);
+        intf.getInformation(cmd, callback, handleError);
     };
 
     client.getAllData = function (md, cb) {
@@ -339,5 +347,5 @@
             dataRate: "uds/statistics/dataRate/json"
         }
     };
-})(exports);
+})(exports, false);
 
