@@ -19,25 +19,7 @@ block body
                     table.table
                         tbody
                             tr
-                                th(style="width:180px")
-                                    i.fa.fa-trash-o
-                                    |  Packet Loss
-
-                                td(ng-show="!editLoss") {{ item.plr | packetLossRate }}
-                                td(ng-show="editLoss")
-                                    div.input-group
-                                        input.form-control(type="number", ng-model="loss",ng-pattern="/^-?(?:[0-9]+|[0-9]*\.[0-9]+)$/", ng - required = "true", min = "0", max = "100")
-                                        span.input-group-addon %
                                 td
-                                    div(ng-show="item.type == 'OpenFlow' && isEditable",style="width:80px")
-                                        a.btn.btn-default.btn-sm(ng-click="startEditLoss()",ng-show="!editLoss")
-                                            i.fa.fa-cog
-                                        a.btn.btn-success.btn-sm(ng-click="modifyLoss(loss)",ng-show="editLoss",ng-disabled="editLinkForm.$invalid || editLinkForm.$pristine")
-                                            i.fa.fa-check-circle
-                                        | &nbsp;
-                                        a.btn.btn-danger.btn-sm(ng-click="stopEditLoss()",ng-show="editLoss",ng-disabled="editLinkForm.$pristine")
-                                            i.fa.fa-ban
-                            tr
                                 th
                                     i.fa.fa-clock-o
                                     |  Delay
@@ -56,16 +38,41 @@ block body
                                         a.btn.btn-danger.btn-sm(ng-click="stopEditDelay()",ng-show="editDelay",ng-disabled="editLinkForm.$pristine")
                                             i.fa.fa-ban
                             tr
+                                td(ng-show="!editLoss") {{ item.srcPlr | packetLossRate }}
+                                td(ng-show="editLoss")
+                                    div.input-group
+                                        input.form-control(type="number", ng-model="loss",ng-pattern="/^-?(?:[0-9]+|[0-9]*\.[0-9]+)$/", ng-required = "true", min = "0", max = "100")
+                                        span.input-group-addon %
+                                th(style="width:180px")
+                                    i.fa.fa-trash-o
+                                    |  Packet Loss
+                                td(ng-show="!editLoss") {{ item.dstPlr | packetLossRate }}
+                                td(ng-show="editLoss")
+                                    div.input-group
+                                        input.form-control(type="number", ng-model="loss",ng-pattern="/^-?(?:[0-9]+|[0-9]*\.[0-9]+)$/", ng-required="true", min="0", max="100")
+                                        span.input-group-addon %
+                                td
+                                    div(ng-show="item.type == 'OpenFlow' && isEditable",style="width:80px")
+                                        a.btn.btn-default.btn-sm(ng-click="startEditLoss()",ng-show="!editLoss")
+                                            i.fa.fa-cog
+                                        a.btn.btn-success.btn-sm(ng-click="modifyLoss(loss)",ng-show="editLoss",ng-disabled="editLinkForm.$invalid || editLinkForm.$pristine")
+                                            i.fa.fa-check-circle
+                                        | &nbsp;
+                                        a.btn.btn-danger.btn-sm(ng-click="stopEditLoss()",ng-show="editLoss",ng-disabled="editLinkForm.$pristine")
+                                            i.fa.fa-ban
+                            tr
+                                td {{ item.srcTx | dataRate }}
                                 th
                                     i.fa.fa-sign-in
                                     |  Transmit Data Rate
-                                td {{ item.drTx | dataRate }}
+                                td {{ item.dstTx | dataRate }}
                                 td
                             tr
+                                td {{ item.srcRx | dataRate }}
                                 th
                                     i.fa.fa-sign-out
                                     |  Receive Data Rate
-                                td {{ item.drRx | dataRate }}
+                                td {{ item.dstRx | dataRate }}
                                 td
         div.col-md-4
             h2 Destination

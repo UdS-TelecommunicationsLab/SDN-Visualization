@@ -439,7 +439,7 @@
                                         target: target,
                                         type: d.type,
                                         link: d,
-                                        dr: (d.drTx + d.drRx)
+                                        dr: (d.srcTx + d.srcRx + d.dstTx + d.dstRx)
                                     });
                                 }
                             });

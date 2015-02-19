@@ -138,16 +138,18 @@
                 }
 
                 var plr = tab.append("tr");
-                plr.append("th").html("Packet Loss:");
-                plr.append("td").html(packetLossRateFilter(obj.link.plr));
+                plr.append("th").html("Packet Loss (S/D):");
+                plr.append("td").html(packetLossRateFilter(obj.link.srcPlr) + " / " + packetLossRateFilter(obj.link.dstPlr));
 
                 var delay = tab.append("tr");
                 delay.append("th").html("Delay:");
                 delay.append("td").html(delayFilter(obj.link.delay));
 
                 var dr = tab.append("tr");
-                dr.append("th").html("Data Rate (T/R):");
-                dr.append("td").html(numberToFixedFilter(obj.link.drTx / 1000, 3) + " / " + numberToFixedFilter(obj.link.drRx / 1000, 3) + " kbps");
+                dr.append("th").html("Data Rate (S|D) (T/R):");
+                var o = numberToFixedFilter(obj.link.srcTx / 1000, 3) + " / " + numberToFixedFilter(obj.link.srcRx / 1000, 3) + " | " +
+                    numberToFixedFilter(obj.link.srcRx / 1000, 3) + " / " + numberToFixedFilter(obj.link.dstRx / 1000, 3) + " kbps";
+                dr.append("td").html(o);
             }
         };
         defaultParameters.linkTooltip = createLinkTooltip;
@@ -168,7 +170,7 @@
                             target: localLink.dstHost.id,
                             type: localLink.type,
                             link: localLink,
-                            dr: (localLink.drTx + localLink.drRx)
+                            dr: (localLink.srcTx + localLink.srcRx + localLink.dstTx + localLink.dstRx) / 2
                         });
                     } else if (linkChange[objectDiff.token.changed] === objectDiff.token.object) {
                         linkChangeSet.changed = true;
@@ -177,7 +179,7 @@
                         });
                         if (changedLink) {
                             repository.applyChanges(changedLink.link, linkChange);
-                            changedLink.dr = (changedLink.link.drTx + changedLink.link.drRx);
+                            changedLink.dr = (changedLink.srcTx + changedLink.srcRx + changedLink.dstTx + changedLink.dstRx) / 2;
                         }
                     } else if (linkChange[objectDiff.token.changed] === objectDiff.token.removed) {
                         linkChangeSet.changed = true;

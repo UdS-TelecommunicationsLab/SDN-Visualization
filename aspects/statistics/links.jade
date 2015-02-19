@@ -1,41 +1,56 @@
 div
-	div.panel.panel-default(ng-show="data.nvm.links.length > 0")
-		table.table.table-striped.table-condensed
-			thead
-				tr
-					th(style="width: 50px")
-					th(style="width: 20px")
-					th Source [Port]
-					th Destination [Port]
-					th.linkParameter Tx Rate
-					th.linkParameter Rx Rate
-					th.linkParameter Loss
-					th.linkParameter Delay
-			tbody
-				tr(ng-repeat="link in data.nvm.links | srcOrDstId:deviceFilter")
-					td
-						a.btn.btn-default.btn-xs(href="{{ '/detail/link/' + link.id }}") Details
-					td
-						sdn-ui-on-off-label(field="link.active")
-					td 
-						a(href="{{ '/detail/device/' + link.srcHost.id }}")
-							sdn-device-type-icon(device="link.srcHost")
-							code.dp {{ link.srcHost.name }}
-						span.middle [{{ link.srcPort }}]
-					td 
-						a(href="{{ '/detail/device/' + link.dstHost.id }}")
-							sdn-device-type-icon(device="link.dstHost")
-							code.dp {{ link.dstHost.name }}
-						span.middle [{{ link.dstPort }}] 
-					td.linkParameter(ng-class="{ nonZero: link.drTx != 0 && link.drTx != null }") {{ link.drTx | dataRate }}
-					td.linkParameter(ng-class="{ nonZero: link.drRx != 0 && link.drRx != null }") {{ link.drRx | dataRate }}
-					td.linkParameter.loss(ng-class="{ nonZero: link.plr != 0 && link.plr != null }") {{ link.plr | packetLossRate }}
-					td.linkParameter(ng-class="{ nonZero: link.delay != 0 && link.delay != null }") {{ link.delay | delay }}
+    div.panel.panel-default(ng-show="data.nvm.links.length > 0")
+        div.panel-heading
+            i.fa.fa-fw.fa-link
+            | &nbsp;Links
+        table.table.table-striped.table-condensed.table-hover
+            thead
+                tr
+                    th(colspan=2,rowspan=2,width="70px")
+                    th(colspan=4) Source
+                    th(colspan=4) Destination
+                    th(rowspan=2).linkParameter Delay
+                tr
+                    th Name [Port]
+                    th.linkParameter Tx Rate
+                    th.linkParameter Rx Rate
+                    th.linkParameter Loss
 
-	div.panel.panel-default(ng-show="data.nvm.links.length > 0")
-		div.panel-body
-			small All links are symmetric, so the inverse direction is also connected.
+                    th Name [Port]
+                    th.linkParameter Tx Rate
+                    th.linkParameter Rx Rate
+                    th.linkParameter Loss
+            tbody
+                tr(ng-repeat="link in data.nvm.links | srcOrDstId:deviceFilter")
+                    td(width="50px")
+                        a.btn.btn-default.btn-xs(href="{{ '/detail/link/' + link.id }}") Details
+                    td(width="20px")
+                        sdn-ui-on-off-label(field="link.active")
+
+                    td
+                        a(href="{{ '/detail/device/' + link.srcHost.id }}")
+                            sdn-device-type-icon(device="link.srcHost")
+                            code.dp {{ link.srcHost.name }}
+                        span.middle [{{ link.srcPort }}]
+                    td.linkParameter(ng-class="{ nonZero: link.srcTx != 0 && link.srcTx != null }") {{ link.srcTx | dataRate }}
+                    td.linkParameter(ng-class="{ nonZero: link.srcRx != 0 && link.srcRx != null }") {{ link.srcRx | dataRate }}
+                    td.linkParameter(ng-class="{ nonZero: link.srcPlr != 0 && link.srcPlr != null }") {{ link.srcPlr | packetLossRate }}
+
+                    td
+                        a(href="{{ '/detail/device/' + link.dstHost.id }}")
+                            sdn-device-type-icon(device="link.dstHost")
+                            code.dp {{ link.dstHost.name }}
+                        span.middle [{{ link.dstPort }}]
+                    td.linkParameter(ng-class="{ nonZero: link.dstTx != 0 && link.dstTx != null }") {{ link.dstTx | dataRate }}
+                    td.linkParameter(ng-class="{ nonZero: link.dstRx != 0 && link.dstRx != null }") {{ link.dstRx | dataRate }}
+                    td.linkParameter.loss(ng-class="{ nonZero: link.dstPlr != 0 && link.dstPlr != null }") {{ link.dstPlr | packetLossRate }}
+
+                    td.linkParameter(ng-class="{ nonZero: link.delay != 0 && link.delay != null }") {{ link.delay | delay }}
+
+    div.panel.panel-default(ng-show="data.nvm.links.length > 0")
+        div.panel-body
+            small All links are symmetric, so the inverse direction is also connected.
 
 
-	div.alert.alert-info(ng-show="data.nvm.links.length == 0")
-		strong There are no links at the moment.
+    div.alert.alert-info(ng-show="data.nvm.links.length == 0")
+        strong There are no links at the moment.

@@ -80,17 +80,19 @@
         if (data === null || data == undefined || data === {}) {
             console.error("processDesc called without data");
         } else {
-            for(var deviceId in data) {
-                var device = _.find(model.devices, function(d) { return d.id === deviceId; });
+            for (var deviceId in data) {
+                var device = _.find(model.devices, function (d) {
+                    return d.id === deviceId;
+                });
                 var deviceObj = data[deviceId];
-                if(device && deviceObj != null) {
+                if (device && deviceObj != null) {
                     device.capabilities = deviceObj.capabilities;
                     device.actions = deviceObj.actions;
-                    if(deviceObj.portDesc) {
+                    if (deviceObj.portDesc) {
                         var ports = {};
                         for (var i = 0; i < deviceObj.portDesc.length; i++) {
                             var port = deviceObj.portDesc[i];
-                            if(port) {
+                            if (port) {
                                 ports[port.portNumber] = mapper.ports.map(port);
                             }
                         }
@@ -113,9 +115,11 @@
         if (data === null || data == undefined || data === {}) {
             console.error("processDesc called without data");
         } else {
-            for(var deviceId in data) {
-                var device = _.find(model.devices, function(d) { return d.id === deviceId; });
-                if(device && data[deviceId] != null) {
+            for (var deviceId in data) {
+                var device = _.find(model.devices, function (d) {
+                    return d.id === deviceId;
+                });
+                if (device && data[deviceId] != null) {
                     device.description = data[deviceId].desc;
                 }
             }
@@ -155,17 +159,25 @@
         if (data === null || data == undefined || data === {}) {
             console.error("processDelay called without data");
         } else {
-            if(data.length > 0 && data[0] && data[0].delays) {
-                data[0].delays.forEach(function (d) {
-                    var link = _.find(model.links, function (q) {
-                        return (q.srcHost.id == d.srcdpid && q.dstHost.id == d.dstdpid) ||
-                            (q.dstHost.id == d.srcdpid && q.srcHost.id == d.dstdpid);
-                    });
-                    if (link) {
-                        link.delay = parseFloat(d.delayMS);
-                    }
+            data.forEach(function (d) {
+                var srcDpid = d.srcDpid;
+                var srcPort = d.srcPort;
+                var dstDpid = d.dstDpid;
+                var dstPort = d.dstPort;
+                if(d.srcDpid > d.dstDpid) {
+                    srcDpid = d.dstDpid;
+                    srcPort = d.dstPort;
+                    dstDpid = d.srcDpid;
+                    dstPort = d.srcPort;
+                }
+
+                var links = _.filter(model.links, function (q) {
+                    return q.srcHost.id == srcDpid && d.srcPort == srcPort && q.dstHost.id == dstDpid && d.dstPort == dstPort;
                 });
-            }
+                for(var i = 0; i < links.length; i++) {
+                    links[i].delay = parseFloat(d.delayMS);
+                }
+            });
         }
         callback();
     };
@@ -180,16 +192,24 @@
         if (data === null || data == undefined || data === {}) {
             console.error("processPacketLoss called without data");
         } else {
-            if(data.length > 0 && data[0] && data[0].packetLoss) {
-                data[0].packetLoss.forEach(function (d) {
-                    var link = _.find(model.links, function (q) {
-                        return (q.srcHost.id == d.srcDpid && q.dstHost.id == d.dstDpid) ||
-                            (q.dstHost.id == d.srcDpid && q.srcHost.id == d.dstDpid);
+            for (var deviceId in data) {
+                for (var port in data[deviceId]) {
+                    var plr = data[deviceId][port];
+
+                    var srcLinks = _.filter(model.links, function (q) {
+                        return (q.srcHost.id == deviceId && q.srcPort == port);
                     });
-                    if (link) {
-                        link.plr = Math.max(0, Math.min(1, 1 - (parseInt(d.dstPackets, 10) / parseInt(d.srcPackets, 10))));
+
+                    for (var j = 0; j < srcLinks.length; j++) {
+                        srcLinks[j].srcPlr = plr;
                     }
-                });
+                    var dstLinks = _.filter(model.links, function (q) {
+                        return (q.dstHost.id == deviceId && q.dstPort == port);
+                    });
+                    for (var i = 0; i < dstLinks.length; i++) {
+                        dstLinks[i].dstPlr = plr;
+                    }
+                }
             }
         }
         callback();
@@ -206,22 +226,30 @@
             console.error("processDataRate called without data");
         } else {
             var drMax = 0;
+            for (var deviceId in data) {
+                for (var port in data[deviceId]) {
+                    var interval = 5;
+                    var drTx = data[deviceId][port].transmitBytes * 8 / interval;
+                    var drRx = data[deviceId][port].receiveBytes * 8 / interval;
 
-            if(data.length > 0 && data[0] && data[0].datarate) {
-                data[0].datarate.forEach(function(d) {
-                    var link = _.find(model.links, function(q) {
-                        return (q.srcHost.id == d.srcDpid && q.dstHost.id == d.dstDpid) ||
-                            (q.dstHost.id == d.srcDpid && q.srcHost.id == d.dstDpid);
+                    var srcLinks = _.filter(model.links, function (q) {
+                        return (q.srcHost.id == deviceId && q.srcPort == port);
                     });
-                    if(link &&
-                        d.lastLookup != null && d.nextToLastLookup != null &&
-                        d.lastLookup.bytesTrans != null && d.nextToLastLookup.bytesTrans != null &&
-                        d.lastLookup.bytesRec != null && d.nextToLastLookup.bytesRec != null) {
-                        link.drTx = (d.lastLookup.bytesTrans - d.nextToLastLookup.bytesTrans) * 8 / (d.intervall / 1000);
-                        link.drRx = (d.lastLookup.bytesRec - d.nextToLastLookup.bytesRec) * 8 / (d.intervall / 1000);
-                        drMax = Math.max(link.drTx, Math.max(link.drRx, drMax));
+
+                    for (var j = 0; j < srcLinks.length; j++) {
+                        srcLinks[j].srcTx = drTx;
+                        srcLinks[j].srcRx = drRx;
                     }
-                });
+                    var dstLinks = _.filter(model.links, function (q) {
+                        return (q.dstHost.id == deviceId && q.dstPort == port);
+                    });
+                    for (var i = 0; i < dstLinks.length; i++) {
+                        dstLinks[i].dstTx = drTx;
+                        dstLinks[i].dstRx = drRx;
+                    }
+
+                    drMax = Math.max(drRx, Math.max(drTx, drMax));
+                }
             }
             model._internals.drMax = drMax;
         }
@@ -259,11 +287,12 @@
         if (data == null) {
             console.error("processPorts called without data");
         } else {
-            for(var deviceId in data) {
-                var device = _.find(model.devices, function(d) { return d.id === deviceId; });
-                if(device && data[deviceId] != null) {
-                    if(data[deviceId].port)
-                    {
+            for (var deviceId in data) {
+                var device = _.find(model.devices, function (d) {
+                    return d.id === deviceId;
+                });
+                if (device && data[deviceId] != null) {
+                    if (data[deviceId].port) {
                         var ports = mapper.ports.mapAll(data[deviceId].port, device);
                         device.updatePorts(ports);
                     }
@@ -312,9 +341,9 @@
 
     var getResource = function (cmd, cb) {
         var callback = cb;
-        if(DEBUG) {
+        if (DEBUG) {
             var now = new Date();
-            callback = function(d) {
+            callback = function (d) {
                 console.log("[Worker] " + cmd + " took " + ((new Date().getTime() - now.getTime()) / 1000) + " seconds.");
                 cb(d);
             };
@@ -342,9 +371,9 @@
             ports: "core/switch/all/port/json",
             desc: "core/switch/all/desc/json",
             features: "core/switch/all/features/json",
-            delay: "uds/statistics/delay/json",
-            packetLoss: "uds/statistics/packetLoss/json",
-            dataRate: "uds/statistics/dataRate/json"
+            delay: "uds/delay/json",
+            packetLoss: "uds/statistics/packetloss/json",
+            dataRate: "uds/statistics/datarate/json"
         }
     };
 })(exports, false);

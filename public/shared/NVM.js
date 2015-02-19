@@ -122,9 +122,12 @@ var __extends = this.__extends || function (d, b) {
         this.dstHost = dstHost;
         this.dstPort = dstPort;
         this.type = type;
-        this.drTx = null;
-        this.drRx = null;
-        this.plr = null;
+        this.srcTx = null;
+        this.srcRx = null;
+        this.dstTx = null;
+        this.dstRx = null;
+        this.srcPlr = null;
+        this.dstPlr = null;
         this.delay = null;
     };
 
