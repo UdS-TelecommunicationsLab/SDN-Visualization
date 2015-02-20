@@ -124,7 +124,7 @@
                             return topology.boundingBox(d.target.y, h);
                         });
 
-                    if (force.alpha() < 0.02) {
+                    if (force.alpha() < 1) {
                         showTopology();
                     }
                 };
@@ -163,6 +163,7 @@
                 // Node and Link Styling
                 var styleNode = function (collection) {
                     collection = collection.transition(defaults.animationDuration);
+                    collection.style("opacity", 1);
                     if ($scope.styles && $scope.styles.node) {
                         collection = $scope.styles.node(collection);
                     } else {
@@ -182,6 +183,7 @@
 
                 var styleLink = function (collection) {
                     collection = collection.transition(defaults.animationDuration);
+                    collection.style("opacity", 1);
                     if ($scope.styles && $scope.styles.link) {
                         collection = $scope.styles.link(collection, linkStrengthMax);
                     } else {
@@ -461,8 +463,19 @@
                     linkCollection.forEach(function (d) {
                         if (d.id == link.id) {
                             d.highlight = true;
+                        } else {
+                            d.blur = true;
                         }
                     });
+                    var parts = link.split(".");
+                    var src = parts[0].split("-")[0];
+                    var dst = parts[1].split("-")[0];
+                    nodeCollection.forEach(function (d) {
+                        if (d.id != src && d.id != dst) {
+                            d.blur = true;
+                        }
+                    });
+                    redrawNodes();
                     redrawLinks();
                 };
 
