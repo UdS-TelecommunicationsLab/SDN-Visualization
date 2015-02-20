@@ -226,8 +226,9 @@
 
     // Mapping Flows
     var flows = {
-        map: function (obj, deviceId) {
+        map: function (obj, deviceId, flowId) {
             var flowEntry = new nvm.FlowEntry();
+            flowEntry.id = flowId + "-" + deviceId;
             flowEntry.deviceId = deviceId;
             flowEntry.inPort = parseInt(obj.match.in_port, 10);
 
@@ -277,7 +278,7 @@
                             if (flowByCookie[flowId] === undefined) {
                                 flowByCookie[flowId] = new nvm.Flow(flowId);
                             }
-                            flowByCookie[flowId].entries.push(flows.map(flowObj, deviceId));
+                            flowByCookie[flowId].entries.push(flows.map(flowObj, deviceId, flowId));
 
                             var device = _.find(devices, function (lclDevice) {
                                 return lclDevice.id === deviceId;

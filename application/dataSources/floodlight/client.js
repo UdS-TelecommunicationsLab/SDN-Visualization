@@ -156,7 +156,7 @@
      *
      */
     var processDelay = function (data) {
-        if (data === null || data == undefined || data === {}) {
+        if (data === null || data == undefined || data === {} || (data.code && data.code == 404)) {
             console.error("processDelay called without data");
         } else {
             data.forEach(function (d) {
@@ -189,7 +189,7 @@
      *
      */
     var processPacketLoss = function (data) {
-        if (data === null || data == undefined || data === {}) {
+        if (data === null || data == undefined || data === {} || (data.code && data.code == 404)) {
             console.error("processPacketLoss called without data");
         } else {
             for (var deviceId in data) {
@@ -222,7 +222,7 @@
      *
      */
     var processDataRate = function (data) {
-        if (data === null || data == undefined || data === {}) {
+        if (data === null || data == undefined || data === {} || (data.code && data.code == 404)) {
             console.error("processDataRate called without data");
         } else {
             var drMax = 0;

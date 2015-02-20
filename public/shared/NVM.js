@@ -258,6 +258,7 @@ var __extends = this.__extends || function (d, b) {
      * The FlowEntry contains information on the match and the associated actions.
      */
     exports.FlowEntry = function() {
+        this.id = "";
         this.inPort = 0;
 
         // Data Link Layer
