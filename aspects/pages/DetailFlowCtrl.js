@@ -37,7 +37,6 @@
 
             for(var i = 0; i < $scope.item.entries.length; i++) {
                 var entry = $scope.item.entries[i];
-                console.log(entry);
                 if(typeof(entries[entry.deviceId]) === "undefined") {
                     entries[entry.deviceId] = {
                         item: repository.getDeviceById(entry.deviceId).item,
