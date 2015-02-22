@@ -32,6 +32,31 @@
         config = require("../../config"),
         nvm = require("../../../public/shared/NVM");
 
+    var mapEndpoints = function (d) {
+        var fe = new nvm.FlowEntry();
+        fe.deviceId = d;
+        fe.actions = {endpoint: true};
+        return fe;
+    };
+
+    var findSourceOrDestination = function (entry, port) {
+        return function (d) {
+            return (d.srcHost.id === entry.deviceId && d.srcPort === port) || (d.dstHost.id === entry.deviceId && d.dstPort === port);
+        };
+    };
+
+    var findDestination = function (entry) {
+        return function (d) {
+            return (d.dstHost.id === entry.deviceId && d.dstPort === entry.inPort && d.srcHost.type === nvm.Client.type);
+        };
+    };
+
+    var findSource = function (entry) {
+        return function (d) {
+            return (d.srcHost.id === entry.deviceId && d.srcPort === entry.inPort && d.dstHost.type === nvm.Client.type);
+        };
+    };
+
     // Mapping Controller
     var controller = {
         map: function () {
@@ -79,16 +104,16 @@
 
             if (rawData) {
                 rawData.forEach(function (rawClient) {
-                    var dst = _.find(sw, function (lclSwitch) {
-                        if (rawClient && rawClient.attachmentPoint.length > 0) {
+                    if(rawClient && rawClient.attachmentPoint.length > 0)
+                    {
+                        var dst = _.find(sw, function (lclSwitch) {
                             return rawClient.attachmentPoint[0].switchDPID === lclSwitch.id;
+                        });
+                        if (dst) {
+                            var client = clients.map(rawClient);
+                            lclClients.push(client);
+                            lclLinks.push(new nvm.Link(client, 1, dst, rawClient.attachmentPoint[0].port, "Ethernet"));
                         }
-                        return false;
-                    });
-                    if (dst) {
-                        var client = clients.map(rawClient);
-                        lclClients.push(client);
-                        lclLinks.push(new nvm.Link(client, 1, dst, rawClient.attachmentPoint[0].port, "Ethernet"));
                     }
                 });
 
@@ -234,36 +259,36 @@
             var flowEntry = new nvm.FlowEntry();
             flowEntry.id = flowId + "-" + deviceId;
             flowEntry.deviceId = deviceId;
-            flowEntry.inPort = parseInt(obj.match.in_port, 10);
+            flowEntry.inPort = parseInt(obj.match.in_port || 0, 10);
 
-            flowEntry.packetCount = parseInt(obj.packetCount, 10);
-            flowEntry.byteCount = parseInt(obj.byteCount, 10);
-            flowEntry.durationSeconds = parseInt(obj.durationSeconds, 10);
-            flowEntry.priority = parseInt(obj.priority, 10);
-            flowEntry.idleTimeoutSeconds = parseInt(obj.idleTimeoutSec, 10);
-            flowEntry.hardTimeoutSeconds = parseInt(obj.hardTimeoutSec, 10);
+            flowEntry.packetCount = parseInt(obj.packetCount || 0, 10);
+            flowEntry.byteCount = parseInt(obj.byteCount || 0, 10);
+            flowEntry.durationSeconds = parseInt(obj.durationSeconds || 0, 10);
+            flowEntry.priority = parseInt(obj.priority || 0, 10);
+            flowEntry.idleTimeoutSeconds = parseInt(obj.idleTimeoutSec || 0, 10);
+            flowEntry.hardTimeoutSeconds = parseInt(obj.hardTimeoutSec || 0, 10);
 
             flowEntry.dl.src = "00:00:" + obj.match.eth_src;
             flowEntry.dl.dst = "00:00:" + obj.match.eth_dst;
-            flowEntry.dl.type = parseInt(obj.match.eth_type);
-            flowEntry.dl.vlan = parseInt(obj.match.eth_vlan_vid, 10) || 0;
+            flowEntry.dl.type = parseInt(obj.match.eth_type || 0, 10);
+            flowEntry.dl.vlan = parseInt(obj.match.eth_vlan_vid || 0, 10) || 0;
             // TODO: flow.dl.vlanPriority = parseInt(obj.match.dataLayerVirtualLanPriorityCodePoint, 10);
 
             if (obj.match.arp_opcode) {
-                flowEntry.nw.src = obj.match.arp_spa;
-                flowEntry.nw.dst = obj.match.arp_tpa;
+                flowEntry.nw.src = obj.match.arp_spa || "";
+                flowEntry.nw.dst = obj.match.arp_tpa || "";
                 flowEntry.nw.protocol = 0;
             } else {
-                flowEntry.nw.src = obj.match.ipv4_src;
-                flowEntry.nw.dst = obj.match.ipv4_dst;
-                flowEntry.nw.protocol = parseInt(obj.match.ip_proto, 10);
+                flowEntry.nw.src = obj.match.ipv4_src || "";
+                flowEntry.nw.dst = obj.match.ipv4_dst || "";
+                flowEntry.nw.protocol = parseInt(obj.match.ip_proto || 0, 10);
             }
-            flowEntry.nw.typeOfService = parseInt(obj.match.ip_dscp, 10);
+            flowEntry.nw.typeOfService = parseInt(obj.match.ip_dscp || 0, 10);
 
             flowEntry.tp.src = parseInt(obj.match.tcp_src || obj.match.udp_src || 0, 10);
             flowEntry.tp.dst = parseInt(obj.match.tcp_dst || obj.match.udp_src || 0, 10);
 
-            flowEntry.actions = _.cloneDeep(obj.actions);
+            flowEntry.actions = _.clone(obj.actions);
 
             return flowEntry;
         },
@@ -271,8 +296,12 @@
             var flowByCookie = {};
             if (rawObject) {
                 for (var deviceId in rawObject) {
+                    if(rawObject[deviceId] && rawObject[deviceId].ERROR) {
+                        continue;
+                    }
+
                     var switchFlows = rawObject[deviceId].flows;
-                    if (switchFlows != null) {
+                    if (switchFlows !== null) {
                         for (var j = 0; j < switchFlows.length; j++) {
                             var flowObj = switchFlows[j];
                             var flowId = parseInt(flowObj.cookie, 10);
@@ -294,30 +323,6 @@
             }
 
             var result = [];
-            var mapEndpoints = function (d) {
-                var fe = new nvm.FlowEntry();
-                fe.deviceId = d;
-                fe.actions = {endpoint: true};
-                return fe;
-            };
-
-            var findSourceOrDestination = function (entry, port) {
-                return function (d) {
-                    return (d.srcHost.id === entry.deviceId && d.srcPort === port) || (d.dstHost.id === entry.deviceId && d.dstPort === port);
-                };
-            };
-
-            var findDestination = function (entry) {
-                return function (d) {
-                    return (d.dstHost.id === entry.deviceId && d.dstPort === entry.inPort && d.srcHost.type === nvm.Client.type);
-                };
-            };
-
-            var findSource = function (entry) {
-                return function (d) {
-                    return (d.srcHost.id === entry.deviceId && d.srcPort === entry.inPort && d.dstHost.type === nvm.Client.type);
-                };
-            };
 
             for (var m in flowByCookie) {
                 var flow = flowByCookie[m];
@@ -330,7 +335,6 @@
                 var endpoints = [];
                 for (var k = 0; k < flow.entries.length; k++) {
                     var entry = flow.entries[k];
-
 
                     sources.push(entry.nw.src);
                     destinations.push(entry.nw.dst);
@@ -381,8 +385,6 @@
                             endpoints.push(destinationLinks[n].srcHost.id);
                         }
                     }
-
-
                     flow.endpoints = _.unique(endpoints).map(mapEndpoints);
                 }
 
@@ -411,6 +413,7 @@
                     return d.deviceId;
                 });
                 delete flow.endpoints;
+
                 result.push(flow);
             }
 
