@@ -48,6 +48,7 @@ module.exports = function(grunt) {
                 boss: true,
                 eqnull: true,
                 globals: {
+                    module: true,
                     exports: true,
                     require: true,
                     process: true,

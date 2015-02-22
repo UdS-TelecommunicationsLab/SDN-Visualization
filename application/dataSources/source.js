@@ -33,12 +33,12 @@
     };
     source.init = function (dataSource) {
         var sourceIdentifier = dataSource.type;
-        if (sourceIdentifier == "floodlight" || sourceIdentifier == "nox") {
+        if (sourceIdentifier === "floodlight" || sourceIdentifier === "nox") {
             var client = require("./" + sourceIdentifier + "/client");
             source.getAllData = client.getAllData;
         } else {
             source.getAllData = unconfigured;
         }
-    }
+    };
     source.getAllData = unconfigured;
 })(exports);

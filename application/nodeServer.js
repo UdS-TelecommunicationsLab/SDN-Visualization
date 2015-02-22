@@ -41,7 +41,7 @@
             res.redirect("https://" + req.headers.host + ":" + app.get("port") + req.url);
         });
 
-        var httpListenHandler = net.createServer().listen(80, function(e) {
+        var httpListenHandler = net.createServer().listen(80, function() {
             http.createServer(httpApp).listen(httpListenHandler);
         });
     };

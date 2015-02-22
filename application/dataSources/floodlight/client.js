@@ -25,6 +25,7 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
  */
 
+/* jshint node:true */
 (function (client, DEBUG) {
     "use strict";
     var mapper = require("./mapper"),
@@ -42,9 +43,27 @@
         resourceCount--;
         if (resourceCount === 0) {
 
-            if (call)
+            if (call) {
                 call(errorRaised);
+            }
         }
+    };
+
+    var findDevice = function (deviceId) {
+        return function (d) {
+            return d.id === deviceId;
+        };
+    };
+
+    var findSrcHostAndPort = function (deviceId, port) {
+        return function (q) {
+            return (q.srcHost.id === deviceId && q.srcPort === port);
+        };
+    };
+    var findDstHostAndPort = function (deviceId, port) {
+        return function (q) {
+            return (q.dstHost.id === deviceId && q.dstPort === port);
+        };
     };
 
     var handleError = function (e) {
@@ -60,7 +79,7 @@
      *
      */
     var processGeneral = function (data) {
-        if (data === null || data == undefined || data === {}) {
+        if (data === null || data === undefined || data === {}) {
             console.error("processGeneral called without data");
         } else {
             model.controller = mapper.controller.map(data);
@@ -77,23 +96,24 @@
      *
      */
     var processFeatures = function (data) {
-        if (data === null || data == undefined || data === {}) {
+        if (data === null || data === undefined || data === {}) {
             console.error("processDesc called without data");
         } else {
-            for (var deviceId in data) {
-                var device = _.find(model.devices, function (d) {
-                    return d.id === deviceId;
-                });
+            var deviceIds = _.keys(data);
+            for (var i = 0; i < deviceIds.length; i++) {
+                var deviceId = deviceIds[i];
+                var device = _.find(model.devices, findDevice(deviceId));
                 var deviceObj = data[deviceId];
-                if (device && deviceObj != null) {
+                if (device && deviceObj !== null) {
                     device.capabilities = deviceObj.capabilities;
                     device.actions = deviceObj.actions;
                     if (deviceObj.portDesc) {
                         var ports = {};
-                        for (var i = 0; i < deviceObj.portDesc.length; i++) {
-                            var port = deviceObj.portDesc[i];
-                            if (port) {
-                                ports[port.portNumber] = mapper.ports.map(port);
+                        for (var j = 0; j < deviceObj.portDesc.length; j++) {
+                            var port = deviceObj.portDesc[j];
+                            if (port && port.portNumber !== "local") {
+                                var portNumber = parseInt(port.portNumber, 10);
+                                ports[portNumber] = mapper.ports.map(port);
                             }
                         }
                         device.updatePorts(ports);
@@ -112,13 +132,11 @@
      *
      */
     var processDesc = function (data) {
-        if (data === null || data == undefined || data === {}) {
+        if (data === null || data === undefined || data === {}) {
             console.error("processDesc called without data");
         } else {
             for (var deviceId in data) {
-                var device = _.find(model.devices, function (d) {
-                    return d.id === deviceId;
-                });
+                var device = _.find(model.devices, findDevice(deviceId));
                 if (device && data[deviceId] != null) {
                     device.description = data[deviceId].desc;
                 }
@@ -135,7 +153,7 @@
      *
      */
     var processSwitches = function (data) {
-        if (data === null || data == undefined || data === {}) {
+        if (data === null || data === undefined || data === {}) {
             console.error("processSwitches called without data");
         } else {
             model.addDevices(mapper.switches.mapAll(data));
@@ -156,7 +174,7 @@
      *
      */
     var processDelay = function (data) {
-        if (data === null || data == undefined || data === {} || (data.code && data.code == 404)) {
+        if (data === null || data === undefined || data === {} || (data.code && data.code === 404)) {
             console.error("processDelay called without data");
         } else {
             data.forEach(function (d) {
@@ -164,7 +182,7 @@
                 var srcPort = d.srcPort;
                 var dstDpid = d.dstDpid;
                 var dstPort = d.dstPort;
-                if(d.srcDpid > d.dstDpid) {
+                if (d.srcDpid > d.dstDpid) {
                     srcDpid = d.dstDpid;
                     srcPort = d.dstPort;
                     dstDpid = d.srcDpid;
@@ -172,9 +190,9 @@
                 }
 
                 var links = _.filter(model.links, function (q) {
-                    return q.srcHost.id == srcDpid && d.srcPort == srcPort && q.dstHost.id == dstDpid && d.dstPort == dstPort;
+                    return q.srcHost.id === srcDpid && d.srcPort === srcPort && q.dstHost.id === dstDpid && d.dstPort === dstPort;
                 });
-                for(var i = 0; i < links.length; i++) {
+                for (var i = 0; i < links.length; i++) {
                     links[i].delay = parseFloat(d.delayMS);
                 }
             });
@@ -189,25 +207,27 @@
      *
      */
     var processPacketLoss = function (data) {
-        if (data === null || data == undefined || data === {} || (data.code && data.code == 404)) {
+        if (data === null || data === undefined || data === {} || (data.code && data.code === 404)) {
             console.error("processPacketLoss called without data");
         } else {
             for (var deviceId in data) {
-                for (var port in data[deviceId]) {
-                    var plr = data[deviceId][port];
+                if (data[deviceId]) {
+                    var device = data[deviceId];
+                    for (var port in device) {
+                        if (device[port] !== undefined) {
+                            var portNumber = parseInt(port, 10);
+                            var plr = device[port];
 
-                    var srcLinks = _.filter(model.links, function (q) {
-                        return (q.srcHost.id == deviceId && q.srcPort == port);
-                    });
+                            var srcLinks = _.filter(model.links, findSrcHostAndPort(deviceId, portNumber));
+                            for (var j = 0; j < srcLinks.length; j++) {
+                                srcLinks[j].srcPlr = plr;
+                            }
 
-                    for (var j = 0; j < srcLinks.length; j++) {
-                        srcLinks[j].srcPlr = plr;
-                    }
-                    var dstLinks = _.filter(model.links, function (q) {
-                        return (q.dstHost.id == deviceId && q.dstPort == port);
-                    });
-                    for (var i = 0; i < dstLinks.length; i++) {
-                        dstLinks[i].dstPlr = plr;
+                            var dstLinks = _.filter(model.links, findDstHostAndPort(deviceId, portNumber));
+                            for (var i = 0; i < dstLinks.length; i++) {
+                                dstLinks[i].dstPlr = plr;
+                            }
+                        }
                     }
                 }
             }
@@ -222,33 +242,36 @@
      *
      */
     var processDataRate = function (data) {
-        if (data === null || data == undefined || data === {} || (data.code && data.code == 404)) {
+        if (data === null || data === undefined || data === {} || (data.code && data.code === 404)) {
             console.error("processDataRate called without data");
         } else {
             var drMax = 0;
             for (var deviceId in data) {
-                for (var port in data[deviceId]) {
-                    var interval = 5;
-                    var drTx = data[deviceId][port].transmitBytes * 8 / interval;
-                    var drRx = data[deviceId][port].receiveBytes * 8 / interval;
+                if (data[deviceId]) {
+                    var device = data[deviceId];
+                    for (var port in device) {
+                        if (device[port] !== undefined) {
+                            var portNumber = parseInt(port, 10);
 
-                    var srcLinks = _.filter(model.links, function (q) {
-                        return (q.srcHost.id == deviceId && q.srcPort == port);
-                    });
+                            var interval = 5; // TODO: replace with proper interval
+                            var drTx = device[port].transmitBytes * 8 / interval;
+                            var drRx = device[port].receiveBytes * 8 / interval;
 
-                    for (var j = 0; j < srcLinks.length; j++) {
-                        srcLinks[j].srcTx = drTx;
-                        srcLinks[j].srcRx = drRx;
+                            var srcLinks = _.filter(model.links, findSrcHostAndPort(deviceId, portNumber));
+                            for (var j = 0; j < srcLinks.length; j++) {
+                                srcLinks[j].srcTx = drTx;
+                                srcLinks[j].srcRx = drRx;
+                            }
+
+                            var dstLinks = _.filter(model.links, findDstHostAndPort(deviceId, portNumber));
+                            for (var i = 0; i < dstLinks.length; i++) {
+                                dstLinks[i].dstTx = drTx;
+                                dstLinks[i].dstRx = drRx;
+                            }
+
+                            drMax = Math.max(drRx, Math.max(drTx, drMax));
+                        }
                     }
-                    var dstLinks = _.filter(model.links, function (q) {
-                        return (q.dstHost.id == deviceId && q.dstPort == port);
-                    });
-                    for (var i = 0; i < dstLinks.length; i++) {
-                        dstLinks[i].dstTx = drTx;
-                        dstLinks[i].dstRx = drRx;
-                    }
-
-                    drMax = Math.max(drRx, Math.max(drTx, drMax));
                 }
             }
             model._internals.drMax = drMax;
@@ -263,7 +286,7 @@
      *
      */
     var processLinks = function (data) {
-        if (data == null) {
+        if (data === null) {
             console.error("processLinks called without data");
         } else {
             model.addLinks(mapper.links.mapAll(data, model.devices));
@@ -284,17 +307,17 @@
      *
      */
     var processPorts = function (data) {
-        if (data == null) {
+        if (data === null) {
             console.error("processPorts called without data");
         } else {
             for (var deviceId in data) {
-                var device = _.find(model.devices, function (d) {
-                    return d.id === deviceId;
-                });
-                if (device && data[deviceId] != null) {
-                    if (data[deviceId].port) {
-                        var ports = mapper.ports.mapAll(data[deviceId].port, device);
-                        device.updatePorts(ports);
+                if (data[deviceId]) {
+                    var device = _.find(model.devices, findDevice(deviceId));
+                    if (device) {
+                        if (data[deviceId].port) {
+                            var ports = mapper.ports.mapAll(data[deviceId].port, device);
+                            device.updatePorts(ports);
+                        }
                     }
                 }
             }
@@ -312,7 +335,7 @@
      *
      */
     var processFlows = function (data) {
-        if (data == null) {
+        if (data === null) {
             console.error("processFlows called without data");
         } else {
             model.flows = mapper.flows.mapAll(data, model.devices, model.links);
@@ -328,7 +351,7 @@
      *
      */
     var processHosts = function (data) {
-        if (data == null) {
+        if (data === null) {
             console.error("processHosts called without data");
         } else {
             var clientData = mapper.clients.mapAll(data, model.devices);

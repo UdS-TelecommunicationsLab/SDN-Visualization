@@ -74,7 +74,7 @@ var __extends = this.__extends || function (d, b) {
             return function (newItems) {
                 newItems.forEach(function (newItem) {
                     var existingItem = _.find(targetCollection, function (d) {
-                        return d.id == newItem.id;
+                        return d.id === newItem.id;
                     });
                     if (existingItem !== undefined) {
                         _.extend(existingItem, newItem);
@@ -192,13 +192,13 @@ var __extends = this.__extends || function (d, b) {
             for(var portNumber in ports) {
                 if (self.ports[portNumber] !== undefined) {
                     self.ports[portNumber] = _.assign(self.ports[portNumber], ports[portNumber], function(value, other) {
-                        return typeof other == 'undefined' ? value : other;
+                        return (typeof other === 'undefined') ? value : other;
                     });
                 } else {
                     self.ports[portNumber] = ports[portNumber];
                 }
             }
-        }
+        };
     };
     exports.Device.type = "Unknown";
 

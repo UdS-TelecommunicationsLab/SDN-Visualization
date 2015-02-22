@@ -30,13 +30,11 @@
     var _ = require("lodash"),
         common = require("../common"),
         config = require("../../config"),
-        crypt = require("../../../public/shared/crypt"),
-        network = require("../../../public/shared/network"),
         nvm = require("../../../public/shared/NVM");
 
     // Mapping Controller
     var controller = {
-        map: function (obj) {
+        map: function () {
             var configuration = config.getConfiguration();
 
             var ctrl = new nvm.Controller("Floodlight");
@@ -51,6 +49,12 @@
         }
     };
     exports.controller = controller;
+
+    var findDevice = function(deviceId) {
+        return function (d) {
+            return d.id === deviceId;
+        };
+    };
 
     // Mapping Clients
     var clients = {
@@ -77,8 +81,7 @@
                 rawData.forEach(function (rawClient) {
                     var dst = _.find(sw, function (lclSwitch) {
                         if (rawClient && rawClient.attachmentPoint.length > 0) {
-                            // port >= 0 to make sure switch control interface do not get displayed
-                            return rawClient.attachmentPoint[0].switchDPID === lclSwitch.id && rawClient.attachmentPoint[0].port != -2;
+                            return rawClient.attachmentPoint[0].switchDPID === lclSwitch.id;
                         }
                         return false;
                     });
@@ -183,7 +186,7 @@
 
     var ports = {
         map: function (obj, existingPort) {
-            var port = (existingPort !== undefined) ? existingPort : new nvm.Port(obj.portNumber);
+            var port = (existingPort !== undefined) ? existingPort : new nvm.Port(parseInt(obj.portNumber, 10));
 
             port.hardwareAddress = obj.hardwareAddress;
             port.name = obj.name;
@@ -217,7 +220,8 @@
             var allPorts = {};
             for (var i = 0; i < obj.length; i++) {
                 var p = obj[i];
-                allPorts[p.portNumber] = ports.map(p, device.ports[p.portNumber]);
+                var portNumber = parseInt(p.portNumber, 10);
+                allPorts[portNumber] = ports.map(p, device.ports[portNumber]);
             }
             return allPorts;
         }
@@ -280,9 +284,7 @@
                             }
                             flowByCookie[flowId].entries.push(flows.map(flowObj, deviceId, flowId));
 
-                            var device = _.find(devices, function (lclDevice) {
-                                return lclDevice.id === deviceId;
-                            });
+                            var device = _.find(devices, findDevice(deviceId));
                             if (device) {
                                 device.activeFlows.push(flowId);
                             }
@@ -292,6 +294,31 @@
             }
 
             var result = [];
+            var mapEndpoints = function (d) {
+                var fe = new nvm.FlowEntry();
+                fe.deviceId = d;
+                fe.actions = {endpoint: true};
+                return fe;
+            };
+
+            var findSourceOrDestination = function (entry, port) {
+                return function (d) {
+                    return (d.srcHost.id === entry.deviceId && d.srcPort === port) || (d.dstHost.id === entry.deviceId && d.dstPort === port);
+                };
+            };
+
+            var findDestination = function (entry) {
+                return function (d) {
+                    return (d.dstHost.id === entry.deviceId && d.dstPort === entry.inPort && d.srcHost.type === nvm.Client.type);
+                };
+            };
+
+            var findSource = function (entry) {
+                return function (d) {
+                    return (d.srcHost.id === entry.deviceId && d.srcPort === entry.inPort && d.dstHost.type === nvm.Client.type);
+                };
+            };
+
             for (var m in flowByCookie) {
                 var flow = flowByCookie[m];
 
@@ -303,6 +330,8 @@
                 var endpoints = [];
                 for (var k = 0; k < flow.entries.length; k++) {
                     var entry = flow.entries[k];
+
+
                     sources.push(entry.nw.src);
                     destinations.push(entry.nw.dst);
                     protocols.push(entry.nw.protocol);
@@ -311,11 +340,9 @@
 
                     for (var action in entry.actions) {
                         var port = parseInt(entry.actions[action], 10);
-                        if (action == "output") {
-                            var link = _.find(links, function (d) {
-                                return (d.srcHost.id === entry.deviceId && d.srcPort === port) || (d.dstHost.id === entry.deviceId && d.dstPort === port);
-                            });
-                            if(link) {
+                        if (action === "output") {
+                            var link = _.find(links, findSourceOrDestination(entry, port));
+                            if (link) {
                                 flow.links.push({
                                     linkId: link.id,
                                     direction: "forward"
@@ -333,12 +360,10 @@
                         }
                     }
 
-                    if (entry.actions.length == 0) {
+                    if (entry.actions.length === 0) {
                         entry.actions["drop"] = true;
                     } else {
-                        var sourceLinks = _.filter(links, function (d) {
-                            return (d.srcHost.id === entry.deviceId && d.srcPort === entry.inPort && d.dstHost.type === nvm.Client.type);
-                        });
+                        var sourceLinks = _.filter(links, findSource(entry));
                         for (var i = 0; i < sourceLinks.length; i++) {
                             flow.links.push({
                                 linkId: sourceLinks[i].id,
@@ -346,50 +371,46 @@
                             });
                             endpoints.push(sourceLinks[i].dstHost.id);
                         }
+                        var destinationLinks = _.filter(links, findDestination(entry));
 
-                        var destinationLinks = _.filter(links, function (d) {
-                            return (d.dstHost.id === entry.deviceId && d.dstPort === entry.inPort && d.srcHost.type === nvm.Client.type);
-                        });
-                        for (var j = 0; j < destinationLinks.length; j++) {
+                        for (var n = 0; n < destinationLinks.length; n++) {
                             flow.links.push({
                                 linkId: destinationLinks[i].id,
                                 direction: "forward" // TODO: properly set direction
                             });
-                            endpoints.push(destinationLinks[j].srcHost.id);
+                            endpoints.push(destinationLinks[n].srcHost.id);
                         }
                     }
 
-                    flow.endpoints = _.unique(endpoints).map(function(d) {
-                        var fe = new nvm.FlowEntry();
-                        fe.deviceId = d;
-                        fe.actions = { endpoint: true }; return fe;
-                    });
+
+                    flow.endpoints = _.unique(endpoints).map(mapEndpoints);
                 }
 
                 var src = _.unique(sources);
                 var dst = _.unique(destinations);
-                if (src.length == 1 && dst.length == 1 || (src.length == 2 && dst.length == 2 &&_.difference(src, dst).length == 0)) {
+                if (src.length === 1 && dst.length === 1 || (src.length === 2 && dst.length === 2 && _.difference(src, dst).length === 0)) {
                     flow.source = src[0];
                     flow.destination = dst[0];
                 }
 
                 var protocol = _.unique(protocols);
-                if (protocol.length == 1) {
+                if (protocol.length === 1) {
                     flow.protocol = protocol[0];
 
-                    if (flow.protocol == 6 || flow.protocol == 17) {
+                    if (flow.protocol === 6 || flow.protocol === 17) {
                         var service = _.unique(services);
-                        if (service.length == 1) {
+                        if (service.length === 1) {
                             flow.service = service[0];
-                        } else if (service.length == 2) {
+                        } else if (service.length === 2) {
                             flow.service = Math.min(service[0], service[1]);
                         }
                     }
                 }
 
-                flow.entries = _.sortBy(_.union(flow.entries, flow.endpoints), function(d) { return d.deviceId});
+                flow.entries = _.sortBy(_.union(flow.entries, flow.endpoints), function (d) {
+                    return d.deviceId;
+                });
                 delete flow.endpoints;
-
                 result.push(flow);
             }
 

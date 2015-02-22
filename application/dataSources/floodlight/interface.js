@@ -42,6 +42,9 @@
                 } catch (e) {
                     console.log(e);
                     onSuccess(null);
+                    if(onError) {
+                        onError(e);
+                    }
                 }
                 onSuccess(res);
             });
@@ -56,7 +59,7 @@
             host: address[0],
             port: address[1],
             path: "/wm/" + command
-        }
+        };
         var req = http.request(options, successCallback);
         req.on("error", function(err) {
             console.log(err);

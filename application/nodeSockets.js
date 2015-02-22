@@ -29,10 +29,8 @@
     "use strict";
     var config = require("./config"),
         io = require("socket.io"),
-        moment = require("moment"),
         msgpack = require('../lib/msgpack-javascript/msgpack.codec.js').msgpack,
-        linkManipulation = require("./ofca/linkManipulation"),
-        storage = require("./storage");
+        linkManipulation = require("./ofca/linkManipulation");
 
     var connection;
     var worker;
@@ -60,6 +58,7 @@
 
         linkManipulation.manipulateLink(srcNode, user, iface, delay, loss, errHandler);
         linkManipulation.manipulateLink(dstNode, user, iface, delay, loss, errHandler);
+        callback({success: true });
     };
 
     var handleNvmReset = function (message, callback) {
@@ -75,7 +74,7 @@
         connection.on("connection", function (socket) {
             socket.on("/interact/saveVizConfiguration", handleSaveVizConfiguration);
             socket.on("/interact/setLinkSpec", handleSetLinkSpec);
-            socket.on("/nvm/reset", handleNvmReset)
+            socket.on("/nvm/reset", handleNvmReset);
         });
     };
 

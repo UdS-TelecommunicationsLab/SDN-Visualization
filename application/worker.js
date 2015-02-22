@@ -57,7 +57,7 @@
 
         oldModel = model;
         if(reset) {
-            DEBUG && console.log("[Worker] Reset NVM.");
+            DEBUG && console.log("[Worker] Reset NVM."); // jshint ignore:line
             model = new nvm.NVM(model.started);
             reset = false;
         } else {
@@ -66,7 +66,7 @@
 
         var now = new Date();
         var diffMs = (now.getTime() - started.getTime());
-        DEBUG && console.log("[Worker] Run finished on " + moment(now).format("dddd, MMMM Do YYYY, HH:mm:ss") + ". Took " + (diffMs/1000) + " seconds.");
+        DEBUG && console.log("[Worker] Run finished on " + moment(now).format("dddd, MMMM Do YYYY, HH:mm:ss") + ". Took " + (diffMs/1000) + " seconds."); // jshint ignore:line
 
         var timeToWait = Math.max(pollingDelay - diffMs, 0);
         setTimeout(loadingProcess, timeToWait);
@@ -79,7 +79,7 @@
 
     var loadingProcess = function() {
         started = new Date();
-        DEBUG && console.log("[Worker] Run started on " + moment(started).format("dddd, MMMM Do YYYY, HH:mm:ss") + ".");
+        DEBUG && console.log("[Worker] Run started on " + moment(started).format("dddd, MMMM Do YYYY, HH:mm:ss") + "."); // jshint ignore:line
         try {
             if (isAvailable()) {
                 dataSource.getAllData(model, finish);
@@ -87,7 +87,7 @@
                 setTimeout(loadingProcess, pollingDelay);
             }
         } catch (e) {
-            DEBUG && console.log("[Worker] " + e);
+            DEBUG && console.log("[Worker] " + e); // jshint ignore:line
         }
     };
 
@@ -101,7 +101,7 @@
         }
 
         if (m && m.reset) {
-            DEBUG && console.log("[Worker] Received request to reset NVM.");
+            DEBUG && console.log("[Worker] Received request to reset NVM."); // jshint ignore:line
             reset = true;
         }
     });

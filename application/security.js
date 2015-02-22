@@ -36,7 +36,7 @@
 
     security.init = function() {
         passport.use(new LocalStrategy(function(enteredName, enteredPass, done) {
-            if (enteredName == name && enteredPass == pass) {
+            if (enteredName === name && enteredPass === pass) {
                 done(null, { name: name });
             } else {
                 done(null, false, { message: "Incorrect username or password." });

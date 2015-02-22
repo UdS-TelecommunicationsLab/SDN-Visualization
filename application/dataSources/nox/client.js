@@ -41,10 +41,11 @@
         resourceCount--;
         if (resourceCount === 0) {
 
-            if (call)
+            if (call) {
                 call(errorRaised);
+            }
         }
-    }
+    };
 
     var handleError = function (e) {
         console.log(e);
@@ -63,7 +64,7 @@
     };
 
     var processInfos = function (data) {
-        if (data === null || data == undefined || data === {}) {
+        if (data === null || data === undefined || data === {}) {
             console.error("processInfos called without data");
         } else {
             model.controller = mapper.controller.map(data.status);
@@ -104,7 +105,7 @@
 
         getResource(client.commands.get.general, processInfos);
         getResource(client.commands.get.flows, processFlows);
-    }
+    };
 
     client.commands = {
         get: {
