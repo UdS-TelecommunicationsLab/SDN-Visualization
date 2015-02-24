@@ -50,7 +50,7 @@ block nav
                         button.btn.btn-default(type="button",ng-click="clearDeviceFilter()",ng-disabled="deviceFilter == ''")
                             i.fa.fa-times
 
-    ul(class="nav navbar-nav",style="margin-left: 20px;")
+    ul.pull-right(class="nav navbar-nav",style="margin-left: 20px;")
         li(ng-cloak, ng-class="{ ok: totalStatus, error: !totalStatus}")
             a(href="/status", ng-show="totalStatus", tooltip="Everything is fine.", tooltip-placement="bottom")
                 i.fa.fa-check-square
