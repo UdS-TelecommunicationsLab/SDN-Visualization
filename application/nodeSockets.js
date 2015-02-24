@@ -56,8 +56,9 @@
             }
         };
 
-        linkManipulation.manipulateLink(srcNode, user, iface, delay, loss, errHandler);
-        linkManipulation.manipulateLink(dstNode, user, iface, delay, loss, errHandler);
+        // TODO: readd as soon as security concerns are solved
+        //linkManipulation.manipulateLink(srcNode, user, iface, delay, loss, errHandler);
+        //linkManipulation.manipulateLink(dstNode, user, iface, delay, loss, errHandler);
         callback({success: true });
     };
 
