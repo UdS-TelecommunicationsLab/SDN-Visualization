@@ -76,14 +76,14 @@
                     $modal.open({
                         templateUrl: "/templates/topology/sdn-topology-help",
                         resolve: {},
-                        size: "sm",
+                        size: "md",
                         controller: function ($scope, $modalInstance) {
                             $scope.close = function () {
                                 $modalInstance.dismiss('cancel');
                             };
                         },
                         backdrop: true
-                    })
+                    });
                 };
 
                 // D3.js Force-Layout Configuration and Behaviour
