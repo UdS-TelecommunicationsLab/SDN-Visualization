@@ -6,3 +6,4 @@ public/css/app.css
 lib/
 .idea/
 *.js.map
+security.log

@@ -29,17 +29,25 @@
     "use strict";
     var passport = require("passport"),
         pkg = require("../package.json"),
+        fs = require("fs"),
+        moment = require("moment"),
         LocalStrategy = require("passport-local").Strategy;
 
     var name = (pkg.credentials && pkg.credentials.name) || "root";
     var pass = (pkg.credentials && pkg.credentials.pass) || "1234";
 
+    var logFile = "./security.log";
+
     security.init = function () {
+        fs.open(logFile, "a", function() {
+        });
         passport.use(new LocalStrategy({
                 passReqToCallback: true
             },
             function (req, enteredName, enteredPass, done) {
                 if (enteredName === name && enteredPass === pass) {
+                    var logEntry = moment().format() + "\t" + req.ip + "\t" + name + "\n";
+                    fs.appendFileSync(logFile, logEntry);
                     done(null, {name: name});
                 } else {
                     done(null, false, req.flash("loginMessage", "Incorrect username or password."));
