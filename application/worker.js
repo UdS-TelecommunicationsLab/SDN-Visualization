@@ -27,11 +27,11 @@
 
 (function(DEBUG) {
     "use strict";
-    var dataSource = require("../application/dataSources/source"),
-        config = require("./config"),
+    var dataSource = require(__dirname + "/dataSources/source"),
+        config = require(__dirname + "/config"),
         moment = require("moment"),
-        objectDiff = require("../lib/objectDiff-enhanced/objectDiff"),
-        nvm = require("../public/shared/NVM");
+        objectDiff = require(__dirname + "/../lib/objectDiff-enhanced/objectDiff"),
+        nvm = require(__dirname + "/../public/shared/NVM");
 
     var pollingDelay = 1500; // in milliseconds
     var model = new nvm.NVM();

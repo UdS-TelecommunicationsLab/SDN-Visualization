@@ -36,7 +36,7 @@
     var name = (pkg.credentials && pkg.credentials.name) || "root";
     var pass = (pkg.credentials && pkg.credentials.pass) || "1234";
 
-    var logFile = "./security.log";
+    var logFile = __dirname + "/../security.log";
 
     security.init = function () {
         fs.open(logFile, "a", function() {

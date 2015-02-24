@@ -32,7 +32,7 @@
 
     var config = null;
     var callbacks = [];
-    var sdnConfigurationPath = "./sdnConfiguration.json";
+    var sdnConfigurationPath = __dirname + "/../sdnConfiguration.json";
 
     var createFileIfNotExistent = function () {
         if (!fs.existsSync(sdnConfigurationPath)) {
