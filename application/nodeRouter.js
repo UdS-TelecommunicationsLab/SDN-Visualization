@@ -30,6 +30,7 @@
     "use strict";
 
     var config = require("./config"),
+        pkg = require("../package.json"),
         moment = require("moment"),
         msgpack = require("../lib/msgpack-javascript/msgpack.codec.js").msgpack,
         passport = require("passport"),
@@ -39,7 +40,7 @@
     var loginUrl = "/login";
 
     var index = function(request, response) {
-        response.render("index");
+        response.render("index", { demoMode: pkg.isDemoMode || false });
     };
 
     var login = function(req, res) {
@@ -52,7 +53,7 @@
 
     var registerTemplates = function(app) {
         app.get("/templates/*", ensureLoggedIn(loginUrl), function(request, response) {
-            response.render(request.params[0]);
+            response.render(request.params[0], { demoMode: pkg.isDemoMode || false });
         });
     };
 

@@ -4,6 +4,7 @@
   "private": true,
   "appPort": "443",
   "isHttpRedirectEnabled": false,
+  "isDemoMode": false,
   "operatorUrl": "http://www.openflow.uni-saarland.de",
   "credentials": {
     "name": "root",
