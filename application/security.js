@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  * 
  * This license applies to all parts of the SDN-Visualization Application that are not externally
- * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
+ * maintained libraries. The licenses of externally maintained libraries can be found in /node_modules and /lib.
  */
 
 (function(security) {
