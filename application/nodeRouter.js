@@ -44,7 +44,7 @@
 
     var login = function(req, res) {
         if (!req.user) {
-            res.render('login');
+            res.render('login', { message: req.flash("loginMessage") });
         } else {
             res.redirect("/");
         }
@@ -113,7 +113,7 @@
             successRedirect: "/",
             successFlash: false,
             failureRedirect: loginUrl,
-            failureFlash: false
+            failureFlash: true
         }));
 
         registerTemplates(app);
