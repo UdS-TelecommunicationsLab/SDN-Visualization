@@ -7,19 +7,20 @@ div
             thead
                 tr
                     th(colspan=2,rowspan=2,width="70px")
-                    th(colspan=4) Source
-                    th(colspan=4) Destination
-                    th(rowspan=2).linkParameter Delay
+                    th(colspan=5) Source
+                    th(colspan=5) Destination
                 tr
                     th Name [Port]
                     th.linkParameter Tx Rate
                     th.linkParameter Rx Rate
                     th.linkParameter Loss
+                    th.linkParameter Delay
 
                     th Name [Port]
                     th.linkParameter Tx Rate
                     th.linkParameter Rx Rate
                     th.linkParameter Loss
+                    th.linkParameter Delay
             tbody
                 tr(ng-repeat="link in data.nvm.links | srcOrDstId:deviceFilter")
                     td(width="50px")
@@ -35,6 +36,7 @@ div
                     td.linkParameter(ng-class="{ nonZero: link.srcTx != 0 && link.srcTx != null }") {{ link.srcTx | dataRate }}
                     td.linkParameter(ng-class="{ nonZero: link.srcRx != 0 && link.srcRx != null }") {{ link.srcRx | dataRate }}
                     td.linkParameter(ng-class="{ nonZero: link.srcPlr != 0 && link.srcPlr != null }") {{ link.srcPlr | packetLossRate }}
+                    td.linkParameter(ng-class="{ nonZero: link.srcDelay != 0 && link.srcDelay != null }") {{ link.srcDelay | delay }}
 
                     td
                         a(href="{{ '/detail/device/' + link.dstHost.id }}")
@@ -44,8 +46,7 @@ div
                     td.linkParameter(ng-class="{ nonZero: link.dstTx != 0 && link.dstTx != null }") {{ link.dstTx | dataRate }}
                     td.linkParameter(ng-class="{ nonZero: link.dstRx != 0 && link.dstRx != null }") {{ link.dstRx | dataRate }}
                     td.linkParameter.loss(ng-class="{ nonZero: link.dstPlr != 0 && link.dstPlr != null }") {{ link.dstPlr | packetLossRate }}
-
-                    td.linkParameter(ng-class="{ nonZero: link.delay != 0 && link.delay != null }") {{ link.delay | delay }}
+                    td.linkParameter(ng-class="{ nonZero: link.dstDelay != 0 && link.dstDelay != null }") {{ link.dstDelay | delay }}
 
     div.panel.panel-default(ng-show="data.nvm.links.length > 0")
         div.panel-body

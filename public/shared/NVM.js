@@ -128,7 +128,8 @@ var __extends = this.__extends || function (d, b) {
         this.dstRx = null;
         this.srcPlr = null;
         this.dstPlr = null;
-        this.delay = null;
+        this.srcDelay = null;
+        this.dstDelay = null;
     };
 
 

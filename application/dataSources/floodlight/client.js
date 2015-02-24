@@ -66,6 +66,12 @@
         };
     };
 
+    var findLink = function (srcId, srcPort, dstId, dstPort) {
+        return function (q) {
+            return (q.srcHost.id === srcId && q.srcPort === srcPort && q.dstHost.id === dstId && q.dstPort === dstPort);
+        };
+    };
+
     var handleError = function (e) {
         console.log(e);
         errorRaised = true;
@@ -178,22 +184,18 @@
             console.error("processDelay called without data");
         } else {
             data.forEach(function (d) {
-                var srcDpid = d.srcDpid;
-                var srcPort = d.srcPort;
-                var dstDpid = d.dstDpid;
-                var dstPort = d.dstPort;
-                if (d.srcDpid > d.dstDpid) {
-                    srcDpid = d.dstDpid;
-                    srcPort = d.dstPort;
-                    dstDpid = d.srcDpid;
-                    dstPort = d.srcPort;
+                var delay = parseFloat(d.delayMS);
+                var srcPort = parseInt(d.srcPort, 10);
+                var dstPort = parseInt(d.dstPort, 10);
+
+                var srcLinks = _.filter(model.links, findLink(d.srcDpid, srcPort, d.dstDpid, dstPort));
+                for (var i = 0; i < srcLinks.length; i++) {
+                    srcLinks[i].srcDelay = delay;
                 }
 
-                var links = _.filter(model.links, function (q) {
-                    return q.srcHost.id === srcDpid && d.srcPort === srcPort && q.dstHost.id === dstDpid && d.dstPort === dstPort;
-                });
-                for (var i = 0; i < links.length; i++) {
-                    links[i].delay = parseFloat(d.delayMS);
+                var links = _.filter(model.links, findLink(d.dstDpid, dstPort, d.srcDpid, srcPort));
+                for (var j = 0; j < links.length; j++) {
+                    links[j].dstDelay = delay;
                 }
             });
         }
