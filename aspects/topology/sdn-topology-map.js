@@ -51,8 +51,6 @@
 
                 var defaults = _.cloneDeep(topology.defaultParameters);
 
-                $scope.loaded = false;
-
                 $scope.$watch("showInactive", function () {
                     $scope.showInactive = !($scope.showInactive != true && $scope.showInactive != "true");
                     restart();
@@ -97,9 +95,6 @@
                     .linkDistance(1)
                     .linkStrength(function (d) {
                         return ($scope.showInactive || d.link.active) ? 1 : 0;
-                    })
-                    .on("end", function () {
-                        showTopology();
                     });
 
                 var nodeCollection = force.nodes();
@@ -123,31 +118,8 @@
                         .attr("y2", function (d) {
                             return topology.boundingBox(d.target.y, h);
                         });
-
-                    if (force.alpha() < 1) {
-                        showTopology();
-                    }
                 };
                 force.on("tick", tick);
-
-                var showTopology = function () {
-                    if (nodeCollection.length == 0) {
-                        return;
-                    }
-
-                    if (!$scope.loaded) {
-                        mapInner.slideDown(1000);
-                        force.alpha(0.1);
-                    }
-
-                    $scope.loaded = true;
-                    $scope.$digest();
-                };
-
-                var hideTopology = function () {
-                    $scope.loaded = false;
-                    mapInner.slideUp(1000);
-                };
 
                 var resize = function () {
                     w = mapNode.width();
@@ -311,10 +283,6 @@
                         } else {
                             topology.defaultTextStyle(texts);
                         }
-
-                        if (nodeCollection.length == 0) {
-                            hideTopology();
-                        }
                     }
                 };
 
@@ -377,7 +345,6 @@
                         topic: "modelUpdate",
                         callback: function (event, message) {
                             if (isDataInitialized) {
-                                hideTopology();
                                 _.remove(linkCollection);
                                 _.remove(nodeCollection);
                                 isDataInitialized = false;
