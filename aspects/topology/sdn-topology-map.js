@@ -428,9 +428,7 @@
 
                 var highlightLink = function (event, link) {
                     linkCollection.forEach(function (d) {
-                        if (d.id == link.id) {
-                            d.highlight = true;
-                        } else {
+                        if (d.id !== link) {
                             d.blur = true;
                         }
                     });
