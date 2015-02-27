@@ -19,11 +19,11 @@ block body
                     table.table
                         tbody
                             tr
-                                td
+                                td(ng-show="!editDelay") {{ item.srcDelay | delay }}
                                 th
                                     i.fa.fa-clock-o
                                     |  Delay
-                                td(ng-show="!editDelay") {{ item.delay | delay }}
+                                td(ng-show="!editDelay") {{ item.dstDelay | delay }}
                                 td(ng-show="editDelay")
                                     div.input-group
                                         input.form-control(type="number", ng-model="delay",ng-pattern="/^-?(?:[0-9]+|[0-9]*\.[0-9]+)$/", min = "0", ng - required = "true")
