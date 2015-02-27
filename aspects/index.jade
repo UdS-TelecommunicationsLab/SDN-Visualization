@@ -59,7 +59,7 @@ block nav
             a(href="/status", ng-show="!totalStatus", tooltip="{{ systemError }}", tooltip-placement="bottom")
                 i.fa.fa-exclamation-triangle
                 | &nbsp;
-                small Error on {{ systemErrorStamp | formatDateShort }}
+                small {{ systemErrorStamp | formatDateWithoutYear }}
 
 
 block body
