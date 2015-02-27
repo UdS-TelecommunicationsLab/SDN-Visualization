@@ -44,7 +44,7 @@ block nav
     form.navbar-form.navbar-left(role="search")
         div.form-group
             div.div.btn-group
-                div.input-group(style="width:350px")
+                div.input-group()
                     input.form-control(type="text", ng-model="deviceFilter", placeholder="filter name, mac or datapath")
                     span.input-group-btn
                         button.btn.btn-default(type="button",ng-click="clearDeviceFilter()",ng-disabled="deviceFilter == ''")
@@ -55,7 +55,7 @@ block nav
             a(href="/status", ng-show="totalStatus", tooltip="Everything is fine.", tooltip-placement="bottom")
                 i.fa.fa-check-square
                 | &nbsp;
-                small {{ lastUpdate | formatDateShort }}
+                small {{ lastUpdate | formatDateWithoutYear }}
             a(href="/status", ng-show="!totalStatus", tooltip="{{ systemError }}", tooltip-placement="bottom")
                 i.fa.fa-exclamation-triangle
                 | &nbsp;
