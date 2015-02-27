@@ -148,6 +148,10 @@
             this.status = status;
         };
 
+        var clearLog = function() {
+            data.logs.length = 0;
+        };
+
         var load = function() {
             $http.get("/api/model?d=" + new Date()).
                 success(function(compressedData, status, headers, config) {
@@ -205,6 +209,7 @@
             getFlowById: getFlowById,
             data: data,
             applyChanges: objectDiff.applyChanges,
+            clearLog: clearLog,
             init: init
         };
     });

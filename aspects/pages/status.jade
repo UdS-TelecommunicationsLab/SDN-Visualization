@@ -1,69 +1,72 @@
 div#sdn-status
-	div.row
-		div.col-sm-7.col-md-4
-			div.panel.panel-default
-				div.panel-heading
-					i.fa.fa-check-square
-					|  Status
-				div.table-responsive
-					table.table.table-striped.table-condensed
-						tr
-							td Name
-							td(colspan=2)
-								strong {{ data.nvm.controller.name }}
-						tr
-							td Contact
-							td(colspan=2)
-								a(href="{{ 'mailto:' + contactInformation}}",ng-show="contactInformation") {{ contactInformation }}
-								span(ng-show="!contactInformation") {{ contactInformation }}
-						tr
-							td Type
-							td(colspan=2) {{ data.nvm.controller.type }}
-						tr
-							td Started
-							td(colspan=2) {{ data.nvm.controller.started | formatSince }}
-						tr
-							td Last Update
-							td(colspan=2) {{ data.nvm.latestUpdate | formatDate }}
-						tr
-							td Monitored Networks
-							td(colspan=2)
-								p(ng-repeat="network in data.nvm.controller.monitoredNetworks") {{ network }}
-						tr
-							td Local CRC
-							td(colspan=2)
-								sdn-crc-box(crc="localCRC")
-						tr
-							td Server CRC
-							td(colspan=2)
-								sdn-crc-box(crc="serverCRC")
-			div.panel.panel-default
-				div.panel-heading
-					i.fa.fa-flash
-					| &nbsp;Actions
-				div.panel-body
-					button.btn.btn-danger(ng-click="resetModel()")
-						i.fa.fa-fw.fa-trash-o
-						| &nbsp;Invalidate Model
-		div.col-sm-5.col-md-8
-			div.panel.panel-default
-				div.panel-heading
-					i.fa.fa-bars
-					|  Log
-				div.table-responsive
-					table.table.table-striped.table-condensed
-						tbody
-							tr(ng-repeat="log in data.logs", ng-class="{ success: log.status == 'success', danger: log.status == 'error'}")
-								th.hidden-sm(style="width:180px") {{ log.date | formatDateShort }}
-								th.visible-sm(style="width:100px") {{ log.date | formatDateShort }}
-								td {{ log.message }}
-					div.panel-body(ng-show="!totalStatus")
-						div.alert.alert-danger
-							p There is an error at the moment. In case it does not vanish after a few seconds try the following:
-							ul
-								li
-									a.alert-link(href="/status",ng-click="reload()") Reload
-									|  the page by pressing F5 or the according button in your browser's address bar.
-								li If this does not help
-									a.alert-link(href="{{ 'mailto:' + contactInformation }}") contact
-									|  an administrator using the address given on the left side.
+    div.row
+        div.col-sm-7.col-md-4
+            div.panel.panel-default
+                div.panel-heading
+                    i.fa.fa-check-square
+                    |  Status
+                div.table-responsive
+                    table.table.table-striped.table-condensed
+                        tr
+                            td Name
+                            td(colspan=2)
+                                strong {{ data.nvm.controller.name }}
+                        tr
+                            td Contact
+                            td(colspan=2)
+                                a(href="{{ 'mailto:' + contactInformation}}",ng-show="contactInformation") {{ contactInformation }}
+                                span(ng-show="!contactInformation") {{ contactInformation }}
+                        tr
+                            td Type
+                            td(colspan=2) {{ data.nvm.controller.type }}
+                        tr
+                            td Started
+                            td(colspan=2) {{ data.nvm.controller.started | formatSince }}
+                        tr
+                            td Last Update
+                            td(colspan=2) {{ data.nvm.latestUpdate | formatDate }}
+                        tr
+                            td Monitored Networks
+                            td(colspan=2)
+                                p(ng-repeat="network in data.nvm.controller.monitoredNetworks") {{ network }}
+                        tr
+                            td Local CRC
+                            td(colspan=2)
+                                sdn-crc-box(crc="localCRC")
+                        tr
+                            td Server CRC
+                            td(colspan=2)
+                                sdn-crc-box(crc="serverCRC")
+            div.panel.panel-default
+                div.panel-heading
+                    i.fa.fa-flash
+                    | &nbsp;Actions
+                div.panel-body
+                    button.btn.btn-danger(ng-click="resetModel()")
+                        i.fa.fa-fw.fa-trash-o
+                        | &nbsp;Invalidate Model
+        div.col-sm-5.col-md-8
+            div.panel.panel-default
+                div.panel-heading
+                    i.fa.fa-bars
+                    |  Log
+                    a.pull-right.btn.btn-default.btn-xs(ng-click="clearLog()", tooltip="Clear Log", tooltip-placement="bottom")
+                        i.fa.fa-fw.fa-trash-o
+
+                div.table-responsive
+                    table.table.table-striped.table-condensed
+                        tbody
+                            tr(ng-repeat="log in data.logs", ng-class="{ success: log.status == 'success', danger: log.status == 'error'}")
+                                th.hidden-sm(style="width:180px") {{ log.date | formatDateShort }}
+                                th.visible-sm(style="width:100px") {{ log.date | formatDateShort }}
+                                td {{ log.message }}
+                    div.panel-body(ng-show="!totalStatus")
+                        div.alert.alert-danger
+                            p There is an error at the moment. In case it does not vanish after a few seconds try the following:
+                            ul
+                                li
+                                    a.alert-link(href="/status",ng-click="reload()") Reload
+                                    |  the page by pressing F5 or the according button in your browser's address bar.
+                                li If this does not help
+                                    a.alert-link(href="{{ 'mailto:' + contactInformation }}") contact
+                                    |  an administrator using the address given on the left side.
