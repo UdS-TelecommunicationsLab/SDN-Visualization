@@ -103,7 +103,7 @@
      */
     var processFeatures = function (data) {
         if (data === null || data === undefined || data === {}) {
-            console.error("processDesc called without data");
+            console.error("processFeatures called without data");
         } else {
             var deviceIds = _.keys(data);
             for (var i = 0; i < deviceIds.length; i++) {
@@ -122,6 +122,7 @@
                                 ports[portNumber] = mapper.ports.map(port);
                             }
                         }
+
                         device.updatePorts(ports);
                     }
                 }
@@ -183,21 +184,22 @@
         if (data === null || data === undefined || data === {} || (data.code && data.code === 404)) {
             console.error("processDelay called without data");
         } else {
-            data.forEach(function (d) {
-                var delay = parseFloat(d.delayMS);
-                var srcPort = parseInt(d.srcPort, 10);
-                var dstPort = parseInt(d.dstPort, 10);
+            for(var k = 0; k < data.length; k++) {
+                var delaySample = data[k];
+                var delay = parseFloat(delaySample.delayMS);
+                var srcPort = parseInt(delaySample.srcPort, 10);
+                var dstPort = parseInt(delaySample.dstPort, 10);
 
-                var srcLinks = _.filter(model.links, findLink(d.srcDpid, srcPort, d.dstDpid, dstPort));
+                var srcLinks = _.filter(model.links, findLink(delaySample.srcDpid, srcPort, delaySample.dstDpid, dstPort));
                 for (var i = 0; i < srcLinks.length; i++) {
                     srcLinks[i].srcDelay = delay;
                 }
 
-                var links = _.filter(model.links, findLink(d.dstDpid, dstPort, d.srcDpid, srcPort));
+                var links = _.filter(model.links, findLink(delaySample.dstDpid, dstPort, delaySample.srcDpid, srcPort));
                 for (var j = 0; j < links.length; j++) {
                     links[j].dstDelay = delay;
                 }
-            });
+            }
         }
         callback();
     };
