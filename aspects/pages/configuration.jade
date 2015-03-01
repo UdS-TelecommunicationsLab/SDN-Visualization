@@ -9,13 +9,14 @@ div#sdn-configuration
                                 button.btn.btn-default(type="button",ng-click="exportConfig()",ng-disabled="!configForm.$pristine")
                                     i.fa.fa-upload
                                     |  Export
-                            div.col-md-8
-                                div.input-group(style="width:350px")
-                                    input.form-control(type="file",name="importConfiguration")
-                                    span.input-group-btn
-                                        button.btn.btn-default(type="submit")
-                                            i.fa.fa-download
-                                            |  Import
+                            if !demoMode
+                                div.col-md-8
+                                    div.input-group(style="width:350px")
+                                        input.form-control(type="file",name="importConfiguration")
+                                        span.input-group-btn
+                                            button.btn.btn-default(type="submit")
+                                                i.fa.fa-download
+                                                |  Import
 
     form.form.form-horizontal(name="configForm")
         div

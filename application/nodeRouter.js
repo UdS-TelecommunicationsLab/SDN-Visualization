@@ -25,7 +25,7 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /node_modules and /lib.
  */
 
-(function(nodeRouter) {
+(function (nodeRouter) {
     /*jslint node: true */
     "use strict";
 
@@ -39,27 +39,27 @@
 
     var loginUrl = "/login";
 
-    var index = function(request, response) {
-        response.render("index", { demoMode: pkg.isDemoMode || false });
+    var index = function (request, response) {
+        response.render("index", {demoMode: pkg.isDemoMode || false});
     };
 
-    var login = function(req, res) {
+    var login = function (req, res) {
         if (!req.user) {
-            res.render('login', { message: req.flash("loginMessage") });
+            res.render('login', {message: req.flash("loginMessage")});
         } else {
             res.redirect("/");
         }
     };
 
-    var registerTemplates = function(app) {
-        app.get("/templates/*", ensureLoggedIn(loginUrl), function(request, response) {
-            response.render(request.params[0], { demoMode: pkg.isDemoMode || false });
+    var registerTemplates = function (app) {
+        app.get("/templates/*", ensureLoggedIn(loginUrl), function (request, response) {
+            response.render(request.params[0], {demoMode: pkg.isDemoMode || false});
         });
     };
 
-    var registerOtherRoutes = function(app) {
-        app.get("/version", function(req, res) {
-            res.json({ version: require("../package.json").version });
+    var registerOtherRoutes = function (app) {
+        app.get("/version", function (req, res) {
+            res.json({version: require("../package.json").version});
         });
 
         app.get("/operator", function (req, res) {
@@ -67,8 +67,8 @@
         });
     };
 
-    var registerAPI = function(app) {
-        app.get("/api/model", ensureLoggedIn(loginUrl), function(request, response) {
+    var registerAPI = function (app) {
+        app.get("/api/model", ensureLoggedIn(loginUrl), function (request, response) {
             response.json({
                 data: msgpack.pack({
                     nvm: storage.getNVM(),
@@ -77,36 +77,36 @@
             });
         });
 
-        app.get("/api/vizConfiguration", ensureLoggedIn(loginUrl), function(request, response) {
+        app.get("/api/vizConfiguration", ensureLoggedIn(loginUrl), function (request, response) {
             response.json({
                 configuration: config.getConfiguration()
             });
         });
 
-        app.get("/api/exportVizConfiguration", ensureLoggedIn(loginUrl), function(request, response) {
+        app.get("/api/exportVizConfiguration", ensureLoggedIn(loginUrl), function (request, response) {
             var fileName = "SDN_VIZ_Configuration_" + moment(new Date()).format("YYYY_MM_DD_HH_mm_ss") + ".json";
             response.setHeader("Content-disposition", "attachment; filename=" + fileName + "");
             config.attachToResponse(response);
         });
 
-        app.post("/api/importVizConfiguration", ensureLoggedIn(loginUrl), function(request, response) {
-            if (request.files.importConfiguration) {
-                config.importConfig(request, function() {
-                        console.log("Error while reading uploaded visualiztation file.");
-                    },
-                    function() {
-                        console.log("Error while writing uploaded visualiztation file.");
-                    }, function() {
-                        response.redirect("back");
-                    });
+        app.post("/api/importVizConfiguration", ensureLoggedIn(loginUrl), function (request, response) {
+            if (request.files && request.files.importConfiguration) {
+                var readErrback = function () {
+                    console.log("Error while reading uploaded visualization file.");
+                };
+                config.importConfig(request, readErrback, readErrback, function () {
+                    response.redirect("back");
+                });
+            } else {
+                response.redirect("back");
             }
         });
     };
 
-    nodeRouter.init = function(app) {
+    nodeRouter.init = function (app) {
         app.get("/", ensureLoggedIn(loginUrl), index);
         app.get(loginUrl, login);
-        app.get("/logout", function(req, res) {
+        app.get("/logout", function (req, res) {
             req.logout();
             res.redirect("/");
         });
