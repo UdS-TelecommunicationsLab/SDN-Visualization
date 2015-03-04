@@ -6,7 +6,7 @@ module.exports = function(config) {
     frameworks: ['jasmine'],
     files: [
       './public/shared/NVM.js',
-      './public/js/lib/objectDiff.js',
+      './lib/objectDiff-enhanced/objectDiff.js',
       'test/**/*.js'
     ],
     exclude: [

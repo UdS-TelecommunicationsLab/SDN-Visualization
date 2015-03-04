@@ -1,57 +1,93 @@
 ﻿extend detail
 block header
-	span(class="device Flow")
-		i.fa.fa-random
-	span Flow: 
-	code.dp
-		| {{ item.id }}
+    span(class="device Flow")
+        i.fa.fa-random
+    span &nbsp;Flow:
+    code.dp
+        | {{ item.id }}
 
 block body
-	div.row
-		div.col-md-4
-			h2 Data Link Layer
-			div.table-responsive
-				table.table.table-bordered.table-condensed.table-striped
-					tbody
-						tr
-							th Source:
-							td
-								a(href="{{ '/detail/device/' +  item.dl.src }}")
-									code.dp {{ item.dl.src }}
-						tr
-							th Destination:
-							td
-								a(href="{{ '/detail/device/' +  item.dl.dst }}")
-									code.dp {{ item.dl.dst }}
-						tr
-							th Type:
-							td {{ item.dl.type | ethernetFrameType }}
-						tr
-							th VLAN:
-							td {{ item.dl.vlan }} / {{ item.dl.vlanPriority }}
-		div.col-md-4
-			h2 Network Layer 
-				span.label.label-success {{ item.nw.protocol | networkProtocol }}
-			div.table-responsive
-				table.table.table-bordered.table-condensed.table-striped
-					tbody
-						tr
-							th Source:
-							td {{ item.nw.src }}
-						tr
-							th Destination:
-							td {{ item.nw.dst }}
-						tr
-							th Type of Service:
-							td {{ item.nw.typeOfService }}
-		div.col-md-4
-			h2 Transport Layer
-			div.table-responsive
-				table.table.table-bordered.table-condensed.table-striped
-					tbody
-						tr
-							th Source:
-							td {{ item.tp.src }}
-						tr
-							th Destination:
-							td {{ item.tp.dst }}
+    p.sdn-flow
+        strong Parameters:&nbsp;
+        code.dp Source (S): {{ item.source }}
+        | &nbsp;
+        code.dp Destination (D): {{ item.destination }}
+        | &nbsp;
+        span.label.label-success {{ item.protocol | networkProtocol }}
+        | &nbsp;
+        span.label.label-default(ng-show="item.protocol == 6 || item.protocol == 17") {{ item.service | serviceName:item.protocol }}
+
+    div.table-responsive
+        table.table.table-condensed.table-striped.table-bordered
+            thead
+                tr
+                    th(rowspan="2") Device
+                    th(rowspan="2") Operation
+                        sdn-help-tooltip(tooltip="e.g. from | to")
+                    th(rowspan="2") Statistics
+                        sdn-help-tooltip(tooltip="Priority, Idle Timeout, Hard Timeout, Packet Count, Byte Count")
+                    th(colspan="3") Layers
+                tr
+                    th Data
+                    th Network
+                    th Transport
+            tbody(ng-repeat="device in item.devices")
+                tr(ng-repeat="entry in device.entries")
+                    td(ng-show="$first", rowspan="{{ device.entries.length }}")
+                        a(href="{{ '/detail/device/' + device.item.id }}")
+                            sdn-device-type-icon(device="device.item")
+                            code.dp {{ device.item.name }}
+                    td
+                        small(ng-show="entry.actions.endpoint")
+                            i.fa.fa-fw.fa-arrow-circle-o-down
+                            | &nbsp;Endpoint&nbsp;
+                        div(ng-repeat="(key, action) in entry.actions", ng-hide="entry.actions.endpoint")
+                            small(ng-switch="key")
+                                span(ng-switch-when="output")
+                                    i.fa.fa-fw.fa-arrow-circle-o-right
+                                    | &nbsp;{{ entry.inPort }} | {{ action }}&nbsp;
+                                span(ng-switch-when="drop")
+                                    i.fa.fa-fw.fa-trash
+                                    | &nbsp;Drop
+                                span(ng-switch-default) {{ key }} : {{ action }}&nbsp;
+
+                    td
+                        div(ng-hide="entry.actions.endpoint")
+                            div
+                                small(tooltip="Priority", tooltip-placement="top")
+                                    i.fa.fa-fw.fa-exclamation
+                                    | &nbsp;{{ entry.priority }} |
+                                small(tooltip="Idle Timeout", tooltip-placement="top")
+                                    i.fa.fa-fw.fa-clock-o
+                                    | &nbsp;{{ entry.idleTimeoutSeconds }}s |
+                                small(tooltip="Hard Timeout", tooltip-placement="top")
+                                    i.fa.fa-fw.fa-ban
+                                    | &nbsp;{{ entry.hardTimeoutSeconds }}s
+                            div
+                                small(tooltip="Packet Count", tooltip-placement="top")
+                                    i.fa.fa-fw.fa-cubes
+                                    | &nbsp;{{ entry.packetCount }} |
+                                small(tooltip="Byte Count", tooltip-placement="top")
+                                    i.fa.fa-fw.fa-cube
+                                    | &nbsp;{{ entry.byteCount }}
+                    td
+                        div(ng-hide="entry.actions.endpoint")
+                            code.dp S:&nbsp;
+                                a(href="{{ '/detail/device/' +  entry.dl.src }}") {{ entry.dl.src }}
+                            | <br/>
+                            code.dp D:&nbsp;
+                                a(href="{{ '/detail/device/' +  entry.dl.dst }}") {{ entry.dl.dst }}
+                            | <br/>
+                            code.dp VLAN: {{ entry.dl.vlan }} / {{ entry.dl.vlanPriority }} | Type: {{ entry.dl.type | ethernetFrameType }}
+                    td
+                        div(ng-hide="entry.actions.endpoint")
+                            code.dp S: {{ entry.nw.src }}
+                            | <br/>
+                            code.dp D: {{ entry.nw.dst }}
+                            | <br/>
+                            code.dp ToS:  {{ entry.nw.typeOfService }}
+                    td
+                        div(ng-hide="entry.actions.endpoint")
+                            code.dp S: {{ entry.tp.src }}
+                            | <br/>
+                            code.dp D: {{ entry.tp.dst }}

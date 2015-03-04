@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013 - 2014 Saarland University
+ * Copyright (c) 2013 - 2015 Saarland University
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  * 
  * This license applies to all parts of the SDN-Visualization Application that are not externally
- * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
+ * maintained libraries. The licenses of externally maintained libraries can be found in /node_modules and /lib.
  */
 
 (function(sdnViz) {
@@ -30,7 +30,7 @@
     sdnViz.filter("dataRate", function(numberToFixedFilter) {
         return function(input) {
             if (input !== undefined && input !== null)
-                return (numberToFixedFilter(input, 3)).toString() + " kB/s";
+                return (numberToFixedFilter(input / 1000, 2)).toString() + " kbps";
             return "UNK";
         };
     });

@@ -6,9 +6,10 @@
 @header-background: #005278;
 
 body {
-    position: relative;
-    padding-top: 70px;
-    background-color: @background-color;
+  position: relative;
+  padding-top: 70px;
+  background-color: @background-color;
+  overflow-y: scroll;
 }
 
 .navbar > .container .navbar-brand,
@@ -17,246 +18,271 @@ body {
 .container-fluid > .navbar-header,
 .container > .navbar-collapse,
 .container-fluid > .navbar-collapse {
-    margin-left: 0;
+  margin-left: 0;
 }
 
 h1 {
-    font-size: 24px;
+  font-size: 24px;
 }
 
 h1 small {
-    font-size: 18px;
+  font-size: 18px;
 }
 
 h2 {
-    font-size: 18px;
+  font-size: 18px;
 }
 
 h2 small {
-    font-size: 14px;    
+  font-size: 14px;
 }
 
 h3 {
-    font-size: 14px;    
-    font-weight: bold;
+  font-size: 14px;
+  font-weight: bold;
 }
 
 h4 {
-    font-size: 12px;
-    font-weight: bold;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 h5 {
-    font-size: 12px;        
+  font-size: 12px;
 }
 
 h6 {
-    font-size: 12px;
-    font-style: italic;
+  font-size: 12px;
+  font-style: italic;
 }
 
 .page-header {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 #sdn-nav {
-    text-shadow: 0 -1px 0 rgba(0,0,0,.15);
-    background-color: @header-background;
-    border:0;
-    box-shadow: 0 1px 0 rgba(255,255,255,.1);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, .15);
+  background-color: @header-background;
+  border: 0;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .1);
 
-    .navbar-brand {
-        color: white;
-        background: transparent url("../images/ofviz.png") no-repeat center left;
-        padding-left: 46px;
-		padding-right: 20px;
+  .navbar-brand {
+    color: white;
+  }
+
+  .navbar-brand-img {
+    background: transparent url("../images/ofviz.png") no-repeat center left;
+    width: 46px;
+    margin-right: -8px;
+  }
+
+  .navbar-nav > li > a {
+    color: desaturate(lighten(@header-background, 60%), 20%);
+
+    img, small {
+      vertical-align: middle;
     }
 
-    .navbar-nav > li > a {
-        color: desaturate(lighten(@header-background, 60%), 20%);
-
-        img, small {
-            vertical-align: middle;
-        }
-
-        small {
-            display: inline-block;
-            margin-left: 5px;
-        }
+    small {
+      display: inline-block;
+      margin-left: 5px;
     }
+  }
 
-    .navbar-nav > li.active,
-    .navbar-nav > li > a:hover {
-        color: white;
-    }
+  .navbar-nav > li.active,
+  .navbar-nav > li > a:hover {
+    color: white;
+  }
 
-    .navbar-nav > li.ok a {
-        color: #5cb85c !important;
-    }
+  .navbar-nav > li.ok a {
+    color: #5cb85c !important;
+  }
 
-    .navbar-nav > li.error a {
-        color: #d9534f !important;
-    }
+  .navbar-nav > li.error a {
+    color: #d9534f !important;
+  }
 
-    .navbar-nav > li.active a {
-        color: white;
-        background-color: darken(@header-background, 5%);
-    }
+  .navbar-nav > li.active a {
+    color: white;
+    background-color: darken(@header-background, 5%);
+  }
+
+  .navbar-form {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
 }
 
 code {
-    color: @header-background;
-    background-color: desaturate(lighten(@header-background, 70%), 70%);
+  color: @header-background;
+  background-color: desaturate(lighten(@header-background, 70%), 70%);
 }
 
 code.dp {
-    background-color: transparent;   
-    vertical-align: middle;
+  background-color: transparent;
+  vertical-align: middle;
 }
 
 span.middle {
-    vertical-align: middle;
+  vertical-align: middle;
 }
 
 a.thumbnail {
-    overflow: hidden;
-    word-wrap: break-word;
-    text-decoration: none;
-    margin-bottom: 0px;
+  overflow: hidden;
+  word-wrap: break-word;
+  text-decoration: none;
+  margin-bottom: 0px;
 
-    code {
-        white-space: normal;
-    }
+  code {
+    white-space: normal;
+  }
 }
 
 .nav-pills li:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .form-group {
-    margin-left: 5px;
-    margin-right: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
 @import "documentation.less";
 @import "topology.less";
 
 span.device {
-    display: inline-block;
-    vertical-align: middle;
-    line-height: 16px;
-    margin: 5px;
-    padding: 5px;
-    color: white;
-    -ms-border-radius: 2px;
-    border-radius: 2px;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 12px;
+  font-size: 12px;
+  margin: 3px;
+  padding: 3px;
+  color: white;
+  -ms-border-radius: 2px;
+  border-radius: 2px;
+
+  .fa {
+    font-size: 10px;
+  }
 }
 
-span.device strong { // same style as fa-fw
-    display: block;
-    width: 1.28571429em;
-    text-align: center;
+.sdn-device-thumbnail {
+  margin-bottom: 5px;
 }
 
+span.device strong {
+  // same style as fa-fw
+  display: block;
+  width: 1.28571429em;
+  text-align: center;
+}
 
 span.device.Link {
-    background: #a23800 !important;
+  background: #a23800 !important;
 }
 
 span.device.Flow {
-    background: #ffb800 !important;
+  background: #0077ff !important;
+}
+
+.sdn-flow span.label-default {
+  background: #0077ff !important;
+}
+
+a.sdn-flow:hover {
+  text-decoration: none;
 }
 
 #sdn-about {
-    .logo {
-        text-align: center;
-        margin-bottom: 10px;
-    }
+  .logo {
+    text-align: center;
+    margin-bottom: 10px;
+  }
 
-    .jumbotron img {
-        position: relative;
-        top: -30px;
-        left: -30px;
-        margin: 0;
-    }
+  .jumbotron img {
+    position: relative;
+    top: -30px;
+    left: -30px;
+    margin: 0;
+  }
 
-    .row img {
-        margin: 0 auto;
-        display: block;
-        background: white;
-        padding: 10px;
-    }
+  .row img {
+    margin: 0 auto;
+    display: block;
+    background: white;
+    padding: 10px;
+  }
 
-    .row a:hover {
-        text-decoration: none;
-    }
+  .row a:hover {
+    text-decoration: none;
+  }
 }
 
 .topologyStats {
-    font-size: 1.2em;
+  font-size: 1.15em;
 }
 
 .panel-heading {
-    h2 {
-        margin: 5px 0 5px 0;
-    }
+  h2 {
+    margin: 5px 0 5px 0;
+  }
 }
- 
 
 .helpTooltip {
-    color: #428bca;
-    font-size: 10px;
-    position: relative;
-    top: -5px;
+  color: #428bca;
+  font-size: 10px;
+  position: relative;
+  top: -5px;
 }
 
 .tooltip-inner {
-    white-space:pre-wrap;
+  white-space: pre-wrap;
 }
 
 .macDigitBox {
-    width: 38px;
-    margin-bottom: 5px;
-    font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+  width: 38px;
+  margin-bottom: 5px;
+  font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
 }
 
 .ng-invalid.form-control {
   border-color: #b94a48;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
 
 .label-center {
-    margin: 10px 0;
-    display: inline-block;
+  margin: 10px 0;
+  display: inline-block;
 }
 
-th.linkParameter,td.linkParameter {
-    width: 140px;
-    text-align: right;
+th.linkParameter, td.linkParameter {
+  width: 140px;
+  text-align: right;
 }
 
 td.nonZero {
-    font-weight: bold;
+  font-weight: bold;
 }
+
 td.nonZero.loss {
-    color: #d9534f ;
+  color: #d9534f;
 }
 
 .no-wrap {
-    white-space: nowrap;
+  white-space: nowrap;
 }
 
-.no-wrap select{
-    display: inline;
+.no-wrap select {
+  display: inline;
 }
 
 .colorpickerBox {
-	display: inline-block;
+  display: inline-block;
 }
 
 #toast-container > div {
-	opacity: 1;
+  opacity: 1;
 }
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
@@ -264,32 +290,54 @@ td.nonZero.loss {
 }
 
 td.decimal {
-    text-align: right !important;
-    vertical-align: middle !important;
+  text-align: right !important;
+  vertical-align: middle !important;
 }
 
 #sdn-copyright {
-    text-align: center;
-    color: #666;
-    font-size: 0.9em;
+  text-align: center;
+  color: #666;
+  font-size: 0.9em;
 
-    p {
-        margin-left: auto;
-        margin-right: auto;
-    }
+  p {
+    margin-left: auto;
+    margin-right: auto;
+  }
 
-    a.uds {
-        display: block;
-        vertical-align: middle;
-        height: 65px;
-        width: 150px;
-        margin: 0 auto;
-        background: url(../images/logos/UdS.png) 0 65px;
-        text-indent: -999em;
-    }
+  #logos a {
+    display: block;
+    vertical-align: middle;
+    height: 65px;
+    width: 150px;
+    margin: 0 auto;
+    text-indent: -999em;
+  }
 
-    a.uds:hover {
-        background: url(../images/logos/UdS.png) 0 0;
-    }
+  a.uds {
+    background: url(../images/logos/UdS.png) 0 65px;
+  }
+
+  a.ivci {
+    background: url(../images/logos/ivci.png) 0 65px;
+  }
+
+  #logos a:hover {
+    background-position: 0 0;
+  }
 }
 
+.sdn-flow-table {
+  a {
+    font-size: 12px;
+  }
+  .table > tbody > tr > td {
+    padding: 1px;
+  }
+  .dp {
+    font-size: 12px;
+  }
+}
+
+.table-hover > tbody > tr:hover {
+  background-color: #b8c6cc;
+}

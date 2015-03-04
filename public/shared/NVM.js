@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013 - 2014 Saarland University
+ * Copyright (c) 2013 - 2015 Saarland University
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,49 +22,78 @@
  * THE SOFTWARE.
  * 
  * This license applies to all parts of the SDN-Visualization Application that are not externally
- * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
+ * maintained libraries. The licenses of externally maintained libraries can be found in /node_modules and /lib.
  */
 
-var __extends = this.__extends || function(d, b) {
-    for (var p in b) {
-        if (b.hasOwnProperty(p)) {
-            d[p] = b[p];
+var __extends = this.__extends || function (d, b) {
+        for (var p in b) {
+            if (b.hasOwnProperty(p)) {
+                d[p] = b[p];
+            }
         }
-    }
 
-    function Ctor() { this.constructor = d; }
+        function Ctor() {
+            this.constructor = d;
+        }
 
-    Ctor.prototype = b.prototype;
-    d.prototype = new Ctor();
-};
+        Ctor.prototype = b.prototype;
+        d.prototype = new Ctor();
+    };
 
-(function(exports) {
+(function (exports, _) {
     "use strict";
+
     /**
      * The NVM type assembles all the other entites together in one extensive model.
      */
-    exports.NVM = function(startDate) {
-        this.started = startDate || (new Date());
-        this.latestInteraction = new Date();
-        this.latestUpdate = new Date();
+    exports.NVM = function (startDate, oldModel) {
+        var self = this;
+        self.started = startDate || (new Date());
+        self.latestUpdate = new Date();
 
-        this.controller = new exports.Controller(new Date());
+        self.controller = new exports.Controller(new Date());
 
-        this.devices = [];
-        this.links = [];
-        this.flows = [];
+        self.devices = [];
+        self.links = [];
+        self.flows = [];
+
+        if (oldModel) {
+        var setInactive = function (d) {
+            return _.extend(d, {active: false});
+        };
+            self.devices = _.cloneDeep(oldModel.devices).map(setInactive);
+            self.links = _.cloneDeep(oldModel.links).map(setInactive);
+        }
 
         // used for storing temporary data
-        this._internals = {
+        self._internals = {
             drMax: 0
         };
+
+        var mergeEntitiesWithExisting = function (targetCollection) {
+            return function (newItems) {
+                newItems.forEach(function (newItem) {
+                    var existingItem = _.find(targetCollection, function (d) {
+                        return d.id === newItem.id;
+                    });
+                    if (existingItem !== undefined) {
+                        _.extend(existingItem, newItem);
+                    } else {
+                        targetCollection.push(newItem);
+                    }
+                });
+            };
+        };
+
+        self.addDevices = mergeEntitiesWithExisting(self.devices);
+        self.addLinks = mergeEntitiesWithExisting(self.links);
     };
 
 
     /**
      * The Controller type that stores general information like name, type and the monitored networks.
      */
-    exports.Controller = function(type) {
+    exports.Controller = function (type) {
         this.name = "UNK";
         this.type = type || "UNK";
         this.monitoredNetworks = [];
@@ -72,73 +101,106 @@ var __extends = this.__extends || function(d, b) {
         this.isStandalone = true;
     };
 
-
     /**
      * The Link contains two connected hosts and some statistics about the connection in between.
      */
-    exports.Link = function(srcHost, srcPort, dstHost, dstPort, type) {
-        this.id = srcHost.id + '.' + dstHost.id;
+    exports.Link = function (srcHost, srcPort, dstHost, dstPort, type) {
+        if(srcHost.id > dstHost.id) {
+            var tmpHost = srcHost;
+            srcHost = dstHost;
+            dstHost = tmpHost;
+
+            var tmpPort = srcPort;
+            srcPort = dstPort;
+            dstPort = tmpPort;
+        }
+
+        this.id = srcHost.id + '-' + srcPort + '.' + dstHost.id + "-" + dstPort;
+        this.active = true;
         this.srcHost = srcHost;
         this.srcPort = srcPort;
         this.dstHost = dstHost;
         this.dstPort = dstPort;
         this.type = type;
-        this.drTx = null;
-        this.drRx = null;
-        this.plr = null;
-        this.delay = null;
+        this.srcTx = null;
+        this.srcRx = null;
+        this.dstTx = null;
+        this.dstRx = null;
+        this.srcPlr = null;
+        this.dstPlr = null;
+        this.srcDelay = null;
+        this.dstDelay = null;
     };
 
-
-    /**
-     * The Interface encapsulates information on the connected switch, port and the configured IP address.
-     */
-    exports.Interface = function(gw, address, port) {
-        this.gw = gw;
-        this.address = address;
-        this.port = port;
-    };
 
     /**
      * The Port represents a physical port on a switch, which has some associated statistics.
      */
-    exports.Port = function(portNumber) {
+    exports.Port = function (portNumber, deviceId) {
+        this.id = deviceId + "- + portNumber";
         this.number = portNumber;
-        this.receivePackets = 0;
-        this.transmitPackets = 0;
 
-        this.receiveBytes = 0;
-        this.transmitBytes = 0;
+        this.hardwareAddress = "";
+        this.name = "";
 
-        this.receiveDropped = 0;
-        this.transmitDropped = 0;
+        this.config = undefined;
+        this.state = undefined;
+        this.currentFeatures = undefined;
+        this.advertisedFeatures = undefined;
+        this.supportedFeatures = undefined;
+        this.peerFeatures = undefined;
 
-        this.receiveErrors = 0;
-        this.transmitErrors = 0;
+        this.receivePackets = undefined;        // number
+        this.transmitPackets = undefined;       // number
 
-        this.receiveFrameErrors = 0;
-        this.receiveOverrunErrors = 0;
-        this.receiveCRCErrors = 0;
+        this.receiveBytes = undefined;          // number
+        this.transmitBytes = undefined;         // number
 
-        this.collisions = 0;
+        this.receiveDropped = undefined;        // number
+        this.transmitDropped = undefined;       // number
+
+        this.receiveErrors = undefined;         // number
+        this.transmitErrors = undefined;        // number
+
+        this.receiveFrameErrors = undefined;    // number
+        this.receiveOverrunErrors = undefined;  // number
+        this.receiveCRCErrors = undefined;      // number
+
+        this.collisions = undefined;            // number
     };
 
 
     /**
      * The Device represents a common base class for Clients and Switches.
      */
-    exports.Device = function(id, name, userName, url, location, purpose, color) {
-        this.id = id;
-        this.name = name || id;
-        this.type = exports.Device.type;
-        this.deviceType = "";
-        this.location = location || "-";
-        this.purpose = purpose || "-";
-        this.userName = userName || "";
-        this.url = url || "";
-        this.color = color || "#444444";
-        this.activeFlows = [];
-        this.ports = {};
+    exports.Device = function (id, name, userName, url, location, purpose, color) {
+        var self = this;
+
+        self.id = id;
+        self.active = true;
+        self.name = name || id;
+        self.type = exports.Device.type;
+        self.deviceType = "";
+        self.location = location || "-";
+        self.purpose = purpose || "-";
+        self.userName = userName || "";
+        self.url = url || "";
+        self.color = color || "#444444";
+        self.activeFlows = [];
+        self.internetAddresses = [];
+        self.ports = {};
+
+        self.updatePorts = function(ports) {
+            for(var portNumber in ports) {
+                if (self.ports[portNumber] !== undefined) {
+                    self.ports[portNumber] = _.assign(self.ports[portNumber], ports[portNumber], function(value, other) {
+                        return (typeof other === 'undefined') ? value : other;
+                    });
+                } else {
+                    self.ports[portNumber] = ports[portNumber];
+                }
+            }
+        };
     };
     exports.Device.type = "Unknown";
 
@@ -146,27 +208,33 @@ var __extends = this.__extends || function(d, b) {
     /**
      * The Client contains a connected interface as well as general information of devices.
      */
-    exports.Client = (function(base) {
-        var client = function(id, name, gw, ip, port, deviceType, userName, url, location, purpose, color) {
+    exports.Client = (function (base) {
+        var client = function (id, name, deviceType, userName, url, location, purpose, color, lastSeen) {
             base.call(this, id, name, userName, url, location, purpose, color);
             this.type = exports.Client.type;
             this.deviceType = deviceType;
-            this.interface = new exports.Interface(gw, ip, port);
+            this.lastSeen = lastSeen || new Date(0);
         };
         __extends(client, base);
         return client;
     })(exports.Device);
     exports.Client.type = "Client";
 
+
     /**
      * The Switch primarily extends Device. It does not contain specific fields.
      */
-    exports.Switch = (function(base) {
-        var lclSwitch = function (id, name, deviceType, userName, url, location, purpose, color, connectedSince) {
+    exports.Switch = (function (base) {
+        var lclSwitch = function (id, name, deviceType, userName, url, location, purpose, color, connectedSince, inetAddress) {
             base.call(this, id, name, userName, url, location, purpose, color);
             this.type = exports.Switch.type;
             this.deviceType = deviceType || "Node";
             this.connectedSince = new Date(connectedSince);
+            this.description = {};
+            this.capabilities = [];
+            this.actions = [];
+            this.attributes = [];
+            this.controllerAddress = inetAddress || "UNK";
         };
         __extends(lclSwitch, base);
         return lclSwitch;
@@ -177,8 +245,23 @@ var __extends = this.__extends || function(d, b) {
     /**
      * The Flow contains information on all layers from data link over network to transport layer.
      */
-    exports.Flow = function() {
+    exports.Flow = function (id) {
+        this.id = id || 0;
+        this.entries = [];
+        this.source = "UNK";
+        this.destination = "UNK";
+        this.service = 0;
+        this.protocol = "UNK";
+        this.label = "UNK";
+        this.links = [];
+    };
+
+    /**
+     * The FlowEntry contains information on the match and the associated actions.
+     */
+    exports.FlowEntry = function() {
         this.id = "";
+        this.inPort = 0;
 
         // Data Link Layer
         this.dl = {
@@ -200,11 +283,18 @@ var __extends = this.__extends || function(d, b) {
         // Transport Layer
         this.tp = {
             src: 0, // Port
-            dst: 0, // Port
+            dst: 0 // Port
         };
 
-        this.path = []; // list of NodeIDs from src to dst
+        this.packetCount = 0;
+        this.byteCount = 0;
+        this.durationSeconds = 0;
+        this.priority = 0;
+        this.idleTimeoutSeconds = 0;
+        this.hardTimeoutSeconds = 0;
+
+        this.actions = [];
     };
 
-
-})((typeof process === 'undefined' || !process.versions) ? window.sdn = window.sdn || {} : exports);
+})((typeof process === 'undefined' || !process.versions) ? window.sdn = window.sdn || {} : exports,
+    (typeof process === 'undefined' || !process.versions) ? window._ : require("lodash"));

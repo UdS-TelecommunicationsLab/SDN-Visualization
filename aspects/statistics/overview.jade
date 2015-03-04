@@ -1,0 +1,29 @@
+div
+    div.row
+        div.col-md-8
+            div.panel.panel-default
+                div.panel-heading
+                    i.fa.fa-hdd-o
+                    |  Devices&nbsp;
+                    span.label.label-default {{ data.nvm.devices.length }}
+                div.panel-body
+                    div.row
+                        div.col-xs-6.col-sm-4.col-md-4.col-lg-3(ng-repeat="device in data.nvm.devices | hasIdOrName:deviceFilter | orderBy:'name' ")
+                            sdn-device-thumbnail(device="device")
+        div.col-md-4
+            div.panel.panel-default
+                div.panel-heading
+                    i.fa.fa-random
+                    |  Flows&nbsp;
+                    span.label.label-default {{ data.nvm.flows.length }}
+                div.table-responsive.sdn-flow-table
+                    table.table.table-condensed.table-striped
+                        thead
+                        tbody
+                            tr(ng-repeat="flow in data.nvm.flows")
+                                td
+                                    code.dp S: {{ flow.source }}
+                                td
+                                    code.dp D: {{ flow.destination }}
+                                td
+                                    sdn-flow-label(flow="flow")

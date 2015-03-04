@@ -1,4 +1,4 @@
-# Software Defined Networking Visualization Application
+﻿# Software Defined Networking - Visualization Application
 
 Providing a web-based interactive visualization solution for *Software-Defined Networks* (in particular *OpenFlow* driven systems).
 
@@ -8,7 +8,7 @@ Providing a web-based interactive visualization solution for *Software-Defined N
 
 **Institution:** [Telecommuncations Chair](http://www.nt.uni-saarland.de/) - [Saarland University](http://www.uni-saarland.de/)
 
-**Version:** 2014.1.1
+**Version:** 2015.1.1
 
 ## Installation Guide
 
@@ -58,6 +58,7 @@ Before starting the application, the `package.json` has to be adapted to the app
 * `appPort`: usually set to 443, to allow HTTPS communication on the well-known port.
 * `credentials`: the web interface is secure by a simple name/password check without any sophisticated user management. Therefore one can specify these parameters here. **THE DEFAULT VALUES SHOULD BE CHANGED FOR "PRODUCTIVE" SETUPS**
 * `isHttpRedirectEnabled`: this can be set to false, when the normal port 80 should not be used for redirecting to the SSL encrypted instance of the application.
+* `isDemoMode`: this can be set to true, in order to disable controls for changing connection string and controller type on the configuration page.
 * `operatorUrl`: specify a target URL that is accessed, when a users clicks on the operator logo in the sidebar.
 
 All other parameters should be left in place to ensure proper operation. Especially changing version numbers of dependencies might cause severe interoperability issues, as Node.js packages are not downward-compatible by default.
@@ -83,7 +84,9 @@ There are two common options for running the application. In either case there w
 	sudo nohup /usr/bin/nodejs main.js > output.log &
 
 ##### Upstart Script
-The package includes the file `sdnViz.conf`, which is a prepared for usage. The only required modification is the directory (`<project root>`), which you have to specify. The respective line contains a `TODO` comment. You might also consider to change the logs output.
+The package includes the file `sdn-viz.conf`, which is a prepared for copying it into `/etc/init/`. It requires the npm package `forever` to be installed globally, which can be done via `npm install -g forever`. 
+
+The only required modification to the file is the directory (`<project root>`), which you have to specify. The respective line contains a `TODO` comment. You might also consider to change the logs output.
 
 
 ## Configuration

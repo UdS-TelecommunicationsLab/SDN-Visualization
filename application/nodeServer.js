@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013 - 2014 Saarland University
+ * Copyright (c) 2013 - 2015 Saarland University
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  * 
  * This license applies to all parts of the SDN-Visualization Application that are not externally
- * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
+ * maintained libraries. The licenses of externally maintained libraries can be found in /node_modules and /lib.
  */
 
 (function(nodeServer) {
@@ -41,13 +41,13 @@
             res.redirect("https://" + req.headers.host + ":" + app.get("port") + req.url);
         });
 
-        var httpListenHandler = net.createServer().listen(80, function(e) {
+        var httpListenHandler = net.createServer().listen(80, function() {
             http.createServer(httpApp).listen(httpListenHandler);
         });
     };
 
     var startWorker = function() {
-        var worker = require("child_process").fork("application/worker.js");
+        var worker = require("child_process").fork(__dirname + "/worker.js");
 
         worker.on("exit", function() {
             console.log("Worker process terminated. Trying to restart.");
@@ -62,7 +62,7 @@
         nodeSockets.setWorker(worker);
         worker.send({ start: true });
 
-        console.log("Worker started");
+        console.log("Worker started.");
     };
 
     nodeServer.init = function(app) {
@@ -71,13 +71,13 @@
         }
 
         var server = https.createServer({
-            key: fs.readFileSync('./cert/key.pem'),
-            cert: fs.readFileSync('./cert/cert.pem'),
+            key: fs.readFileSync(__dirname + '/../cert/key.pem'),
+            cert: fs.readFileSync(__dirname + '/../cert/cert.pem'),
             rejectUnauthorized: false
         }, app);
 
         server.listen(app.get("port"), function() {
-            console.log("Server listening on port " + app.get("port"));
+            console.log("Server listening on port " + app.get("port") + ".");
 
             startWorker();
             nodeSockets.bind(server);

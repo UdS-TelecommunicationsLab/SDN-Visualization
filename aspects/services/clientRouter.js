@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013 - 2014 Saarland University
+ * Copyright (c) 2013 - 2015 Saarland University
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  * 
  * This license applies to all parts of the SDN-Visualization Application that are not externally
- * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
+ * maintained libraries. The licenses of externally maintained libraries can be found in /node_modules and /lib.
  */
 
 (function(sdnViz) {
@@ -57,8 +57,12 @@
 
             // HANDLING ACTIVE LINK IN TOP BAR
             $rootScope.$on("$routeChangeSuccess", function() {
+                var path = $location.path();
+                $rootScope.isSearchVisible = path.lastIndexOf("/statistics") === 0;
+
+
                 $("#sdn-nav li.active").removeClass("active");
-                $("#sdn-nav a[href='" + $location.path() + "']").closest("li").addClass("active");
+                $("#sdn-nav a[href='" + path + "']").closest("li").addClass("active");
             });
         };
 

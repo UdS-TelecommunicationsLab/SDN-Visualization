@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013 - 2014 Saarland University
+ * Copyright (c) 2013 - 2015 Saarland University
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,21 +22,44 @@
  * THE SOFTWARE.
  * 
  * This license applies to all parts of the SDN-Visualization Application that are not externally
- * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
+ * maintained libraries. The licenses of externally maintained libraries can be found in /node_modules and /lib.
  */
 
-(function() {
+(function () {
     "use strict";
-    var _ = require("underscore"),
+    var _ = require("lodash"),
         common = require("../common"),
         config = require("../../config"),
-        crypt = require("../../../public/shared/crypt"),
-        network = require("../../../public/shared/network"),
         nvm = require("../../../public/shared/NVM");
+
+    var mapEndpoints = function (d) {
+        var fe = new nvm.FlowEntry();
+        fe.deviceId = d;
+        fe.actions = {endpoint: true};
+        return fe;
+    };
+
+    var findSourceOrDestination = function (entry, port) {
+        return function (d) {
+            return (d.srcHost.id === entry.deviceId && d.srcPort === port) || (d.dstHost.id === entry.deviceId && d.dstPort === port);
+        };
+    };
+
+    var findDestination = function (entry) {
+        return function (d) {
+            return (d.dstHost.id === entry.deviceId && d.dstPort === entry.inPort && d.srcHost.type === nvm.Client.type);
+        };
+    };
+
+    var findSource = function (entry) {
+        return function (d) {
+            return (d.srcHost.id === entry.deviceId && d.srcPort === entry.inPort && d.dstHost.type === nvm.Client.type);
+        };
+    };
 
     // Mapping Controller
     var controller = {
-        map: function(obj) {
+        map: function () {
             var configuration = config.getConfiguration();
 
             var ctrl = new nvm.Controller("Floodlight");
@@ -52,9 +75,15 @@
     };
     exports.controller = controller;
 
+    var findDevice = function(deviceId) {
+        return function (d) {
+            return d.id === deviceId;
+        };
+    };
+
     // Mapping Clients
     var clients = {
-        map: function(d) {
+        map: function (d) {
             var id = "00:00:" + d.mac[0];
             var device = common.getDeviceEntry(id);
             var node = device.node;
@@ -65,50 +94,42 @@
             } else {
                 url = "";
             }
-            var gateway = undefined;
-            var port = undefined;
-
-            var attachmentPoints = d.attachmentPoint;
-            if (attachmentPoints.length > 0) {
-                gateway = attachmentPoints[0].switchDPID;
-                port = attachmentPoints[0].port;
-            }
-            var ip = "UNK";
-            if (d.ipv4 && d.ipv4.length > 0) {
-                ip = d.ipv4[0];
-            }
-            return new nvm.Client(id, name || id, gateway, ip, port, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color);
+            var client = new nvm.Client(id, name || id, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color, d.lastSeen);
+            client.internetAddresses = d.ipv4;
+            return client;
         },
-        mapAll: function(rawData, sw) {
+        mapAll: function (rawData, sw) {
             var lclClients = [];
             var lclLinks = [];
 
             if (rawData) {
                 rawData.forEach(function (rawClient) {
-                    var dst = _.find(sw, function (lclSwitch) {
-                        if (rawClient && rawClient.attachmentPoint.length > 0) {
-                            return rawClient.attachmentPoint[0].switchDPID === lclSwitch.id && rawClient.attachmentPoint[0].port >= 0; // port >= 0 to make sure switch interfaces do not get displayed
+                    if(rawClient && rawClient.attachmentPoint.length > 0)
+                    {
+                        var dst = _.find(sw, function (lclSwitch) {
+                            return rawClient.attachmentPoint[0].switchDPID === lclSwitch.id;
+                        });
+                        if (dst) {
+                            var client = clients.map(rawClient);
+                            lclClients.push(client);
+                            var link = new nvm.Link(client, 1, dst, rawClient.attachmentPoint[0].port, "Ethernet");
+                            link.active = dst.active || false;
+                            lclLinks.push(link);
                         }
-                        return false;
-                    });
-                    if (dst) { 
-                        var client = clients.map(rawClient);
-                        lclClients.push(client);
-                        lclLinks.push(new nvm.Link(client, 0, dst, 0, "Ethernet"));
                     }
                 });
 
             }
 
-            return { clients: lclClients, links: lclLinks };
+            return {clients: lclClients, links: lclLinks};
         }
     };
     exports.clients = clients;
 
     // Mapping Switches
     var switches = {
-        map: function(obj) {
-            var device = common.getDeviceEntry(obj.dpid);
+        map: function (obj) {
+            var device = common.getDeviceEntry(obj.switchDPID);
             var node = device.node;
             var url = (node && node.url) || "";
             var name = common.getName(device);
@@ -117,9 +138,19 @@
             } else {
                 url = "";
             }
-            return new nvm.Switch(obj.dpid, name || obj.dpid, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color, obj.connectedSince);
+            var sw = new nvm.Switch(obj.switchDPID, name || obj.switchDPID,
+                node && node.type,
+                node && node.userName,
+                url,
+                node && node.location,
+                node && node.purpose,
+                node && node.color,
+                obj.connectedSince,
+                obj.inetAddress.split(":")[0].substr(1));
+
+            return sw;
         },
-        mapAll: function(obj) {
+        mapAll: function (obj) {
             var res = [];
 
             if (obj) {
@@ -135,19 +166,21 @@
 
     // Mapping Links
     var links = {
-        mapAll: function(obj, devices) {
+        mapAll: function (rawData, devices) {
             var res = [];
-            var drMax = 0;
 
             var alreadyConnected = {};
 
-            if (obj && Array.isArray(obj)) {
-                obj.forEach(function(lnk) {
+            if (rawData && _.isArray(rawData)) {
+                for(var i = 0; i < rawData.length; i++) {
+                    var lnk = rawData[i];
                     var src = lnk["src-switch"];
                     var dst = lnk["dst-switch"];
+                    var srcPort = parseInt(lnk["src-port"], 10);
+                    var dstPort = parseInt(lnk["dst-port"], 10);
 
                     if (src > dst) {
-                        return;
+                        continue;
                     }
 
                     if (alreadyConnected[src] === undefined) {
@@ -157,61 +190,64 @@
                         alreadyConnected[dst] = {};
                     }
                     if (alreadyConnected[dst] && alreadyConnected[dst][src]) {
-                        return;
+                        continue;
                     }
 
-                    var srcHost = _.find(devices, function(d) { return d.id === src; });
-                    var dstHost = _.find(devices, function(d) { return d.id === dst; });
+                    var srcHost = _.find(devices, findDevice(src));
+                    var dstHost = _.find(devices, findDevice(dst));
 
                     if (srcHost && dstHost) {
-                        var link = new nvm.Link(srcHost, lnk["src-port"], dstHost, lnk["dst-port"], "OpenFlow");
-                        //link.delay = parseFloat(lnk.delay);
-                        //link.plr = parseFloat(lnk.plr);
-                        //link.drTx = parseFloat(lnk.drTx);
-                        //link.drRx = parseFloat(lnk.drRx);
-
-                        //drMax = Math.max(drMax, Math.max(lnk.bw_tx, lnk.bw_rx));
-
+                        var link = new nvm.Link(srcHost, srcPort, dstHost, dstPort, "OpenFlow");
                         alreadyConnected[src][dst] = true;
-
                         res.push(link);
                     }
-                });
+                }
             }
-
-            return { links: res, drMax: drMax };
+            return res;
         }
     };
     exports.links = links;
 
     var ports = {
-        map: function(obj) {
-            var port = new nvm.Port(obj.portNumber);
-            port.receivePackets = obj.receivePackets;
-            port.transmitPackets = obj.transmitPackets;
+        map: function (obj, existingPort, deviceId) {
+            var port = (existingPort !== undefined) ? existingPort : new nvm.Port(parseInt(obj.portNumber, 10), deviceId);
 
-            port.receiveBytes = obj.receiveBytes;
-            port.transmitBytes = obj.transmitBytes;
+            if(obj.hardwareAddress !== undefined) {
+                port.hardwareAddress = obj.hardwareAddress;
+                port.name = obj.name;
+                port.config = parseInt(obj.config, 10);
+                port.state = parseInt(obj.state, 10);
+                port.currentFeatures = parseInt(obj.currentFeatures, 10);
+                port.advertisedFeatures = parseInt(obj.advertisedFeatures, 10);
+                port.supportedFeatures = parseInt(obj.supportedFeatures, 10);
+                port.peerFeatures = parseInt(obj.peerFeatures, 10);
+            } else {
+                port.receivePackets = parseInt(obj.receivePackets, 10);
+                port.transmitPackets = parseInt(obj.transmitPackets, 10);
 
-            port.receiveDropped = obj.receiveDropped;
-            port.transmitDropped = obj.transmitDropped;
+                port.receiveBytes = parseInt(obj.receiveBytes, 10);
+                port.transmitBytes = parseInt(obj.transmitBytes, 10);
 
-            port.receiveErrors = obj.receiveErrors;
-            port.transmitErrors = obj.transmitErrors;
+                port.receiveDropped = parseInt(obj.receiveDropped, 10);
+                port.transmitDropped = parseInt(obj.transmitDropped, 10);
 
-            port.receiveFrameErrors = obj.receiveFrameErrors;
-            port.receiveOverrunErrors = obj.receiveOverrunErrors;
-            port.receiveCRCErrors = obj.receiveCRCErrors;
+                port.receiveErrors = parseInt(obj.receiveErrors, 10);
+                port.transmitErrors = parseInt(obj.transmitErrors, 10);
 
-            port.collisions = obj.collisions;
+                port.receiveFrameErrors = parseInt(obj.receiveFrameErrors, 10);
+                port.receiveOverrunErrors = parseInt(obj.receiveOverrunErrors, 10);
+                port.receiveCRCErrors = parseInt(obj.receiveCRCErrors, 10);
+
+                port.collisions = parseInt(obj.collisions, 10);
+            }
             return port;
         },
-        mapAll: function(obj) {
+        mapAll: function (obj, device) {
             var allPorts = {};
-
-            for(var i = 0; i < obj.length; i++) {
+            for (var i = 0; i < obj.length; i++) {
                 var p = obj[i];
-                allPorts[p.portNumber] = ports.map(p);
+                var portNumber = parseInt(p.portNumber, 10);
+                allPorts[portNumber] = ports.map(p, device.ports[portNumber], device.id);
             }
             return allPorts;
         }
@@ -220,58 +256,166 @@
 
     // Mapping Flows
     var flows = {
-        map: function(obj) {
-            var flow = new nvm.Flow();
+        map: function (obj, deviceId, flowId) {
+            var flowEntry = new nvm.FlowEntry();
+            flowEntry.id = flowId + "-" + deviceId;
+            flowEntry.deviceId = deviceId;
+            flowEntry.inPort = parseInt(obj.match.in_port || 0, 10);
 
-            flow.dl.src = "00:00:" + obj.match.dataLayerSource;
-            flow.dl.dst = "00:00:" + obj.match.dataLayerDestination;
-            flow.dl.type = parseInt(obj.match.dataLayerType.replace(/0x/g, ""), 16);
-            flow.dl.vlan = parseInt(obj.match.dataLayerVirtualLan, 10);
-            flow.dl.vlanPriority = parseInt(obj.match.dataLayerVirtualLanPriorityCodePoint, 10);
+            flowEntry.packetCount = parseInt(obj.packetCount || 0, 10);
+            flowEntry.byteCount = parseInt(obj.byteCount || 0, 10);
+            flowEntry.durationSeconds = parseInt(obj.durationSeconds || 0, 10);
+            flowEntry.priority = parseInt(obj.priority || 0, 10);
+            flowEntry.idleTimeoutSeconds = parseInt(obj.idleTimeoutSec || 0, 10);
+            flowEntry.hardTimeoutSeconds = parseInt(obj.hardTimeoutSec || 0, 10);
 
-            flow.nw.src = obj.match.networkSource;
-            flow.nw.dst = obj.match.networkDestination;
-            flow.nw.protocol = parseInt(obj.match.networkProtocol, 10);
-            flow.nw.typeOfService = parseInt(obj.match.networkTypeOfService, 10);
+            flowEntry.dl.src = "00:00:" + obj.match.eth_src;
+            flowEntry.dl.dst = "00:00:" + obj.match.eth_dst;
+            flowEntry.dl.type = parseInt(obj.match.eth_type || 0, 10);
+            flowEntry.dl.vlan = parseInt(obj.match.eth_vlan_vid || 0, 10) || 0;
+            // TODO: flow.dl.vlanPriority = parseInt(obj.match.dataLayerVirtualLanPriorityCodePoint, 10);
 
-            flow.tp.src = parseInt(obj.match.transportSource, 10);
-            flow.tp.dst = parseInt(obj.match.transportDestination, 10);
+            if (obj.match.arp_opcode) {
+                flowEntry.nw.src = obj.match.arp_spa || "";
+                flowEntry.nw.dst = obj.match.arp_tpa || "";
+                flowEntry.nw.protocol = 0;
+            } else {
+                flowEntry.nw.src = obj.match.ipv4_src || "";
+                flowEntry.nw.dst = obj.match.ipv4_dst || "";
+                flowEntry.nw.protocol = parseInt(obj.match.ip_proto || 0, 10);
+            }
+            flowEntry.nw.typeOfService = parseInt(obj.match.ip_dscp || 0, 10);
 
-            flow.path.push(flow.dl.src);
-            flow.path.push(flow.dl.dst);
+            flowEntry.tp.src = parseInt(obj.match.tcp_src || obj.match.udp_src || 0, 10);
+            flowEntry.tp.dst = parseInt(obj.match.tcp_dst || obj.match.udp_src || 0, 10);
 
-            flow.id = crypt.flowId(flow);
+            flowEntry.actions = _.clone(obj.actions);
 
-            flow.actions = obj.actions;
-
-            return flow;
+            return flowEntry;
         },
-        mapAll: function(obj, devices) {
-            var res = {};
-            if (obj) {
-                for (var deviceId in obj) {
-                    var device = _.find(devices, function (lclDevice) { return lclDevice.id === deviceId; });
+        mapAll: function (rawObject, devices, links) {
+            var flowByCookie = {};
+            if (rawObject) {
+                for (var deviceId in rawObject) {
+                    if(rawObject[deviceId] && rawObject[deviceId].ERROR) {
+                        continue;
+                    }
 
-                    var sw = obj[deviceId];
+                    var switchFlows = rawObject[deviceId].flows;
+                    if (switchFlows !== null) {
+                        for (var j = 0; j < switchFlows.length; j++) {
+                            var flowObj = switchFlows[j];
+                            var flowId = parseInt(flowObj.cookie, 10);
+                            if (flowId < 0) {
+                                flowId += Math.pow(2, 63);
+                            }
+                            if (flowByCookie[flowId] === undefined) {
+                                flowByCookie[flowId] = new nvm.Flow(flowId);
+                            }
+                            flowByCookie[flowId].entries.push(flows.map(flowObj, deviceId, flowId));
 
-                    for (var j = 0; j < sw.length; j++) {
-                        var flow = flows.map(sw[j]);
-                        var flowId = flow.id;
-                        if (res[flowId] === undefined) {
-                            res[flowId] = flow;
-                        }
-
-                        if (device) {
-                            device.activeFlows.push(flowId);
-                            res[flowId].path.push(device.id);
+                            var device = _.find(devices, findDevice(deviceId));
+                            if (device) {
+                                device.activeFlows.push(flowId);
+                            }
                         }
                     }
                 }
             }
 
             var result = [];
-            for (var i in res) {
-                result.push(res[i]);
+
+            for (var m in flowByCookie) {
+                var flow = flowByCookie[m];
+
+                var sources = [];
+                var destinations = [];
+                var protocols = [];
+                var services = [];
+
+                var endpoints = [];
+                for (var k = 0; k < flow.entries.length; k++) {
+                    var entry = flow.entries[k];
+
+                    sources.push(entry.nw.src);
+                    destinations.push(entry.nw.dst);
+                    protocols.push(entry.nw.protocol);
+                    services.push(entry.tp.src);
+                    services.push(entry.tp.dst);
+
+                    for (var action in entry.actions) {
+                        var port = parseInt(entry.actions[action], 10);
+                        if (action === "output") {
+                            var link = _.find(links, findSourceOrDestination(entry, port));
+                            if (link) {
+                                flow.links.push({
+                                    linkId: link.id,
+                                    direction: "forward"
+                                });
+                                if (link.srcHost.type === nvm.Client.type) {
+                                    endpoints.push(link.srcHost.id);
+                                }
+                                if (link.dstHost.type === nvm.Client.type) {
+                                    endpoints.push(link.dstHost.id);
+                                }
+                            }
+                        } else {
+                            // TODO: handle other actions
+                            console.log(action);
+                        }
+                    }
+
+                    if (entry.actions.length === 0) {
+                        entry.actions["drop"] = true;
+                    } else {
+                        var sourceLinks = _.filter(links, findSource(entry));
+                        for (var i = 0; i < sourceLinks.length; i++) {
+                            flow.links.push({
+                                linkId: sourceLinks[i].id,
+                                direction: "forward" // TODO: properly set direction
+                            });
+                            endpoints.push(sourceLinks[i].dstHost.id);
+                        }
+                        var destinationLinks = _.filter(links, findDestination(entry));
+
+                        for (var n = 0; n < destinationLinks.length; n++) {
+                            flow.links.push({
+                                linkId: destinationLinks[i].id,
+                                direction: "forward" // TODO: properly set direction
+                            });
+                            endpoints.push(destinationLinks[n].srcHost.id);
+                        }
+                    }
+                    flow.endpoints = _.unique(endpoints).map(mapEndpoints);
+                }
+
+                var src = _.unique(sources);
+                var dst = _.unique(destinations);
+                if (src.length === 1 && dst.length === 1 || (src.length === 2 && dst.length === 2 && _.difference(src, dst).length === 0)) {
+                    flow.source = src[0];
+                    flow.destination = dst[0];
+                }
+
+                var protocol = _.unique(protocols);
+                if (protocol.length === 1) {
+                    flow.protocol = protocol[0];
+
+                    if (flow.protocol === 6 || flow.protocol === 17) {
+                        var service = _.unique(services);
+                        if (service.length === 1) {
+                            flow.service = service[0];
+                        } else if (service.length === 2) {
+                            flow.service = Math.min(service[0], service[1]);
+                        }
+                    }
+                }
+
+                flow.entries = _.sortBy(_.union(flow.entries, flow.endpoints), function (d) {
+                    return d.deviceId;
+                });
+                delete flow.endpoints;
+
+                result.push(flow);
             }
 
             return result;

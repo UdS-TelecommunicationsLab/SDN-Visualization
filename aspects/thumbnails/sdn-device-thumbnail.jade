@@ -1,5 +1,4 @@
-﻿div
+﻿div.sdn-device-thumbnail
 	a.thumbnail(href="{{ '/detail/device/' + device.id }}",tooltip="ID: {{ device.id }}",tooltip-placement="top")
-		span(sdn-device-type-icon,device="device")
+		sdn-device-type-icon(device="device")
 		code.dp {{ device.name }}
-	| <br />

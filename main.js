@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014 Saarland University
+ * Copyright (c) 2013 - 2015 Saarland University
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,18 +22,25 @@
  * THE SOFTWARE.
  * 
  * This license applies to all parts of the SDN-Visualization Application that are not externally
- * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
+ * maintained libraries. The licenses of externally maintained libraries can be found in /node_modules and /lib.
  */
 
 "use strict";
-var path = require("path"),
+var bodyParser = require('body-parser'),
+    cookieParser = require('cookie-parser'),
+    express = require("express"),
+    lessMiddleware = require("less-middleware"),
+    methodOverride = require('method-override'),
+    multipart = require('connect-multiparty'),
+    errorhandler = require('errorhandler'),
+    flash = require('connect-flash'),
+    path = require("path"),
     passport = require("passport"),
-    server = require("./application/nodeServer"),
+    pkg = require("./package.json"),
     router = require("./application/nodeRouter"),
     security = require("./application/security"),
-    pkg = require("./package.json"),
-    lessMiddleware = require("less-middleware"),
-    express = require("express");
+    session = require('express-session'),
+    server = require("./application/nodeServer");
 
 var app = module.exports = express();
 
@@ -41,19 +48,25 @@ app.set("port", process.env.PORT || pkg.appPort || 3000);
 app.set("redirect", pkg.isHttpRedirectEnabled);
 app.set("views", __dirname + "/aspects");
 app.set("view engine", "jade");
-app.use(express.cookieParser());
-app.use(lessMiddleware({ src: __dirname + "/public", compress: true }));
+app.use(cookieParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(methodOverride());
+app.use(lessMiddleware({src: __dirname + "/public", compress: true}));
 //app.use(express.logger("dev"));
-app.use(express.bodyParser());
-app.use(express.methodOverride());
+app.use("/lib", express.static(path.join(__dirname, "lib")));
 app.use(express.static(path.join(__dirname, "public")));
-app.use(express.session({ secret: "df34<ajdrf9364aherf0�q34a<rh" }));
+app.use(session({
+    secret: "df34<ajdrf9364aherf0üqq34a<rh",
+    cookie: {secure: true},
+    saveUninitialized: true, resave: true, expires: false
+}));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(app.router);
+app.use(flash());
 
 if (app.get("env") === "development") {
-    app.use(express.errorHandler());
+    app.use(errorhandler());
 }
 if (app.get("env") === "production") {
 }

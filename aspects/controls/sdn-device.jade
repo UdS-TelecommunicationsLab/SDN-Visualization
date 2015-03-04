@@ -1,7 +1,7 @@
 ﻿div.panel.panel-default
 	div.panel-heading
 		a(href="{{ '/detail/device/' + device.id }}")
-			span(sdn-device-type-icon,device="device")
+			sdn-device-type-icon(device="device")
 			code.dp {{ device.name }} 
 				span(ng-show="port") [{{ port }}]
 		span(ng-show="device.interface")

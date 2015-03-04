@@ -1,49 +1,42 @@
 div#sdn-topology
-	div.row
-		div.col-sm-8.col-md-9
-			div.topologyStats
-				span.label.label-primary
-					i.fa.fa-hdd-o
-					| &nbsp;
-					span Switches: {{ data.nvm.devices | countSwitches }}
-				| &nbsp;
-				span.label.label-primary
-					i.fa.fa-mobile-phone
-					| &nbsp;
-					span Clients: {{ data.nvm.devices | countClients }}
-				| &nbsp;
-				span.label.label-primary()
-					i.fa.fa-random
-					| &nbsp;
-					span Flows: {{ data.nvm.flows.length }}
-				| &nbsp;
-				button.btn.btn-primary.btn-xs(ng-click="showHelp()")
-					i.fa.fa-question
-			| <br>
-			div.well
-				div.map
-					div.mapInner(style="display:none")
-					div.busyIndicator(ng-show="!loaded")
-						span Preparing topology ...
-		div.col-sm-4.col-md-3
-			div.panel.panel-default
-				div.panel-heading
-					i.fa.fa-random
-					|  Flows
-				div.table-responsive
-					table.table.table-condensed.table-striped
-						thead
-						tbody
-							tr(ng-repeat="flow in data.nvm.flows", ng-mouseenter="highlightFlow(flow)",ng-mouseleave="unhighlightFlow(flow)")
-								td(width="48px")
-									a(href="{{ '/detail/flow/' + flow.id }}")
-										span(class="device Flow", ng-switch="flow.nw.protocol")
-											strong(ng-switch-when="6") T
-											strong(ng-switch-when="17") U
-											strong(ng-switch-default="") {{ flow.nw.protocol }}
-								td
-									code.dp S: {{ flow.nw.src }}:{{ flow.tp.src }}
-									| <br>
-									code.dp D: {{ flow.nw.dst }}:{{ flow.tp.dst }}
-							tr(ng-show="data.nvm.flows.length == 0")
-								td(colspan=2) No flows at the moment.
+    div.row
+        div.col-sm-8.col-md-9
+            div.panel.panel-default
+                div.panel-heading
+                    div.topologyStats.pull-right
+                        span.label.label-primary
+                            i.fa.fa-hdd-o
+                            | &nbsp;
+                            span Switches: {{ data.nvm.devices | countSwitches }}
+                        | &nbsp;
+                        span.label.label-primary
+                            i.fa.fa-mobile-phone
+                            | &nbsp;
+                            span Clients: {{ data.nvm.devices | countClients }}
+                        | &nbsp;
+                        span.label.label-primary()
+                            i.fa.fa-random
+                            | &nbsp;
+                            span Flows: {{ data.nvm.flows.length }}
+                    i.fa.fa-globe
+                    | &nbsp;Topology
+                div.panel-body
+                    sdn-topology-map(height="{{ height }}", styles="styles", visibility-button="true")
+        div.col-sm-4.col-md-3
+            div.panel.panel-default
+                div.panel-heading
+                    i.fa.fa-random
+                    | &nbsp;Flows
+                div.table-responsive.sdn-flow-table
+                    table.table.table-condensed.table-striped
+                        thead
+                        tbody
+                            tr(ng-repeat="flow in data.nvm.flows", ng-mouseenter="highlightFlow(flow)",ng-mouseleave="blurFlow(flow)")
+                                td
+                                    code.dp S: {{ flow.source }}
+                                td
+                                    code.dp D: {{ flow.destination }}
+                                td
+                                    sdn-flow-label(flow="flow")
+                            tr(ng-show="data.nvm.flows.length == 0")
+                                td(colspan=2) No flows at the moment.

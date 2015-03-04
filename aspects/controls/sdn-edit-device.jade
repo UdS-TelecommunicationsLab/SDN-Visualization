@@ -7,21 +7,21 @@
 			div.col-md-10
 				div.row
 					div.col-sm-6.col-md-4.col-lg-2
-						div.sdn-mac-digit-box(device-pattern="item",index="0")
+						sdn-mac-digit-box(device-pattern="item",index="0")
 					div.col-sm-6.col-md-4.col-lg-2
-						div.sdn-mac-digit-box(device-pattern="item",index="1")
+						sdn-mac-digit-box(device-pattern="item",index="1")
 					div.col-sm-6.col-md-4.col-lg-2
-						div.sdn-mac-digit-box(device-pattern="item",index="2")
+						sdn-mac-digit-box(device-pattern="item",index="2")
 					div.col-sm-6.col-md-4.col-lg-2
-						div.sdn-mac-digit-box(device-pattern="item",index="3")
+						sdn-mac-digit-box(device-pattern="item",index="3")
 					div.col-sm-6.col-md-4.col-lg-2
-						div.sdn-mac-digit-box(device-pattern="item",index="4")
+						sdn-mac-digit-box(device-pattern="item",index="4")
 					div.col-sm-6.col-md-4.col-lg-2
-						div.sdn-mac-digit-box(device-pattern="item",index="5")
+						sdn-mac-digit-box(device-pattern="item",index="5")
 					div.col-sm-6.col-md-4.col-lg-2
-						div.sdn-mac-digit-box(device-pattern="item",index="6")
+						sdn-mac-digit-box(device-pattern="item",index="6")
 					div.col-sm-6.col-md-4.col-lg-2
-						div.sdn-mac-digit-box(device-pattern="item",index="7")
+						sdn-mac-digit-box(device-pattern="item",index="7")
 	
 		div.form-group
 			label.control-label.col-md-2 Name:
@@ -43,7 +43,7 @@
 			div.col-md-10
 				select.input-sm.form-control(style="width: 120px",ng-model="item.type", ng-options="value for value in types")
 				span(class="device", style="background-color: {{ item.color }}")
-					i.fa {{ item.type | deviceTypeIcon }}
+					i.fa.fa-fw {{ item.type | deviceTypeIcon }}
 				input.input-sm.form-control.colorpickerBox(style="width: 80px", colorpicker="hex", type="text", ng-model="item.color")
 
 		div.form-group

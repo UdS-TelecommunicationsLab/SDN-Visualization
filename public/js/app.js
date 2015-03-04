@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 - 2014 Saarland University
+ * Copyright (c) 2013 - 2015 Saarland University
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  * 
  * This license applies to all parts of the SDN-Visualization Application that are not externally
- * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
+ * maintained libraries. The licenses of externally maintained libraries can be found in /node_modules and /lib.
  */
 
 "use strict";
@@ -35,8 +35,20 @@ sdnViz.config(function($routeProvider, $locationProvider) {
             templateUrl: "templates/pages/topology",
             controller: "TopologyCtrl"
         }).
-        when("/statistics", {
-            templateUrl: "templates/pages/statistics",
+        when("/statistics/overview", {
+            templateUrl: "templates/statistics/overview",
+            controller: "StatisticsCtrl"
+        }).
+        when("/statistics/devices", {
+            templateUrl: "templates/statistics/devices",
+            controller: "StatisticsCtrl"
+        }).
+        when("/statistics/links", {
+            templateUrl: "templates/statistics/links",
+            controller: "StatisticsCtrl"
+        }).
+        when("/statistics/flows", {
+            templateUrl: "templates/statistics/flows",
             controller: "StatisticsCtrl"
         }).
         when("/documentation", {

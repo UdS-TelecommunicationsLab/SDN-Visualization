@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013 - 2014 Saarland University
+ * Copyright (c) 2013 - 2015 Saarland University
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  * 
  * This license applies to all parts of the SDN-Visualization Application that are not externally
- * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
+ * maintained libraries. The licenses of externally maintained libraries can be found in /node_modules and /lib.
  */
 
 (function(sdnViz) {
@@ -49,7 +49,7 @@
                     }
                 }));
             }
-            return { item: device, connectedDevices: connectedDevices, latestInteraction: data.nvm.latestInteraction };
+            return { item: device, connectedDevices: connectedDevices };
         };
 
         var getLinkById = function(id) {
@@ -57,7 +57,7 @@
                 return e.id == id;
             });
 
-            return { item: link, latestInteraction: data.nvm.latestInteraction };
+            return { item: link };
         };
 
         var getFlowById = function(id) {
@@ -65,7 +65,7 @@
                 return e.id == id;
             });
 
-            return { item: flow, latestInteraction: data.nvm.latestInteraction };
+            return { item: flow };
         };
 
         // Change Management
@@ -73,13 +73,15 @@
             var res;
             if (_.isArray(obj)) {
                 res = [];
-                for (var b in obj) {
-                    res.push(copyCleanModel(obj[b]));
+                for (var i = 0; i < obj.length; i++) {
+                    res.push(copyCleanModel(obj[i]));
                 }
             } else if (_.isObject(obj)) {
                 res = {};
-                for (var a in obj) {
-                    if (a !== "$$hashKey") {
+                var keys = _.keys(obj);
+                for (var j = 0; j < keys.length; j++) {
+                    var a = keys[j];
+                    if(a !== "$$hashKey"){
                         res[a] = copyCleanModel(obj[a]);
                     }
                 }
@@ -146,6 +148,10 @@
             this.status = status;
         };
 
+        var clearLog = function() {
+            data.logs.length = 0;
+        };
+
         var load = function() {
             $http.get("/api/model?d=" + new Date()).
                 success(function(compressedData, status, headers, config) {
@@ -203,6 +209,7 @@
             getFlowById: getFlowById,
             data: data,
             applyChanges: objectDiff.applyChanges,
+            clearLog: clearLog,
             init: init
         };
     });

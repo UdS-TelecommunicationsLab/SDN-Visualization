@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013 - 2014 Saarland University
+ * Copyright (c) 2013 - 2015 Saarland University
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,13 +22,32 @@
  * THE SOFTWARE.
  * 
  * This license applies to all parts of the SDN-Visualization Application that are not externally
- * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
+ * maintained libraries. The licenses of externally maintained libraries can be found in /node_modules and /lib.
  */
 
 (function(sdnViz) {
     "use strict";
     sdnViz.controller("DetailFlowCtrl", function(DetailView, $scope, $routeParams, repository) {
         DetailView.init($scope, $routeParams.id, repository.getFlowById);
+
+        $scope.min = Math.min;
+
+        $scope.$watch("item.entries", function(d) {
+            var entries = {};
+
+            for(var i = 0; i < $scope.item.entries.length; i++) {
+                var entry = $scope.item.entries[i];
+                if(typeof(entries[entry.deviceId]) === "undefined") {
+                    entries[entry.deviceId] = {
+                        item: repository.getDeviceById(entry.deviceId).item,
+                        entries: []
+                    };
+                }
+                entries[entry.deviceId].entries.push(entry);
+            }
+
+            $scope.item.devices = _.map(entries, function(d) { return d; });
+        }, true);
 
         $scope.load();
     });

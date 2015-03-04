@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013 - 2014 Saarland University
+ * Copyright (c) 2013 - 2015 Saarland University
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,19 +22,22 @@
  * THE SOFTWARE.
  * 
  * This license applies to all parts of the SDN-Visualization Application that are not externally
- * maintained libraries. The licenses of externally maintained libraries can be found in /licenses.
+ * maintained libraries. The licenses of externally maintained libraries can be found in /node_modules and /lib.
  */
 
 (function(DEBUG) {
     "use strict";
-    var dataSource = require("../application/dataSources/source"),
-        config = require("./config"),
-        objectDiff = require("../public/js/lib/objectDiff"),
-        nvm = require("../public/shared/NVM");
+    var dataSource = require(__dirname + "/dataSources/source"),
+        config = require(__dirname + "/config"),
+        moment = require("moment"),
+        objectDiff = require(__dirname + "/../lib/objectDiff-enhanced/objectDiff"),
+        nvm = require(__dirname + "/../public/shared/NVM");
 
     var pollingDelay = 1500; // in milliseconds
     var model = new nvm.NVM();
     var oldModel = model;
+    var reset = false;
+    var started = new Date();
 
     var finish = function (errorRaised) {
         if (!errorRaised) {
@@ -53,9 +56,20 @@
         process.send({ model: model, changes: changes });
 
         oldModel = model;
-        model = new nvm.NVM(oldModel.started);
-        model.latestInteraction = oldModel.latestInteraction;
-        setTimeout(loadingProcess, pollingDelay);
+        if(reset) {
+            DEBUG && console.log("[Worker] Reset NVM."); // jshint ignore:line
+            model = new nvm.NVM(model.started);
+            reset = false;
+        } else {
+            model = new nvm.NVM(oldModel.started, oldModel);
+        }
+
+        var now = new Date();
+        var diffMs = (now.getTime() - started.getTime());
+        DEBUG && console.log("[Worker] Run finished on " + moment(now).format("dddd, MMMM Do YYYY, HH:mm:ss") + ". Took " + (diffMs/1000) + " seconds."); // jshint ignore:line
+
+        var timeToWait = Math.max(pollingDelay - diffMs, 0);
+        setTimeout(loadingProcess, timeToWait);
     };
 
     var isAvailable = function () {
@@ -64,7 +78,8 @@
     };
 
     var loadingProcess = function() {
-        DEBUG && console.log("Worker run started.");
+        started = new Date();
+        DEBUG && console.log("[Worker] Run started on " + moment(started).format("dddd, MMMM Do YYYY, HH:mm:ss") + "."); // jshint ignore:line
         try {
             if (isAvailable()) {
                 dataSource.getAllData(model, finish);
@@ -72,7 +87,7 @@
                 setTimeout(loadingProcess, pollingDelay);
             }
         } catch (e) {
-            DEBUG && console.log(e);
+            DEBUG && console.log("[Worker] " + e); // jshint ignore:line
         }
     };
 
@@ -85,9 +100,9 @@
             loadingProcess();
         }
 
-        // updating latestInteraction information
-        if (m && m.latestInteraction) {
-            oldModel.latestInteraction = m.latestInteraction;
+        if (m && m.reset) {
+            DEBUG && console.log("[Worker] Received request to reset NVM."); // jshint ignore:line
+            reset = true;
         }
     });
 })(false);
