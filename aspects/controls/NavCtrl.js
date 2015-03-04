@@ -29,6 +29,7 @@
     "use strict";
     sdnViz.controller("NavCtrl", function($scope, $window, $rootScope, repository) {
         $rootScope.deviceFilter = "";
+        $rootScope.isSearchVisible = false;
 
         $scope.data = repository.data;
 

@@ -41,7 +41,7 @@ block nav
             a(ng-click="logout()", tooltip="Logout", tooltip-placement="bottom")
                 i.fa.fa-sign-out
 
-    form.navbar-form.navbar-left(role="search")
+    form.navbar-form.navbar-left(role="search", ng-show="isSearchVisible")
         div.form-group
             div.div.btn-group
                 div.input-group()
