@@ -35,6 +35,10 @@
             $window.location = "/status";
         };
 
+        $scope.clearLog = function() {
+            repository.clearLog();
+        };
+
         $scope.resetModel = function() {
             websockets.publish("/nvm/reset", null, function() {
                 toastr.success("Successfully reset NVM.");

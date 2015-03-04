@@ -57,8 +57,12 @@
 
             // HANDLING ACTIVE LINK IN TOP BAR
             $rootScope.$on("$routeChangeSuccess", function() {
+                var path = $location.path();
+                $rootScope.isSearchVisible = path.lastIndexOf("/statistics") === 0;
+
+
                 $("#sdn-nav li.active").removeClass("active");
-                $("#sdn-nav a[href='" + $location.path() + "']").closest("li").addClass("active");
+                $("#sdn-nav a[href='" + path + "']").closest("li").addClass("active");
             });
         };
 

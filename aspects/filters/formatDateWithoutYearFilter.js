@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2013 - 2015 Saarland University
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,19 +27,9 @@
 
 (function(sdnViz) {
     "use strict";
-    sdnViz.controller("NavCtrl", function($scope, $window, $rootScope, repository) {
-        $rootScope.deviceFilter = "";
-        $rootScope.isSearchVisible = false;
-
-        $scope.data = repository.data;
-
-        $rootScope.clearDeviceFilter = function() {
-            $rootScope.deviceFilter = "";
+    sdnViz.filter("formatDateWithoutYear", function() {
+        return function(input) {
+            return moment(input).format("DD. MMM HH:mm:ss");
         };
-
-        $scope.logout = function() {
-            $window.location = "/logout";
-        };
-
     });
 })(window.sdnViz);

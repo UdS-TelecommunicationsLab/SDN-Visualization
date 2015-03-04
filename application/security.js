@@ -25,29 +25,40 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /node_modules and /lib.
  */
 
-(function(security) {
+(function (security) {
     "use strict";
     var passport = require("passport"),
         pkg = require("../package.json"),
+        fs = require("fs"),
+        moment = require("moment"),
         LocalStrategy = require("passport-local").Strategy;
 
     var name = (pkg.credentials && pkg.credentials.name) || "root";
     var pass = (pkg.credentials && pkg.credentials.pass) || "1234";
 
-    security.init = function() {
-        passport.use(new LocalStrategy(function(enteredName, enteredPass, done) {
-            if (enteredName === name && enteredPass === pass) {
-                done(null, { name: name });
-            } else {
-                done(null, false, { message: "Incorrect username or password." });
-            }
-        }));
+    var logFile = __dirname + "/../security.log";
 
-        passport.serializeUser(function(user, done) {
+    security.init = function () {
+        fs.open(logFile, "a", function() {
+        });
+        passport.use(new LocalStrategy({
+                passReqToCallback: true
+            },
+            function (req, enteredName, enteredPass, done) {
+                if (enteredName === name && enteredPass === pass) {
+                    var logEntry = moment().format() + "\t" + req.ip + "\t" + name + "\n";
+                    fs.appendFileSync(logFile, logEntry);
+                    done(null, {name: name});
+                } else {
+                    done(null, false, req.flash("loginMessage", "Incorrect username or password."));
+                }
+            }));
+
+        passport.serializeUser(function (user, done) {
             done(null, user.name);
         });
 
-        passport.deserializeUser(function(id, done) {
+        passport.deserializeUser(function (id, done) {
             return done(null, id);
         });
     };

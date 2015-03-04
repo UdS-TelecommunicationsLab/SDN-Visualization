@@ -112,7 +112,9 @@
                         if (dst) {
                             var client = clients.map(rawClient);
                             lclClients.push(client);
-                            lclLinks.push(new nvm.Link(client, 1, dst, rawClient.attachmentPoint[0].port, "Ethernet"));
+                            var link = new nvm.Link(client, 1, dst, rawClient.attachmentPoint[0].port, "Ethernet");
+                            link.active = dst.active || false;
+                            lclLinks.push(link);
                         }
                     }
                 });
@@ -164,18 +166,21 @@
 
     // Mapping Links
     var links = {
-        mapAll: function (obj, devices) {
+        mapAll: function (rawData, devices) {
             var res = [];
 
             var alreadyConnected = {};
 
-            if (obj && Array.isArray(obj)) {
-                obj.forEach(function (lnk) {
+            if (rawData && _.isArray(rawData)) {
+                for(var i = 0; i < rawData.length; i++) {
+                    var lnk = rawData[i];
                     var src = lnk["src-switch"];
                     var dst = lnk["dst-switch"];
+                    var srcPort = parseInt(lnk["src-port"], 10);
+                    var dstPort = parseInt(lnk["dst-port"], 10);
 
                     if (src > dst) {
-                        return;
+                        continue;
                     }
 
                     if (alreadyConnected[src] === undefined) {
@@ -185,60 +190,56 @@
                         alreadyConnected[dst] = {};
                     }
                     if (alreadyConnected[dst] && alreadyConnected[dst][src]) {
-                        return;
+                        continue;
                     }
 
-                    var srcHost = _.find(devices, function (d) {
-                        return d.id === src;
-                    });
-                    var dstHost = _.find(devices, function (d) {
-                        return d.id === dst;
-                    });
+                    var srcHost = _.find(devices, findDevice(src));
+                    var dstHost = _.find(devices, findDevice(dst));
 
                     if (srcHost && dstHost) {
-                        var link = new nvm.Link(srcHost, lnk["src-port"], dstHost, lnk["dst-port"], "OpenFlow");
+                        var link = new nvm.Link(srcHost, srcPort, dstHost, dstPort, "OpenFlow");
                         alreadyConnected[src][dst] = true;
-
                         res.push(link);
                     }
-                });
+                }
             }
-
             return res;
         }
     };
     exports.links = links;
 
     var ports = {
-        map: function (obj, existingPort) {
-            var port = (existingPort !== undefined) ? existingPort : new nvm.Port(parseInt(obj.portNumber, 10));
+        map: function (obj, existingPort, deviceId) {
+            var port = (existingPort !== undefined) ? existingPort : new nvm.Port(parseInt(obj.portNumber, 10), deviceId);
 
-            port.hardwareAddress = obj.hardwareAddress;
-            port.name = obj.name;
-            port.config = obj.config;
-            port.state = obj.state;
-            port.currentFeatures = obj.currentFeatures;
-            port.advertisedFeatures = obj.advertisedFeatures;
-            port.supportedFeatures = obj.supportedFeatures;
-            port.peerFeatures = obj.peerFeatures;
+            if(obj.hardwareAddress !== undefined) {
+                port.hardwareAddress = obj.hardwareAddress;
+                port.name = obj.name;
+                port.config = parseInt(obj.config, 10);
+                port.state = parseInt(obj.state, 10);
+                port.currentFeatures = parseInt(obj.currentFeatures, 10);
+                port.advertisedFeatures = parseInt(obj.advertisedFeatures, 10);
+                port.supportedFeatures = parseInt(obj.supportedFeatures, 10);
+                port.peerFeatures = parseInt(obj.peerFeatures, 10);
+            } else {
+                port.receivePackets = parseInt(obj.receivePackets, 10);
+                port.transmitPackets = parseInt(obj.transmitPackets, 10);
 
-            port.receivePackets = obj.receivePackets;
-            port.transmitPackets = obj.transmitPackets;
+                port.receiveBytes = parseInt(obj.receiveBytes, 10);
+                port.transmitBytes = parseInt(obj.transmitBytes, 10);
 
-            port.receiveBytes = obj.receiveBytes;
-            port.transmitBytes = obj.transmitBytes;
+                port.receiveDropped = parseInt(obj.receiveDropped, 10);
+                port.transmitDropped = parseInt(obj.transmitDropped, 10);
 
-            port.receiveDropped = obj.receiveDropped;
-            port.transmitDropped = obj.transmitDropped;
+                port.receiveErrors = parseInt(obj.receiveErrors, 10);
+                port.transmitErrors = parseInt(obj.transmitErrors, 10);
 
-            port.receiveErrors = obj.receiveErrors;
-            port.transmitErrors = obj.transmitErrors;
+                port.receiveFrameErrors = parseInt(obj.receiveFrameErrors, 10);
+                port.receiveOverrunErrors = parseInt(obj.receiveOverrunErrors, 10);
+                port.receiveCRCErrors = parseInt(obj.receiveCRCErrors, 10);
 
-            port.receiveFrameErrors = obj.receiveFrameErrors;
-            port.receiveOverrunErrors = obj.receiveOverrunErrors;
-            port.receiveCRCErrors = obj.receiveCRCErrors;
-
-            port.collisions = obj.collisions;
+                port.collisions = parseInt(obj.collisions, 10);
+            }
             return port;
         },
         mapAll: function (obj, device) {
@@ -246,7 +247,7 @@
             for (var i = 0; i < obj.length; i++) {
                 var p = obj[i];
                 var portNumber = parseInt(p.portNumber, 10);
-                allPorts[portNumber] = ports.map(p, device.ports[portNumber]);
+                allPorts[portNumber] = ports.map(p, device.ports[portNumber], device.id);
             }
             return allPorts;
         }

@@ -419,18 +419,20 @@
 
                 var highlightDevice = function (event, device) {
                     nodeCollection.forEach(function (d) {
-                        if (d.id == device.id) {
-                            d.highlight = true;
+                        if (d.id !== device) {
+                            d.blur = true;
                         }
                     });
+                    linkCollection.forEach(function (d) {
+                        d.blur = true;
+                    });
                     redrawNodes();
+                    redrawLinks();
                 };
 
                 var highlightLink = function (event, link) {
                     linkCollection.forEach(function (d) {
-                        if (d.id == link.id) {
-                            d.highlight = true;
-                        } else {
+                        if (d.id !== link) {
                             d.blur = true;
                         }
                     });

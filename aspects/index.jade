@@ -41,10 +41,10 @@ block nav
             a(ng-click="logout()", tooltip="Logout", tooltip-placement="bottom")
                 i.fa.fa-sign-out
 
-    form.navbar-form.navbar-left(role="search")
+    form.navbar-form.navbar-left(role="search", ng-show="isSearchVisible")
         div.form-group
             div.div.btn-group
-                div.input-group(style="width:350px")
+                div.input-group()
                     input.form-control(type="text", ng-model="deviceFilter", placeholder="filter name, mac or datapath")
                     span.input-group-btn
                         button.btn.btn-default(type="button",ng-click="clearDeviceFilter()",ng-disabled="deviceFilter == ''")
@@ -53,13 +53,13 @@ block nav
     ul.pull-right(class="nav navbar-nav",style="margin-left: 20px;")
         li(ng-cloak, ng-class="{ ok: totalStatus, error: !totalStatus}")
             a(href="/status", ng-show="totalStatus", tooltip="Everything is fine.", tooltip-placement="bottom")
-                i.fa.fa-check-square
+                i.fa.fa-fw.fa-check-square
                 | &nbsp;
-                small {{ lastUpdate | formatDateShort }}
+                small {{ lastUpdate | formatDateWithoutYear }}
             a(href="/status", ng-show="!totalStatus", tooltip="{{ systemError }}", tooltip-placement="bottom")
-                i.fa.fa-exclamation-triangle
+                i.fa.fa-fw.fa-exclamation-triangle
                 | &nbsp;
-                small Error on {{ systemErrorStamp | formatDateShort }}
+                small {{ systemErrorStamp | formatDateWithoutYear }}
 
 
 block body

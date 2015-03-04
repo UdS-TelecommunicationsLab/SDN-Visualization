@@ -9,13 +9,14 @@ div#sdn-configuration
                                 button.btn.btn-default(type="button",ng-click="exportConfig()",ng-disabled="!configForm.$pristine")
                                     i.fa.fa-upload
                                     |  Export
-                            div.col-md-8
-                                div.input-group(style="width:350px")
-                                    input.form-control(type="file",name="importConfiguration")
-                                    span.input-group-btn
-                                        button.btn.btn-default(type="submit")
-                                            i.fa.fa-download
-                                            |  Import
+                            if !demoMode
+                                div.col-md-8
+                                    div.input-group(style="width:350px")
+                                        input.form-control(type="file",name="importConfiguration")
+                                        span.input-group-btn
+                                            button.btn.btn-default(type="submit")
+                                                i.fa.fa-download
+                                                |  Import
 
     form.form.form-horizontal(name="configForm")
         div
@@ -29,20 +30,30 @@ div#sdn-configuration
                         label.col-sm-2.control-label Contact Mail:
                         div.col-sm-5
                             input.form-control(type="text",
-                                ng-model="configuration.controller.contact",
-                                ng-blur="saveConfiguration()")
+                            ng-model="configuration.controller.contact",
+                            ng-blur="saveConfiguration()")
 
                     div.form-group
                         label.col-sm-1.control-label Type:
                         div.col-sm-4
-                            select.form-control(ng-model="configuration.dataSource.type",
-                            ng-options="item.type as item.title for item in dataSources",
-                            ng-required="true",
-                            ng-blur="saveConfiguration()")
+                            if demoMode
+                                select.form-control(ng-model="configuration.dataSource.type",
+                                ng-options="item.type as item.title for item in dataSources",
+                                disabled="true")
+                            else
+                                select.form-control(ng-model="configuration.dataSource.type",
+                                    ng-options="item.type as item.title for item in dataSources",
+                                    ng-required="true",
+                                    ng-blur="saveConfiguration()")
+
 
                         label.col-sm-2.control-label Connection:
                         div.col-sm-5
-                            input.form-control(type="text",ng-model="configuration.dataSource.connectionString",ng-required="true",ng-blur="saveConfiguration()")
+                            if demoMode
+                                input.form-control(type="text",ng-model="configuration.dataSource.connectionString",disabled="true")
+                            else
+                                input.form-control(type="text",ng-model="configuration.dataSource.connectionString",ng-required="true",ng-blur="saveConfiguration()")
+
 
             div.panel.panel-default
                 div.table-responsive

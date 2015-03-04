@@ -47,7 +47,7 @@
     };
 
     var startWorker = function() {
-        var worker = require("child_process").fork("application/worker.js");
+        var worker = require("child_process").fork(__dirname + "/worker.js");
 
         worker.on("exit", function() {
             console.log("Worker process terminated. Trying to restart.");
@@ -71,8 +71,8 @@
         }
 
         var server = https.createServer({
-            key: fs.readFileSync('./cert/key.pem'),
-            cert: fs.readFileSync('./cert/cert.pem'),
+            key: fs.readFileSync(__dirname + '/../cert/key.pem'),
+            cert: fs.readFileSync(__dirname + '/../cert/cert.pem'),
             rejectUnauthorized: false
         }, app);
 

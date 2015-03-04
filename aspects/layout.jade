@@ -16,7 +16,8 @@ html(ng-app="sdn-visualization",xlink="http://www.w3.org/1999/xlink")
         header#sdn-nav.navbar.navbar-inverse.navbar-fixed-top(role="banner")
             div.container-fluid
                 div.navbar-header
-                    a.navbar-brand(href="/") SDN-Viz
+                    a.navbar-brand.navbar-brand-img(href="/")
+                    a.navbar-brand.hidden-sm(href="/") SDN-Viz
                 div(class="navbar-collapse collapse")
                     block nav
 
@@ -25,12 +26,12 @@ html(ng-app="sdn-visualization",xlink="http://www.w3.org/1999/xlink")
                 block body
                 hr
                 div#sdn-copyright
-                    p SDN-Visualization (
+                    p SDN-Visualization&nbsp;
                         span(ng-cloak)
-                            | v
+                            | (v
                             span(sdn-app-version)
-                            | .
-                        | ) - Created by&nbsp;
+                            | )&nbsp;
+                        | - Created by&nbsp;
                         a(href="http://www.nt.uni-saarland.de/",target="_blank") Telecommunications Lab
                         |  /&nbsp;
                         a(href="http://www.intel-vci.uni-saarland.de",target="_blank") Intel Visual Computing Institute
@@ -44,9 +45,9 @@ html(ng-app="sdn-visualization",xlink="http://www.w3.org/1999/xlink")
                         scrolling="0",width="170px",height="20px",
                         style="vertical-align: middle; margin-top:-5px")
                     div#logos.row
-                        div.col-xs-2.col-xs-offset-4
+                        div.col-sm-3.col-sm-offset-3.col-md-2.col-md-offset-4
                             a.uds(href="http://www.uni-saarland.de/", target="_blank") Saarland University
-                        div.col-xs-2
+                        div.col-sm-3.col-sm-2
                             a.ivci(href="http://www.intel-vci.uni-saarland.de/", target="_blank") Saarland University
 
                     br

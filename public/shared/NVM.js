@@ -136,7 +136,8 @@ var __extends = this.__extends || function (d, b) {
     /**
      * The Port represents a physical port on a switch, which has some associated statistics.
      */
-    exports.Port = function (portNumber) {
+    exports.Port = function (portNumber, deviceId) {
+        this.id = deviceId + "- + portNumber";
         this.number = portNumber;
 
         this.hardwareAddress = "";
