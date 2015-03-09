@@ -26,20 +26,19 @@
  */
 
 "use strict";
-var bodyParser = require('body-parser'),
-    cookieParser = require('cookie-parser'),
+var bodyParser = require("body-parser"),
+    cookieParser = require("cookie-parser"),
     express = require("express"),
     lessMiddleware = require("less-middleware"),
-    methodOverride = require('method-override'),
-    multipart = require('connect-multiparty'),
-    errorhandler = require('errorhandler'),
-    flash = require('connect-flash'),
+    methodOverride = require("method-override"),
+    errorhandler = require("errorhandler"),
+    flash = require("connect-flash"),
     path = require("path"),
     passport = require("passport"),
     pkg = require("./package.json"),
     router = require("./application/nodeRouter"),
     security = require("./application/security"),
-    session = require('express-session'),
+    session = require("express-session"),
     server = require("./application/nodeServer");
 
 var app = module.exports = express();
