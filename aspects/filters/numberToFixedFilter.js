@@ -25,10 +25,16 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /node_modules and /lib.
  */
 
-(function(sdnViz) {
+(function (sdnViz) {
     "use strict";
-    sdnViz.filter("numberToFixed", function() {
-        return function(input, opt) {
+    sdnViz.filter("numberToFixed", function () {
+        return function (input, opt) {
+            if (typeof(input) === "undefined") {
+                return "UNK";
+            }
+            if (_.isString(input)) {
+                input = parseFloat(input);
+            }
             var precision = (opt) ? opt : 5;
             return input.toFixed(precision);
         };
