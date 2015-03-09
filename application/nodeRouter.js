@@ -35,9 +35,11 @@
         msgpack = require("../lib/msgpack-javascript/msgpack.codec.js").msgpack,
         passport = require("passport"),
         ensureLoggedIn = require("connect-ensure-login").ensureLoggedIn,
+        multipart = require("connect-multiparty"),
         storage = require("./storage");
 
     var loginUrl = "/login";
+    var multipartMiddleware = multipart();
 
     var index = function (request, response) {
         response.render("index", {demoMode: pkg.isDemoMode || false});
@@ -89,7 +91,7 @@
             config.attachToResponse(response);
         });
 
-        app.post("/api/importVizConfiguration", ensureLoggedIn(loginUrl), function (request, response) {
+        app.post("/api/importVizConfiguration", multipartMiddleware, ensureLoggedIn(loginUrl), function (request, response) {
             if (request.files && request.files.importConfiguration) {
                 var readErrback = function () {
                     console.log("Error while reading uploaded visualization file.");

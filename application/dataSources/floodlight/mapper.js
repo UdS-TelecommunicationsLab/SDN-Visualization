@@ -359,6 +359,8 @@
                                     endpoints.push(link.dstHost.id);
                                 }
                             }
+                        } else if(action === "none") {
+                            entry.actions["drop"] = true;
                         } else {
                             // TODO: handle other actions
                             console.log(action);
