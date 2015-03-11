@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2013 - 2015 Saarland University
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,12 +25,12 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /node_modules and /lib.
  */
 
-(function (sdnViz) {
+(function(sdnViz) {
     "use strict";
-    sdnViz.filter("packetLossRate", function (percentageFilter) {
-        return function (input) {
-            if (input !== undefined && input !== null) {
-                return percentageFilter(input, 1);
+    sdnViz.filter("percentage", function(numberToFixedFilter) {
+        return function(input, precision) {
+            if (input !== undefined && input !== null){
+                return (numberToFixedFilter(input * 100, precision || 3)).toString() + "%";
             }
             return "UNK";
         };
