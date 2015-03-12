@@ -26,9 +26,9 @@
  */
 
 "use strict";
-var sdnViz = angular.module("sdn-visualization", ["ngRoute","ui.bootstrap", "colorpicker.module"]);
+var sdnViz = angular.module("sdn-visualization", ["ngRoute","angular-locker","ui.bootstrap", "colorpicker.module"]);
 
-sdnViz.config(function($routeProvider, $locationProvider) {
+sdnViz.config(function($routeProvider, $locationProvider, lockerProvider) {
     // Main Views
     $routeProvider.
         when("/topology", {
@@ -94,6 +94,11 @@ sdnViz.config(function($routeProvider, $locationProvider) {
     });
 
     $locationProvider.html5Mode(true);
+
+    lockerProvider.setDefaultDriver("session")
+        .setDefaultNamespace("sdnViz")
+        .setSeparator(".")
+        .setEventsEnabled(false);
 });
 
 sdnViz.run(function($rootScope, router, repository) {

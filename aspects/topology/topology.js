@@ -33,7 +33,6 @@
         var defaultParameters = {
             nodeSize: 10,
             animationDuration: 1000,
-            iconSize: 10,
             inactiveOpacity: 0.25,
             blurOpacity: 0.125,
             colors: {
