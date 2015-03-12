@@ -32,7 +32,7 @@
             if (protocol !== 6 && protocol !== 17) {
                 return input;
             }
-            return sdn.serviceNames[protocol][input] || input;
+            return sdn.serviceNames[protocol][input].toUpperCase() || input;
         };
     });
 })(window.sdnViz);

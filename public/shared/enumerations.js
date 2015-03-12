@@ -67,6 +67,7 @@
 
     // http://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml
     exports.networkProtocols = {
+        "-1": "ARP",
         "0": "HOPOPT",
         "1": "ICMP",
         "2": "IGMP",

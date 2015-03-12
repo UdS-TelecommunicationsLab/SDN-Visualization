@@ -278,7 +278,7 @@
             if (obj.match.arp_opcode) {
                 flowEntry.nw.src = obj.match.arp_spa || "";
                 flowEntry.nw.dst = obj.match.arp_tpa || "";
-                flowEntry.nw.protocol = 0;
+                flowEntry.nw.protocol = -1;
             } else {
                 flowEntry.nw.src = obj.match.ipv4_src || "";
                 flowEntry.nw.dst = obj.match.ipv4_dst || "";
