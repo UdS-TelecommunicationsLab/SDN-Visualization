@@ -29,8 +29,7 @@
     /*jslint node: true */
     "use strict";
 
-    var config = require("./config"),
-        pkg = require("../package.json"),
+    var config = require("./ui-config"),
         moment = require("moment"),
         msgpack = require("../lib/msgpack-javascript/msgpack.codec.js").msgpack,
         passport = require("passport"),
@@ -38,11 +37,13 @@
         multipart = require("connect-multiparty"),
         storage = require("./storage");
 
+    var conf = require("./config").getConfiguration();
+
     var loginUrl = "/login";
     var multipartMiddleware = multipart();
 
     var index = function (request, response) {
-        response.render("index", {demoMode: pkg.isDemoMode || false});
+        response.render("index", {demoMode: conf.isDemoMode || false});
     };
 
     var login = function (req, res) {
@@ -55,7 +56,7 @@
 
     var registerTemplates = function (app) {
         app.get("/templates/*", ensureLoggedIn(loginUrl), function (request, response) {
-            response.render(request.params[0], {demoMode: pkg.isDemoMode || false});
+            response.render(request.params[0], {demoMode: conf.isDemoMode || false});
         });
     };
 
@@ -65,7 +66,8 @@
         });
 
         app.get("/operator", function (req, res) {
-            res.redirect(require("../package.json").operatorUrl);
+            var conf = require("./application/config").getConfiguration();
+            res.redirect(conf.operatorUrl);
         });
     };
 
@@ -86,7 +88,7 @@
         });
 
         app.get("/api/exportVizConfiguration", ensureLoggedIn(loginUrl), function (request, response) {
-            var fileName = "SDN_VIZ_Configuration_" + moment(new Date()).format("YYYY_MM_DD_HH_mm_ss") + ".json";
+            var fileName = "sdn-ui-conf_" + moment(new Date()).format("YYYY_MM_DD_HH_mm_ss") + ".json";
             response.setHeader("Content-disposition", "attachment; filename=" + fileName + "");
             config.attachToResponse(response);
         });

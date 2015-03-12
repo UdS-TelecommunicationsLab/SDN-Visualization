@@ -29,7 +29,7 @@
     "use strict";
     var _ = require("lodash"),
         common = require("../common"),
-        config = require("../../config"),
+        config = require("../../ui-config"),
         nvm = require("../../../public/shared/NVM");
 
     var mapEndpoints = function (d) {

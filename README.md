@@ -53,13 +53,13 @@ Afterwards enter your organizations details and this should leave you with the f
 
 ### Configuration
 
-Before starting the application, the `package.json` has to be adapted to the application's needs. Therefore the following parameters can be modified:
+Before starting the application, the `sdn-conf.json` has to be in place. The easiest way is to copy the existing `sdn-conf.default.json` to `sdn-conf.json` and adapt the values to the application's needs. Therefore the following parameters can be modified:
 
 * `appPort`: usually set to 443, to allow HTTPS communication on the well-known port.
-* `credentials`: the web interface is secure by a simple name/password check without any sophisticated user management. Therefore one can specify these parameters here. **THE DEFAULT VALUES SHOULD BE CHANGED FOR "PRODUCTIVE" SETUPS**
+* `credentials`: the web interface is secured by a simple name/password check without any sophisticated user management. Therefore one can specify these parameters here. **THE DEFAULT VALUES SHOULD BE CHANGED FOR "PRODUCTIVE" SETUPS**
 * `isHttpRedirectEnabled`: this can be set to false, when the normal port 80 should not be used for redirecting to the SSL encrypted instance of the application.
 * `isDemoMode`: this can be set to true, in order to disable controls for changing connection string and controller type on the configuration page.
-* `operatorUrl`: specify a target URL that is accessed, when a users clicks on the operator logo in the sidebar.
+* `operatorUrl`: specify a URL of the institution that operates the visualization.
 
 All other parameters should be left in place to ensure proper operation. Especially changing version numbers of dependencies might cause severe interoperability issues, as Node.js packages are not downward-compatible by default.
 

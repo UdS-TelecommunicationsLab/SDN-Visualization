@@ -1,0 +1,1 @@
+{"dataSource": { "type": "floodlight", "connectionString": "localhost:8080" }, "controller": {"name": "TODO", "contact": "TODO"}, "deviceInformation": [] }

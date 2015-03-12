@@ -35,7 +35,6 @@ var bodyParser = require("body-parser"),
     flash = require("connect-flash"),
     path = require("path"),
     passport = require("passport"),
-    pkg = require("./package.json"),
     router = require("./application/nodeRouter"),
     security = require("./application/security"),
     session = require("express-session"),
@@ -43,8 +42,10 @@ var bodyParser = require("body-parser"),
 
 var app = module.exports = express();
 
-app.set("port", process.env.PORT || pkg.appPort || 3000);
-app.set("redirect", pkg.isHttpRedirectEnabled);
+var conf = require("./application/config").getConfiguration();
+
+app.set("port", process.env.PORT || conf.appPort || 3000);
+app.set("redirect", conf.isHttpRedirectEnabled);
 app.set("views", __dirname + "/aspects");
 app.set("view engine", "jade");
 app.use(cookieParser());

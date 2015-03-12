@@ -28,7 +28,7 @@
 (function(DEBUG) {
     "use strict";
     var dataSource = require(__dirname + "/dataSources/source"),
-        config = require(__dirname + "/config"),
+        config = require(__dirname + "/ui-config"),
         moment = require("moment"),
         objectDiff = require(__dirname + "/../lib/objectDiff-enhanced/objectDiff"),
         nvm = require(__dirname + "/../public/shared/NVM");

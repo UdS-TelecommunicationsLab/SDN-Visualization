@@ -28,13 +28,14 @@
 (function (security) {
     "use strict";
     var passport = require("passport"),
-        pkg = require("../package.json"),
         fs = require("fs"),
         moment = require("moment"),
         LocalStrategy = require("passport-local").Strategy;
 
-    var name = (pkg.credentials && pkg.credentials.name) || "root";
-    var pass = (pkg.credentials && pkg.credentials.pass) || "1234";
+    var conf = require("./config").getConfiguration();
+
+    var name = (conf.credentials && conf.credentials.name) || "root";
+    var pass = (conf.credentials && conf.credentials.pass) || "sdn";
 
     var logFile = __dirname + "/../security.log";
 
