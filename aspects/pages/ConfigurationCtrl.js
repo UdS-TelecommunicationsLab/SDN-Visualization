@@ -43,15 +43,10 @@
         var defaultColor = "#444444";
 
         var createPattern = function (d) {
-            if (d.color === undefined)
+            if (d.color === undefined) {
                 d.color = defaultColor;
-
-            var sub = [];
-            var pattern = d.pattern.replace(/:/g, '');
-            for (var i = 0; i < 8; i++) {
-                sub[i] = pattern.substr(i * 2, 2);
             }
-            _.extend(d, {sub: sub});
+
             return d;
         };
 
@@ -117,11 +112,10 @@
         $scope.saveConfiguration = function () {
             if (angular.toJson($scope.configuration) != $scope.reference) {
                 var filteredCopy = angular.copy(_.filter($scope.configuration.deviceInformation, function (d) {
-                    return d.status != 'blank';
+                    return d.status !== 'blank';
                 }));
                 var res = _.map(filteredCopy, function (d) {
-                    d.pattern = d.sub.join(":");
-                    delete d.sub;
+                    d.pattern = d.pattern.replace(/[-:.]/g, "").match(/.{1,2}/g).join(":");
                     delete d.highlight;
                     return d;
                 });
