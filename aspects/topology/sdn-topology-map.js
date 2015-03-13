@@ -209,7 +209,7 @@
                             tooltip.style("opacity", 0.9);
                             tooltip.html("");
                             if (type == "Node") {
-                                defaults.nodeTooltip(obj, tooltip)
+                                defaults.nodeTooltip(obj, tooltip);
                             } else if (type == "Link") {
                                 defaults.linkTooltip(obj, tooltip);
                             }
