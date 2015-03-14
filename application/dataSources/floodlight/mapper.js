@@ -32,11 +32,14 @@
         config = require("../../ui-config"),
         nvm = require("../../../public/shared/NVM");
 
-    var mapEndpoints = function (d) {
-        var fe = new nvm.FlowEntry();
-        fe.deviceId = d;
-        fe.actions = {endpoint: true};
-        return fe;
+    var mapEndpoints = function(flowId) {
+        return function (d) {
+            var fe = new nvm.FlowEntry();
+            fe.id = flowId + "-" + d;
+            fe.deviceId = d;
+            fe.actions = {endpoint: true};
+            return fe;
+        };
     };
 
     var findSourceOrDestination = function (entry, port) {
@@ -246,6 +249,9 @@
             var allPorts = {};
             for (var i = 0; i < obj.length; i++) {
                 var p = obj[i];
+                if (p.portNumber === "local") {
+                    continue;
+                }
                 var portNumber = parseInt(p.portNumber, 10);
                 allPorts[portNumber] = ports.map(p, device.ports[portNumber], device.id);
             }
@@ -305,10 +311,7 @@
                     if (switchFlows !== null) {
                         for (var j = 0; j < switchFlows.length; j++) {
                             var flowObj = switchFlows[j];
-                            var flowId = parseInt(flowObj.cookie, 10);
-                            if (flowId < 0) {
-                                flowId += Math.pow(2, 63);
-                            }
+                            var flowId = flowObj.cookie;
                             if (flowByCookie[flowId] === undefined) {
                                 flowByCookie[flowId] = new nvm.Flow(flowId);
                             }
@@ -388,7 +391,7 @@
                             endpoints.push(destinationLinks[n].srcHost.id);
                         }
                     }
-                    flow.endpoints = _.unique(endpoints).map(mapEndpoints);
+                    flow.endpoints = _.unique(endpoints).map(mapEndpoints(flow.id));
                 }
 
                 var src = _.unique(sources);

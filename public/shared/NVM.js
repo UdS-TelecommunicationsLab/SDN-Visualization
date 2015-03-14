@@ -143,30 +143,30 @@ var __extends = this.__extends || function (d, b) {
         this.hardwareAddress = "";
         this.name = "";
 
-        this.config = undefined;
-        this.state = undefined;
-        this.currentFeatures = undefined;
-        this.advertisedFeatures = undefined;
-        this.supportedFeatures = undefined;
-        this.peerFeatures = undefined;
+        this.config = null;
+        this.state = null;
+        this.currentFeatures = null;
+        this.advertisedFeatures = null;
+        this.supportedFeatures = null;
+        this.peerFeatures = null;
 
-        this.receivePackets = undefined;        // number
-        this.transmitPackets = undefined;       // number
+        this.receivePackets = null;        // number
+        this.transmitPackets = null;       // number
 
-        this.receiveBytes = undefined;          // number
-        this.transmitBytes = undefined;         // number
+        this.receiveBytes = null;          // number
+        this.transmitBytes = null;         // number
 
-        this.receiveDropped = undefined;        // number
-        this.transmitDropped = undefined;       // number
+        this.receiveDropped = null;        // number
+        this.transmitDropped = null;       // number
 
-        this.receiveErrors = undefined;         // number
-        this.transmitErrors = undefined;        // number
+        this.receiveErrors = null;         // number
+        this.transmitErrors = null;        // number
 
-        this.receiveFrameErrors = undefined;    // number
-        this.receiveOverrunErrors = undefined;  // number
-        this.receiveCRCErrors = undefined;      // number
+        this.receiveFrameErrors = null;    // number
+        this.receiveOverrunErrors = null;  // number
+        this.receiveCRCErrors = null;      // number
 
-        this.collisions = undefined;            // number
+        this.collisions = null;            // number
     };
 
 
@@ -194,7 +194,7 @@ var __extends = this.__extends || function (d, b) {
             for(var portNumber in ports) {
                 if (self.ports[portNumber] !== undefined) {
                     self.ports[portNumber] = _.assign(self.ports[portNumber], ports[portNumber], function(value, other) {
-                        return (typeof other === 'undefined') ? value : other;
+                        return (_.isNull(other)) ? value : other;
                     });
                 } else {
                     self.ports[portNumber] = ports[portNumber];
@@ -231,8 +231,8 @@ var __extends = this.__extends || function (d, b) {
             this.deviceType = deviceType || "Node";
             this.connectedSince = new Date(connectedSince);
             this.description = {};
-            this.capabilities = [];
-            this.actions = [];
+            this.capabilities = "";
+            this.actions = "";
             this.attributes = [];
             this.controllerAddress = inetAddress || "UNK";
         };
@@ -246,7 +246,7 @@ var __extends = this.__extends || function (d, b) {
      * The Flow contains information on all layers from data link over network to transport layer.
      */
     exports.Flow = function (id) {
-        this.id = id || 0;
+        this.id = id || "0";
         this.entries = [];
         this.source = "UNK";
         this.destination = "UNK";

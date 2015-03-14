@@ -111,8 +111,8 @@
                 var device = _.find(model.devices, findDevice(deviceId));
                 var deviceObj = data[deviceId];
                 if (device && deviceObj !== null) {
-                    device.capabilities = deviceObj.capabilities;
-                    device.actions = deviceObj.actions;
+                    device.capabilities = deviceObj.capabilities || "";
+                    device.actions = deviceObj.actions || "";
                     if (deviceObj.portDesc) {
                         var ports = {};
                         for (var j = 0; j < deviceObj.portDesc.length; j++) {
@@ -145,7 +145,7 @@
             for (var deviceId in data) {
                 var device = _.find(model.devices, findDevice(deviceId));
                 if (device && data[deviceId] != null) {
-                    device.description = data[deviceId].desc;
+                    device.description = data[deviceId].desc || "";
                 }
             }
         }
