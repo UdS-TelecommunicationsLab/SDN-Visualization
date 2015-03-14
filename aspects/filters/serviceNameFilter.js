@@ -32,7 +32,11 @@
             if (protocol !== 6 && protocol !== 17) {
                 return input;
             }
-            return sdn.serviceNames[protocol][input].toUpperCase() || input;
+            var name = sdn.serviceNames[protocol][input];
+            if(!name) {
+                return input;
+            }
+            return name.toUpperCase();
         };
     });
 })(window.sdnViz);
