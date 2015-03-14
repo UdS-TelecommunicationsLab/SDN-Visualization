@@ -15,7 +15,7 @@ div.sdn-flow-table
                     th Destination
                     th Protocol
             tbody
-                tr(ng-repeat="flow in data.nvm.flows")
+                tr.sdn-flow(ng-repeat="flow in data.nvm.flows")
                     td
                         a.btn.btn-default.btn-xs(href="{{ '/detail/flow/' + flow.id }}") Details
                     td
@@ -23,10 +23,9 @@ div.sdn-flow-table
                     td
                         code.dp {{ flow.destination }}
                     td
-                        small {{ flow.protocol | networkProtocol }}
+                        span.label.label-success {{ flow.protocol | networkProtocol }}
                     td
-                        small
-                            span(ng-show="flow.protocol == 6 || flow.protocol == 17") {{ flow.service | serviceName:flow.protocol }}
+                        span.label.label-default(ng-show="flow.protocol == 6 || flow.protocol == 17") {{ flow.service | serviceName:flow.protocol }}
                     td {{ flow.entries.length }}
 
     div.alert.alert-info(ng-show="data.nvm.flows.length == 0")
