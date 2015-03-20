@@ -265,6 +265,14 @@ td.nonZero {
   font-weight: bold;
 }
 
+td.loss, th.loss {
+  width: 70px;
+}
+
+td.delay, th.delay {
+  width: 70px;
+}
+
 td.nonZero.loss {
   color: #d9534f;
 }
@@ -335,6 +343,16 @@ td.decimal {
   }
 }
 
+.sdn-link-table {
+  .table > tbody > tr > td {
+    padding: 2px 5px;
+  }
+}
+
 .table-hover > tbody > tr:hover {
   background-color: #b8c6cc;
+}
+
+col:nth-child(even) {
+  background-color: #f9f9f9 !important;
 }
