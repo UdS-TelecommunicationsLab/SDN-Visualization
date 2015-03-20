@@ -31,7 +31,7 @@
         return function(input) {
             if (input !== null)
                 return (numberToFixedFilter(input, 1)).toString() + " ms";
-            return "UNK";
+            return "-/-";
         };
     });
 })(window.sdnViz);

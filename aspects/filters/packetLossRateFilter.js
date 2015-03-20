@@ -32,7 +32,7 @@
             if (input !== undefined && input !== null) {
                 return percentageFilter(input, 1);
             }
-            return "UNK";
+            return "-/-";
         };
     });
 })(window.sdnViz);

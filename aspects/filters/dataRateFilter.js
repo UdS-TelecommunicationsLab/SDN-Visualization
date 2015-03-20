@@ -31,7 +31,7 @@
         return function(input) {
             if (input !== undefined && input !== null)
                 return (numberToFixedFilter(input / 1000, 2)).toString() + " kbps";
-            return "UNK";
+            return "-/-";
         };
     });
 })(window.sdnViz);
