@@ -1,4 +1,4 @@
 ﻿div.sdn-device-thumbnail
-	a.thumbnail(href="{{ '/detail/device/' + device.id }}",tooltip="ID: {{ device.id }}",tooltip-placement="top")
-		sdn-device-type-icon(device="device")
-		code.dp {{ device.name }}
+    a(href="{{ '/detail/device/' + dev.id }}", tooltip="ID: {{ dev.id }}",tooltip-placement="top", ng-class="{ 'thumbnail': showBorder != 'false' }")
+        sdn-device-type-icon(device="dev")
+        code.dp {{ dev.name }}
