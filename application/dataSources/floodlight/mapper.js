@@ -357,9 +357,11 @@
                                 });
                                 if (link.srcHost.type === nvm.Client.type) {
                                     endpoints.push(link.srcHost.id);
+                                    link.srcHost.activeFlows.push(flow.id);
                                 }
                                 if (link.dstHost.type === nvm.Client.type) {
                                     endpoints.push(link.dstHost.id);
+                                    link.dstHost.activeFlows.push(flow.id);
                                 }
                             }
                         } else if(action === "none") {
@@ -380,6 +382,7 @@
                                 direction: "forward" // TODO: properly set direction
                             });
                             endpoints.push(sourceLinks[i].dstHost.id);
+                            sourceLinks[i].dstHost.activeFlows.push(flow.id);
                         }
                         var destinationLinks = _.filter(links, findDestination(entry));
 
@@ -389,6 +392,7 @@
                                 direction: "forward" // TODO: properly set direction
                             });
                             endpoints.push(destinationLinks[n].srcHost.id);
+                            destinationLinks[n].srcHost.activeFlows.push(flow.id);
                         }
                     }
                     flow.endpoints = _.unique(endpoints).map(mapEndpoints(flow.id));
