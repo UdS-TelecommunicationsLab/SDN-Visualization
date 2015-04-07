@@ -48,7 +48,12 @@
 
     var login = function (req, res) {
         if (!req.user) {
-            res.render('login', {message: req.flash("loginMessage")});
+            var credentials = { name: "", pass: ""};
+            var demoMode = conf.isDemoMode || false;
+            if(demoMode) {
+                credentials = conf.credentials;
+            }
+            res.render('login', {message: req.flash("loginMessage"), demoMode: demoMode, credentials: credentials});
         } else {
             res.redirect("/");
         }

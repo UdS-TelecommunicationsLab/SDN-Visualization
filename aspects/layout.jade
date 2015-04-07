@@ -31,6 +31,9 @@ html(ng-app="sdn-visualization",xlink="http://www.w3.org/1999/xlink")
                             | (v
                             span(sdn-app-version)
                             | )&nbsp;
+                        if demoMode
+                            span.label.label-danger DEMO
+                            | &nbsp;
                         | - Created by&nbsp;
                         a(href="http://www.nt.uni-saarland.de/",target="_blank") Telecommunications Lab
                         |  /&nbsp;
