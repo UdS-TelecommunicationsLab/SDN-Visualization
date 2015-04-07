@@ -291,7 +291,7 @@
             flowEntry.nw.typeOfService = parseInt(obj.match.ip_dscp || 0, 10);
 
             flowEntry.tp.src = parseInt(obj.match.tcp_src || obj.match.udp_src || 0, 10);
-            flowEntry.tp.dst = parseInt(obj.match.tcp_dst || obj.match.udp_src || 0, 10);
+            flowEntry.tp.dst = parseInt(obj.match.tcp_dst || obj.match.udp_dst || 0, 10);
 
             flowEntry.actions = _.clone(obj.actions);
 

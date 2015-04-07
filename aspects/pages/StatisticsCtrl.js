@@ -32,5 +32,43 @@
         $scope.isNodeVisible = true;
 
         $scope.data = repository.data;
+
+        $scope.lossClass = function(value) {
+            if(value !== null) {
+                if(value > 0.1) {
+                    return ["label-danger"];
+                } else if (value > 0.01) {
+                    return ["label-warning"];
+                } else {
+                    return ["label-default"];
+                }
+            }
+            return ["hidden"];
+        };
+
+        $scope.rateClass = function(value) {
+            if(value !== null) {
+                if(value > 4000) {
+                    return ["label-danger"];
+                } else if (value > 1000) {
+                    return ["label-warning"];
+                }
+                return ["label-success"];
+            }
+            return ["hidden"];
+        };
+
+        $scope.delayClass = function(value) {
+            if(value !== null) {
+                if(value > 75) {
+                    return ["label-danger"];
+                } else if (value > 10) {
+                    return ["label-warning"];
+                }
+                return ["label-default"];
+            }
+            return ["hidden"];
+        };
+
     });
 })(window.sdnViz);

@@ -84,6 +84,7 @@
         };
 
         var defaultLinkStyle = function (collection, linkStrengthMax) {
+            var dash_length = 12;
             collection
                 .style({
                     "stroke": function (d) {
@@ -93,6 +94,11 @@
                     },
                     "stroke-width": function (d) {
                         return Math.min((d.dr / (2 * linkStrengthMax) * 7 + 3), 10) + "px";
+                    },
+                    "stroke-dasharray": function(d) {
+                        var link = d.link;
+                        var plr = Math.min(1.0, (parseFloat(link.srcPlr) + parseFloat(link.dstPlr)) * 5.0);
+                        return (4 + Math.max(0.0, dash_length*(1-plr))) + "," + dash_length*plr;
                     }
                 });
             return collection;
