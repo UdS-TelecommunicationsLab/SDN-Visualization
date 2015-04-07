@@ -99,6 +99,10 @@ var __extends = this.__extends || function (d, b) {
         this.monitoredNetworks = [];
         this.isReachable = false;
         this.isStandalone = true;
+        this.routing = {
+            availableMetrics: [],
+            currentMetric: ""
+        };
     };
 
     /**

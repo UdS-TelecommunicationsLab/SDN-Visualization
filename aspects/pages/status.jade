@@ -26,6 +26,12 @@ div#sdn-status
                             td Last Update
                             td(colspan=2) {{ data.nvm.latestUpdate | formatDate }}
                         tr
+                            td Routing Metrics:
+                                sdn-help-tooltip(tooltip="Current marked in bold")
+                            td
+                                span(ng-repeat="metric in data.nvm.controller.routing.availableMetrics",
+                                    ng-style="{ 'font-weight': (metric == data.nvm.controller.routing.currentMetric) ? 'bold' : 'normal' }") {{ metric }}{{$last ? '': ','}}&nbsp;
+                        tr
                             td Monitored Networks
                             td(colspan=2)
                                 p(ng-repeat="network in data.nvm.controller.monitoredNetworks") {{ network }}

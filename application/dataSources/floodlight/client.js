@@ -92,6 +92,33 @@
             model.controller.started = started;
         }
 
+        getResource(client.commands.get.routing, processRouting);
+
+        callback();
+    };
+
+    /**
+     * Manipulates the model object during execution.
+     *
+     * @param {Object} data JSON object containing the retrieved information.
+     *
+     */
+    var processRouting = function(data) {
+        if (data === null || data === undefined || data === {}) {
+            console.error("processRouting called without data");
+        } else {
+            var parseMetrics = function(metric) {
+                if (metric == "CONSTANT") {
+                    return "Constant";
+                } else if (metric == "LOW_DELAY") {
+                    return "Low Delay";
+                }
+            };
+
+            model.controller.routing.availableMetrics = _.map(data.availablemetrics, parseMetrics);
+            model.controller.routing.currentMetric = parseMetrics(data.currentdefault);
+        }
+
         callback();
     };
 
@@ -392,6 +419,7 @@
     client.commands = {
         get: {
             general: "core/controller/summary/json",
+            routing: "uds/routing/metrics/json",
             switches: "core/controller/switches/json",
             hosts: "device/",
             links: "topology/links/json",
