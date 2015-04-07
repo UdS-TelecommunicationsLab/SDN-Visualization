@@ -358,9 +358,9 @@
         if (data === null) {
             console.error("processHosts called without data");
         } else {
-            var clientData = mapper.clients.mapAll(data, model.devices);
-            model.addDevices(clientData.clients);
-            model.addLinks(clientData.links);
+            var hostData = mapper.hosts.mapAll(data, model.devices);
+            model.addDevices(hostData.hosts);
+            model.addLinks(hostData.links);
         }
 
         callback();

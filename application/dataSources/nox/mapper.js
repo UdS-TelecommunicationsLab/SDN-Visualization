@@ -56,7 +56,7 @@
     };
     exports.controller = controller;
 
-    // Mapping Clients
+    // Mapping Hosts
     var clients = {
         map: function(d) {
             var device = common.getDeviceEntry(d.id);
@@ -69,7 +69,7 @@
                 url = "";
             }
 
-            return new nvm.Client(d.id, name || d.id, d.gw, d.ip, d.port, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color);
+            return new nvm.Host(d.id, name || d.id, d.gw, d.ip, d.port, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color);
         },
         mapAll: function(rawData, sw) {
             var lclClients = [];

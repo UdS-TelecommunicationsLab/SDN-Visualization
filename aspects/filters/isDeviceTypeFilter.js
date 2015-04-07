@@ -34,7 +34,7 @@
 
             var out = [];
             for (var i = 0; i < input.length; i++) {
-                if ((filter.node && input[i].type === sdn.Switch.type) || (filter.client && input[i].type === sdn.Client.type)) {
+                if ((filter.node && input[i].type === sdn.Switch.type) || (filter.host && input[i].type === sdn.Host.type)) {
                     out.push(input[i]);
                 }
             }

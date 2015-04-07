@@ -136,19 +136,19 @@
                     dstHost.append("td").html("<code>" + obj.link.dstHost.name + "</code> [" + obj.link.dstPort + "]");
                 }
 
-                if(obj.link.srcHost.type !== sdn.Client.type) {
+                if(obj.link.srcHost.type !== sdn.Host.type) {
                     var dataRateSrc = tab.append("tr");
                     dataRateSrc.append("th").html("Data Rate (S) (T/R):");
                     dataRateSrc.append("td").html(numberToFixedFilter(obj.link.srcTx / 1000, 3) + " / " + numberToFixedFilter(obj.link.srcRx / 1000, 3) + " kbps");
                 }
 
-                if(obj.link.dstHost.type !== sdn.Client.type) {
+                if(obj.link.dstHost.type !== sdn.Host.type) {
                     var dataRateDst = tab.append("tr");
                     dataRateDst.append("th").html("Data Rate (D) (T/R):");
                     dataRateDst.append("td").html(numberToFixedFilter(obj.link.dstTx / 1000, 3) + " / " + numberToFixedFilter(obj.link.dstRx / 1000, 3) + " kbps");
                 }
 
-                if(obj.link.srcHost.type !== sdn.Client.type && obj.link.dstHost.type !== sdn.Client.type) {
+                if(obj.link.srcHost.type !== sdn.Host.type && obj.link.dstHost.type !== sdn.Host.type) {
                     var plr = tab.append("tr");
                     plr.append("th").html("Packet Loss (S/D):");
                     plr.append("td").html(packetLossRateFilter(obj.link.srcPlr) + " / " + packetLossRateFilter(obj.link.dstPlr));

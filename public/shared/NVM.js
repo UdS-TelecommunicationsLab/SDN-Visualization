@@ -171,7 +171,7 @@ var __extends = this.__extends || function (d, b) {
 
 
     /**
-     * The Device represents a common base class for Clients and Switches.
+     * The Device represents a common base class for Hosts and Switches.
      */
     exports.Device = function (id, name, userName, url, location, purpose, color) {
         var self = this;
@@ -206,19 +206,19 @@ var __extends = this.__extends || function (d, b) {
 
 
     /**
-     * The Client contains a connected interface as well as general information of devices.
+     * The Host contains a connected interface as well as general information of devices.
      */
-    exports.Client = (function (base) {
+    exports.Host = (function (base) {
         var client = function (id, name, deviceType, userName, url, location, purpose, color, lastSeen) {
             base.call(this, id, name, userName, url, location, purpose, color);
-            this.type = exports.Client.type;
+            this.type = exports.Host.type;
             this.deviceType = deviceType;
             this.lastSeen = lastSeen || new Date(0);
         };
         __extends(client, base);
         return client;
     })(exports.Device);
-    exports.Client.type = "Client";
+    exports.Host.type = "Host";
 
 
     /**
