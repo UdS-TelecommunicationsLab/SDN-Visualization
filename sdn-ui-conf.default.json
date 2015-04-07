@@ -1,1 +1,17 @@
-{"dataSource": { "type": "floodlight", "connectionString": "localhost:8080" }, "controller": {"name": "TODO", "contact": "TODO"}, "deviceInformation": [] }
+{
+  "dataSource": {
+    "type": "floodlight",
+    "connectionString": "localhost:8080"
+  },
+  "controller": {
+    "name": "TODO",
+    "contact": "TODO"
+  },
+  "deviceInformation": [],
+  "serviceNameTranslation": {
+    "enabled": true
+  },
+  "networkProtocolTranslation": {
+    "enabled": true
+  }
+}

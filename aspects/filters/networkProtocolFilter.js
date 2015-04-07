@@ -27,9 +27,12 @@
 
 (function(sdnViz) {
     "use strict";
-    sdnViz.filter("networkProtocol", function() {
+    sdnViz.filter("networkProtocol", function(repository) {
         return function(input) {
-            return sdn.networkProtocols[input] || input;
+            if(repository.data.configuration && !repository.data.configuration.networkProtocolTranslation.enabled || !sdn.networkProtocols[input]) {
+                return input;
+            }
+            return sdn.networkProtocols[input];
         };
     });
 })(window.sdnViz);
