@@ -34,12 +34,6 @@ block nav
         li
             a(href="/documentation", tooltip="Help", tooltip-placement="bottom")
                 i.fa.fa-book
-        li
-            a(href="/about", tooltip="About", tooltip-placement="bottom")
-                i.fa.fa-info
-        li
-            a(ng-click="logout()", tooltip="Logout", tooltip-placement="bottom")
-                i.fa.fa-sign-out
 
     form.navbar-form.navbar-left(role="search", ng-show="isSearchVisible")
         div.form-group
@@ -51,6 +45,12 @@ block nav
                             i.fa.fa-times
 
     ul.pull-right(class="nav navbar-nav",style="margin-left: 20px;")
+        li
+            a(href="/about", tooltip="About", tooltip-placement="bottom")
+                i.fa.fa-info
+        li
+            a(ng-click="logout()", tooltip="Logout", tooltip-placement="bottom")
+                i.fa.fa-sign-out
         li(ng-cloak, ng-class="{ ok: totalStatus, error: !totalStatus}")
             a(href="/status", ng-show="totalStatus", tooltip="Everything is fine.", tooltip-placement="bottom")
                 i.fa.fa-fw.fa-check-square
