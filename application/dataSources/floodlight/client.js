@@ -214,7 +214,8 @@
             var delays = data;
             for(var k = 0; k < delays.length; k++) {
                 var delaySample = delays[k];
-                var delay = (delaySample.inconsistency) ? null : parseFloat(delaySample.fullDelay);
+                // Sw1-Sw2 = C-Sw1-Sw2-C - 0.5*(C-Sw1-C + C-Sw2-C)
+                var delay = (delaySample.inconsistency) ? null : (delaySample.fullDelay - 0.5 * (delaySample["src-ctl-Delay"]  + delaySample["dst-ctl-Delay"]));
                 var srcPort = parseInt(delaySample.srcPort, 10);
                 var dstPort = parseInt(delaySample.dstPort, 10);
 
