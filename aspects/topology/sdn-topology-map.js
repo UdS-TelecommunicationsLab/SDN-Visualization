@@ -87,8 +87,7 @@
                             $scope.close = function () {
                                 $modalInstance.dismiss('cancel');
                             };
-                        },
-                        backdrop: true
+                        }
                     });
                 };
 
