@@ -29,6 +29,9 @@
     "use strict";
     sdnViz.filter("formatDateWithoutYear", function() {
         return function(input) {
+            if(input === null) {
+                return "UNK";
+            }
             return moment(input).format("DD. MMM HH:mm:ss");
         };
     });

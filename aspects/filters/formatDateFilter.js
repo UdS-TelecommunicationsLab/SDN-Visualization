@@ -29,6 +29,9 @@
     "use strict";
     sdnViz.filter("formatDate", function() {
         return function(input) {
+            if(input === null) {
+                return "UNK";
+            }
             return moment(input).format("Do MMMM YYYY - HH:mm:ss");
         };
     });

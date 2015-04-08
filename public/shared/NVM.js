@@ -48,10 +48,10 @@ var __extends = this.__extends || function (d, b) {
      */
     exports.NVM = function (startDate, oldModel) {
         var self = this;
-        self.started = startDate || (new Date());
-        self.latestUpdate = new Date();
+        self.started = startDate || null;
+        self.latestUpdate = null;
 
-        self.controller = new exports.Controller(new Date());
+        self.controller = new exports.Controller();
 
         self.devices = [];
         self.links = [];
@@ -93,9 +93,10 @@ var __extends = this.__extends || function (d, b) {
     /**
      * The Controller type that stores general information like name, type and the monitored networks.
      */
-    exports.Controller = function (type) {
+    exports.Controller = function (started, type) {
         this.name = "UNK";
         this.type = type || "UNK";
+        this.started = started || null;
         this.monitoredNetworks = [];
         this.isReachable = false;
         this.isStandalone = true;

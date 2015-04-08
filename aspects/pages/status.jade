@@ -24,7 +24,7 @@ div#sdn-status
                             td(colspan=2) {{ data.nvm.controller.started | formatSince }}
                         tr
                             td Last Update
-                            td(colspan=2) {{ data.nvm.latestUpdate | formatDate }}
+                            td(colspan=2) {{ lastUpdate | formatDate }}
                         tr
                             td Routing Metrics:
                                 sdn-help-tooltip(tooltip="Current marked in bold")
