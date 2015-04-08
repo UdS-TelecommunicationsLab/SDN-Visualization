@@ -110,6 +110,7 @@
                 var w, h;
                 var mapNode, mapInner, svg;
                 var nodeSelection, linkSelection, tooltip;
+                var polygonBase = "1.16,0 0.58,1.0 -0.58,1.0 -1.16,0.0 -0.58,-1.0 0.58,-1.0";
 
                 var force = d3.layout.force()
                     .friction(.8)
@@ -252,6 +253,7 @@
                 var resizeNode = function (d, th) {
                     var base = d3.select(th);
                     base.selectAll("circle").remove();
+                    base.selectAll("polygon").remove();
                     base.selectAll("rect").remove();
                     base.selectAll("text").attr("font-size", $scope.currentSize);
                     var selection = [];
@@ -265,7 +267,12 @@
                             .attr("width", $scope.currentSize * 2)
                             .attr("height", $scope.currentSize * 2);
                     } else {
-                        selection = base.insert("circle", "text").attr("r", $scope.currentSize);
+                        if(d.device.type === sdn.Host.type)
+                        {
+                            selection = base.insert("circle", "text").attr("r", $scope.currentSize);
+                        } else {
+                            selection = base.insert("polygon", "text").attr("points", $scope.polygonShape);
+                        }
                     }
                     styleNode(selection);
                 };
@@ -302,6 +309,7 @@
 
                         var t = svg.selectAll(".node");
                         styleNode(t.selectAll("circle"));
+                        styleNode(t.selectAll("polygon"));
                         styleNode(t.selectAll("rect"));
 
                         var texts = t.selectAll("text");
@@ -529,6 +537,7 @@
                     }
 
                     $scope.currentSize = defaults.nodeSize * $scope.zoomFactor;
+                    $scope.polygonShape = polygonBase;
 
                     mapNode = angular.element($scope.element).find(".map");
                     mapInner = angular.element($scope.element).find(".mapInner");
@@ -540,7 +549,15 @@
                     nodeSelection = svg.selectAll(".node");
                     linkSelection = svg.selectAll(".link");
 
+                    var scaleNumber = function (d) {
+                        return (parseFloat(d) * $scope.currentSize).toFixed(3);
+                    };
+                    var scalePoint = function (d) {
+                        return _.map(d.split(","), scaleNumber).join(",");
+                    };
                     $scope.$watch("currentSize", function () {
+                        $scope.polygonShape = _.map(polygonBase.split(" "), scalePoint).join(" ");
+
                         force.charge($scope.currentSize * -120);
                         nodeSelection.each(function (d) {
                             resizeNode(d, this);
