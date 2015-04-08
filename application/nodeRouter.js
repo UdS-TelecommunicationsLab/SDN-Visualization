@@ -71,7 +71,7 @@
         });
 
         app.get("/operator", function (req, res) {
-            var conf = require("./application/config").getConfiguration();
+            var conf = require("./config").getConfiguration();
             res.redirect(conf.operatorUrl);
         });
     };

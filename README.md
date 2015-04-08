@@ -65,7 +65,7 @@ All other parameters should be left in place to ensure proper operation. Especia
 
 #### Operator Logo and Link
 
-You might also want to change the logo at `<project root>/public/images/OperatorLogo.jpg`. It should be a JPEG file with 150 x 65 px. The link's target can be changed as specified above.
+You might also want to change the logo at `<project root>/public/images/OperatorLogo.png`. It should be a PNG file with 150 x 130 px and consist of two rows. The upper row contains the image in saturated version and the lower in an desaturated version. The link's target can be changed as specified above.
 
 ### Starting
 
