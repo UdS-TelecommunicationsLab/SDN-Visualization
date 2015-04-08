@@ -45,7 +45,7 @@
                 "showInactive": "@",
                 "identifier": "@"
             },
-            controller: function ($scope, $modal, router, repository, messenger, topology, websockets, locker) {
+            controller: function ($rootScope, $scope, $modal, router, repository, messenger, topology, websockets, locker, hasIdOrNameFilter) {
                 $scope.showInactive = false;
 
                 var isMapCreated = false;
@@ -55,7 +55,7 @@
 
                 locker.bind($scope, "zoomFactor", 1.0);
 
-                $scope.$watch("zoomFactor", function() {
+                $scope.$watch("zoomFactor", function () {
                     $scope.currentSize = defaults.nodeSize * $scope.zoomFactor;
                 });
 
@@ -66,6 +66,20 @@
 
                 $scope.$watch("visibilityButton", function () {
                     $scope.visibilityButton = !($scope.visibilityButton != true && $scope.visibilityButton != "true");
+                });
+
+                $rootScope.$watch("deviceFilter", function () {
+                    resetAll();
+                    if ($scope.data && $scope.data.nvm) {
+                        var devices = _.map(hasIdOrNameFilter($scope.data.nvm.devices, $rootScope.deviceFilter), function (d) {
+                            return d.id;
+                        });
+                        if ($rootScope.deviceFilter != "") {
+                            highlightDevices(null, devices);
+                        } else {
+                            resetAll();
+                        }
+                    }
                 });
 
                 $scope.toggleActiveNodeVisibility = function () {
@@ -170,7 +184,8 @@
                     collection.filter(function (d) {
                         return d.highlight;
                     }).style({
-                        "stroke": defaults.colors.highlight});
+                        "stroke": defaults.colors.highlight
+                    });
                     collection.filter(function (d) {
                         return d.blur === true;
                     }).style("opacity", defaults.blurOpacity);
@@ -234,7 +249,7 @@
                         });
                 };
 
-                var resizeNode = function(d, th) {
+                var resizeNode = function (d, th) {
                     var base = d3.select(th);
                     base.selectAll("circle").remove();
                     base.selectAll("rect").remove();
@@ -370,7 +385,9 @@
                     });
                     messenger.subscribe({
                         topic: "/topology/device/highlight",
-                        callback: highlightDevice
+                        callback: function (device) {
+                            highlightDevices([device]);
+                        }
                     });
                     messenger.subscribe({
                         topic: "/topology/device/blur",
@@ -429,9 +446,9 @@
                     }
                 };
 
-                var highlightDevice = function (event, device) {
+                var highlightDevices = function (event, devices) {
                     nodeCollection.forEach(function (d) {
-                        if (d.id !== device) {
+                        if (!_.contains(devices, d.id)) {
                             d.blur = true;
                         }
                     });
@@ -533,7 +550,7 @@
                         restart();
                     });
 
-                    svg.call(d3.behavior.zoom().scale($scope.zoomFactor).scaleExtent([0.75, 2]).on("zoom", function() {
+                    svg.call(d3.behavior.zoom().scale($scope.zoomFactor).scaleExtent([0.75, 2]).on("zoom", function () {
                         $scope.zoomFactor = d3.event.scale;
                         $scope.$digest();
                     }));

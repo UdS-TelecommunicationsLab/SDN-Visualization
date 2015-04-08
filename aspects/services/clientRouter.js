@@ -58,7 +58,7 @@
             // HANDLING ACTIVE LINK IN TOP BAR
             $rootScope.$on("$routeChangeSuccess", function() {
                 var path = $location.path();
-                $rootScope.isSearchVisible = path.lastIndexOf("/statistics") === 0;
+                $rootScope.isSearchVisible = (path.lastIndexOf("/statistics") === 0) || (path.lastIndexOf("/topology") === 0);
 
 
                 $("#sdn-nav li.active").removeClass("active");
