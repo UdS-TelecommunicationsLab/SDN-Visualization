@@ -211,10 +211,10 @@
         if (data === null || data === undefined || data === {} || (data.code && data.code === 404)) {
             console.error("processDelay called without data");
         } else {
-            var delays = data.fullpath;
+            var delays = data;
             for(var k = 0; k < delays.length; k++) {
                 var delaySample = delays[k];
-                var delay = parseFloat(delaySample.delayMS);
+                var delay = (delaySample.inconsistency) ? null : parseFloat(delaySample.fullDelay);
                 var srcPort = parseInt(delaySample.srcPort, 10);
                 var dstPort = parseInt(delaySample.dstPort, 10);
 
