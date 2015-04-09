@@ -393,8 +393,8 @@
                     });
                     messenger.subscribe({
                         topic: "/topology/device/highlight",
-                        callback: function (device) {
-                            highlightDevices([device]);
+                        callback: function (event, device) {
+                            highlightDevices(event, [device]);
                         }
                     });
                     messenger.subscribe({
