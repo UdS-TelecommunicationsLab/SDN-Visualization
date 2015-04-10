@@ -1,6 +1,6 @@
 {
   "name": "sdn-visualization",
-  "version": "2015.1.2",
+  "version": "2015.4.0",
   "dependencies": {
     "angular": "1.2.27",
     "angular-bootstrap-colorpicker": "~3.0.10",
