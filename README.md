@@ -23,19 +23,20 @@ It is compatible with most modern browsers (e.g. Chrome >=30, Firefox >=25, Inte
 
 ### Prerequisites
 
-	* nodejs 0.10.20 or newer
-	* npm 1.3.11 or newer
-	* grunt
+    * nodejs 0.10.20 or newer
+    * npm 1.3.11 or newer
 
 These can be installed via your package manager (Linux, e.g. apt-get) or via an installer (Windows).
 
-In order to have `grunt` as a command line utility you have to enter the following: `npm install -g grunt-cli`
+In order to have `grunt` and `bower` as command line utilities, you have to enter the following: `npm install -g grunt-cli bower`
 
 ### Setup Process
 Install Node.js modules as well as build the JavaScript sources:
 
-	cd <project root>
-	npm install
+    cd <project root>
+    npm install
+    bower install
+    grunt
 
 #### Creating an SSL certificate
 As this program is using HTTPS for secure communication, you are required to use a certificate. This can be an official, commercial one or a self signed.  
