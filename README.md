@@ -1,6 +1,6 @@
-﻿# Software Defined Networking - Visualization Application
+﻿# SDN-Visualization
 
-Providing a web-based interactive visualization solution for *Software-Defined Networks* (in particular *OpenFlow* driven systems).
+Software Defined Networks monitoring and visualization system
 
 **Authors:** [Andreas Schmidt](mailto:schmidt@nt.uni-saarland.de), [Michael Karl](mailto:karl@nt.uni-saarland.de)
 
@@ -31,7 +31,7 @@ These can be installed via your package manager (Linux, e.g. apt-get) or via an 
 In order to have `grunt` and `bower` as command line utilities, you have to enter the following: `npm install -g grunt-cli bower`
 
 ### Setup Process
-Install Node.js modules as well as build the JavaScript sources:
+Install Node.js packages, bower packages as well as build the JavaScript sources:
 
     cd <project root>
     npm install
@@ -59,14 +59,12 @@ Before starting the application, the `sdn-conf.json` has to be in place. The eas
 * `appPort`: usually set to 443, to allow HTTPS communication on the well-known port.
 * `credentials`: the web interface is secured by a simple name/password check without any sophisticated user management. Therefore one can specify these parameters here. **THE DEFAULT VALUES SHOULD BE CHANGED FOR "PRODUCTIVE" SETUPS**
 * `isHttpRedirectEnabled`: this can be set to false, when the normal port 80 should not be used for redirecting to the SSL encrypted instance of the application.
-* `isDemoMode`: this can be set to true, in order to disable controls for changing connection string and controller type on the configuration page.
+* `isDemoMode`: this can be set to true, in order to disable controls for changing connection string and controller type on the configuration page. In this mode, the credentials are shown on the login page for easier access.
 * `operatorUrl`: specify a URL of the institution that operates the visualization.
-
-All other parameters should be left in place to ensure proper operation. Especially changing version numbers of dependencies might cause severe interoperability issues, as Node.js packages are not downward-compatible by default.
 
 #### Operator Logo and Link
 
-You might also want to change the logo at `<project root>/public/images/OperatorLogo.png`. It should be a PNG file with 150 x 130 px and consist of two rows. The upper row contains the image in saturated version and the lower in an desaturated version. The link's target can be changed as specified above.
+You might also want to change the logo at `<project root>/public/images/OperatorLogo.png`. It should be a PNG file with 150 x 130 px and consist of two rows. The upper row contains the image in saturated version and the lower in an desaturated version. Ensure that the images are properly aligned, so that the visual effect behaves properly. The link's target can be changed as specified above.
 
 ### Starting
 
