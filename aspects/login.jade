@@ -15,11 +15,14 @@ block body
                                 span(aria-hidden="true") &times;
                                 span.sr-only Close
                             strong #{message}
+                    if demoMode
+                        div.alert.alert-info This is a demo version. Enter the following credentials:&nbsp;
+                            strong #{credentials.name} / #{credentials.pass}
                     form.form-horizontal(action="/login", method="post")
                         div.form-group
                             label.col-lg-4.control-label Username:
                             div.col-lg-8
-                                input.form-control(type="text",name="username")
+                                input.form-control(type="text",name="username", autofocus="true")
                         div.form-group
                             label.col-lg-4.control-label Password:
                             div.col-lg-8

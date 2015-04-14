@@ -54,8 +54,21 @@ div#sdn-configuration
                             else
                                 input.form-control(type="text",ng-model="configuration.dataSource.connectionString",ng-required="true",ng-blur="saveConfiguration()")
 
+                    div.form-group
+                        label.col-sm-1.control-label Translate:
+                        div.col-sm-3
+                            div.checkbox
+                                label
+                                    input(type="checkbox",ng-model="configuration.serviceNameTranslation.enabled",ng-required="true",ng-blur="saveConfiguration()")
+                                    | Service Names
+                        div.col-sm-3
+                            div.checkbox
+                                label
+                                    input(type="checkbox",ng-model="configuration.networkProtocolTranslation.enabled",ng-required="true",ng-blur="saveConfiguration()")
+                                    | Network Protocols
 
-            div.panel.panel-default
+
+        div.panel.panel-default
                 div.table-responsive
                     table.table.table-bordered.table-striped
                         thead

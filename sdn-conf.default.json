@@ -1,0 +1,10 @@
+{
+  "appPort": "443",
+  "isHttpRedirectEnabled": true,
+  "isDemoMode": false,
+  "operatorUrl": "http://www.openflow.uni-saarland.de",
+  "credentials": {
+    "name": "root",
+    "pass": "sdn"
+  }
+}

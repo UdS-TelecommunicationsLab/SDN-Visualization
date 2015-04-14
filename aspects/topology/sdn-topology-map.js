@@ -42,14 +42,22 @@
                 "height": "@",
                 "styles": "=",
                 "visibilityButton": "@",
-                "showInactive": "@"
+                "showInactive": "@",
+                "identifier": "@"
             },
-            controller: function ($scope, $modal, router, repository, messenger, topology, websockets) {
+            controller: function ($rootScope, $scope, $modal, router, repository, messenger, topology, websockets, locker, hasIdOrNameFilter) {
                 $scope.showInactive = false;
+
                 var isMapCreated = false;
                 var isDataInitialized = false;
 
                 var defaults = _.cloneDeep(topology.defaultParameters);
+
+                locker.bind($scope, "zoomFactor", 1.0);
+
+                $scope.$watch("zoomFactor", function () {
+                    $scope.currentSize = defaults.nodeSize * $scope.zoomFactor;
+                });
 
                 $scope.$watch("showInactive", function () {
                     $scope.showInactive = !($scope.showInactive != true && $scope.showInactive != "true");
@@ -58,6 +66,20 @@
 
                 $scope.$watch("visibilityButton", function () {
                     $scope.visibilityButton = !($scope.visibilityButton != true && $scope.visibilityButton != "true");
+                });
+
+                $rootScope.$watch("deviceFilter", function () {
+                    resetAll();
+                    if ($scope.data && $scope.data.nvm) {
+                        var devices = _.map(hasIdOrNameFilter($scope.data.nvm.devices, $rootScope.deviceFilter), function (d) {
+                            return d.id;
+                        });
+                        if ($rootScope.deviceFilter != "") {
+                            highlightDevices(null, devices);
+                        } else {
+                            resetAll();
+                        }
+                    }
                 });
 
                 $scope.toggleActiveNodeVisibility = function () {
@@ -79,8 +101,7 @@
                             $scope.close = function () {
                                 $modalInstance.dismiss('cancel');
                             };
-                        },
-                        backdrop: true
+                        }
                     });
                 };
 
@@ -89,6 +110,7 @@
                 var w, h;
                 var mapNode, mapInner, svg;
                 var nodeSelection, linkSelection, tooltip;
+                var polygonBase = "1.16,0 0.58,1.0 -0.58,1.0 -1.16,0.0 -0.58,-1.0 0.58,-1.0";
 
                 var force = d3.layout.force()
                     .friction(.8)
@@ -104,7 +126,6 @@
                     nodeSelection.attr("transform", function (d) {
                         return "translate(" + topology.boundingBox(d.x, w) + "," + topology.boundingBox(d.y, h) + ")";
                     });
-
                     linkSelection
                         .attr("x1", function (d) {
                             return topology.boundingBox(d.source.x, w);
@@ -164,7 +185,8 @@
                     collection.filter(function (d) {
                         return d.highlight;
                     }).style({
-                        "stroke": defaults.colors.highlight});
+                        "stroke": defaults.colors.highlight
+                    });
                     collection.filter(function (d) {
                         return d.blur === true;
                     }).style("opacity", defaults.blurOpacity);
@@ -202,7 +224,7 @@
                             tooltip.style("opacity", 0.9);
                             tooltip.html("");
                             if (type == "Node") {
-                                defaults.nodeTooltip(obj, tooltip)
+                                defaults.nodeTooltip(obj, tooltip);
                             } else if (type == "Link") {
                                 defaults.linkTooltip(obj, tooltip);
                             }
@@ -214,8 +236,8 @@
 
                             var x = (type == "Node") ? d.x : ((d.source.x + d.target.x) / 2);
                             var y = (type == "Node") ? d.y : ((d.source.y + d.target.y) / 2);
-                            x += defaults.nodeSize - tooltipWidth / 2;
-                            y += defaults.nodeSize - tooltipHeight / 2;
+                            x += $scope.currentSize - tooltipWidth / 2;
+                            y += $scope.currentSize - tooltipHeight / 2;
 
                             tooltip
                                 .style("left", function () {
@@ -226,6 +248,33 @@
                         .on("mouseout", function (d) {
                             tooltip.style("opacity", 0);
                         });
+                };
+
+                var resizeNode = function (d, th) {
+                    var base = d3.select(th);
+                    base.selectAll("circle").remove();
+                    base.selectAll("polygon").remove();
+                    base.selectAll("rect").remove();
+                    base.selectAll("text").attr("font-size", $scope.currentSize);
+                    var selection = [];
+                    if (d.fixed) {
+                        var rd = 3;
+                        selection = base.insert("rect", "text")
+                            .attr("x", -$scope.currentSize)
+                            .attr("y", -$scope.currentSize)
+                            .attr("rx", rd)
+                            .attr("ry", rd)
+                            .attr("width", $scope.currentSize * 2)
+                            .attr("height", $scope.currentSize * 2);
+                    } else {
+                        if(d.device.type === sdn.Host.type)
+                        {
+                            selection = base.insert("circle", "text").attr("r", $scope.currentSize);
+                        } else {
+                            selection = base.insert("polygon", "text").attr("points", $scope.polygonShape);
+                        }
+                    }
+                    styleNode(selection);
                 };
 
                 var redrawNodes = function () {
@@ -240,26 +289,11 @@
 
                         var groups = nodeSelection.enter().append("g")
                             .attr("class", "node")
-                            .attr("width", defaults.nodeSize)
-                            .attr("height", defaults.nodeSize)
+                            .attr("width", $scope.currentSize)
+                            .attr("height", $scope.currentSize)
                             .on("dblclick", function (d) {
                                 d.fixed = !d.fixed;
-                                if (d.fixed) {
-                                    var rd = 3;
-                                    d3.select(this).selectAll("circle").remove();
-                                    styleNode(d3.select(this).insert("rect", "text")
-                                        .attr("x", -defaults.nodeSize)
-                                        .attr("y", -defaults.nodeSize)
-                                        .attr("rx", rd)
-                                        .attr("ry", rd)
-                                        .attr("width", defaults.nodeSize * 2)
-                                        .attr("height", defaults.nodeSize * 2));
-                                } else {
-                                    d3.select(this).selectAll("rect").remove();
-                                    styleNode(d3.select(this).insert("circle", "text")
-                                        .attr("r", defaults.nodeSize));
-                                }
-
+                                resizeNode(d, this);
                                 d3.select(this).classed("fixed", d.fixed);
                                 force.start();
                             }).on("contextmenu", function (d) {
@@ -268,13 +302,14 @@
                             })
                             .call(force.drag);
 
-                        groups.append("circle").attr("r", defaults.nodeSize);
-                        groups.append("text").attr("font-size", defaults.iconSize);
+                        groups.append("circle").attr("r", $scope.currentSize);
+                        groups.append("text").attr("font-size", $scope.currentSize);
 
                         addTooltipToElement(groups, "Node");
 
                         var t = svg.selectAll(".node");
                         styleNode(t.selectAll("circle"));
+                        styleNode(t.selectAll("polygon"));
                         styleNode(t.selectAll("rect"));
 
                         var texts = t.selectAll("text");
@@ -358,7 +393,9 @@
                     });
                     messenger.subscribe({
                         topic: "/topology/device/highlight",
-                        callback: highlightDevice
+                        callback: function (event, device) {
+                            highlightDevices(event, [device]);
+                        }
                     });
                     messenger.subscribe({
                         topic: "/topology/device/blur",
@@ -417,9 +454,9 @@
                     }
                 };
 
-                var highlightDevice = function (event, device) {
+                var highlightDevices = function (event, devices) {
                     nodeCollection.forEach(function (d) {
-                        if (d.id !== device) {
+                        if (!_.contains(devices, d.id)) {
                             d.blur = true;
                         }
                     });
@@ -491,9 +528,6 @@
                         if ($scope.styles.nodeSize) {
                             defaults.nodeSize = $scope.styles.nodeSize;
                         }
-                        if ($scope.styles.iconSize) {
-                            defaults.iconSize = $scope.styles.iconSize;
-                        }
                         if ($scope.styles.nodeTooltip) {
                             defaults.nodeTooltip = $scope.styles.nodeTooltip;
                         }
@@ -502,16 +536,41 @@
                         }
                     }
 
-                    force.charge(defaults.nodeSize * -80 + 400);
+                    $scope.currentSize = defaults.nodeSize * $scope.zoomFactor;
+                    $scope.polygonShape = polygonBase;
 
                     mapNode = angular.element($scope.element).find(".map");
                     mapInner = angular.element($scope.element).find(".mapInner");
+
                     svg = d3.select(mapInner.get(0)).append("svg");
 
                     tooltip = d3.select(mapNode.get(0)).append("div").attr("class", "topology-tooltip").style("opacity", 0);
 
                     nodeSelection = svg.selectAll(".node");
                     linkSelection = svg.selectAll(".link");
+
+                    var scaleNumber = function (d) {
+                        return (parseFloat(d) * $scope.currentSize).toFixed(3);
+                    };
+                    var scalePoint = function (d) {
+                        return _.map(d.split(","), scaleNumber).join(",");
+                    };
+                    $scope.$watch("currentSize", function () {
+                        $scope.polygonShape = _.map(polygonBase.split(" "), scalePoint).join(" ");
+
+                        force.charge($scope.currentSize * -120);
+                        nodeSelection.each(function (d) {
+                            resizeNode(d, this);
+                        });
+                        redrawLinks();
+                        redrawNodes();
+                        restart();
+                    });
+
+                    svg.call(d3.behavior.zoom().scale($scope.zoomFactor).scaleExtent([0.75, 2]).on("zoom", function () {
+                        $scope.zoomFactor = d3.event.scale;
+                        $scope.$digest();
+                    }));
 
                     messenger.publish.viewActive({
                         canLeaveCallback: function () {

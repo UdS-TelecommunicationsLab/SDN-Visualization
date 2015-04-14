@@ -1,15 +1,7 @@
 {
   "name": "sdn-visualization",
-  "version": "2015.1.2",
+  "version": "2015.4.0",
   "private": true,
-  "appPort": "443",
-  "isHttpRedirectEnabled": false,
-  "isDemoMode": false,
-  "operatorUrl": "http://www.openflow.uni-saarland.de",
-  "credentials": {
-    "name": "root",
-    "pass": "sdn"
-  },
   "scripts": {
     "postinstall": "./node_modules/bower/bin/bower install",
     "start": "node main.js"
@@ -39,9 +31,7 @@
   "licenses": [
     "MIT"
   ],
-  "author": {
-    "name": "Saarland University"
-  },
+  "author": "Andreas Schmidt <schmidt@nt.uni-saarland.de>",
   "engines": {
     "node": "0.10.20",
     "npm": "1.3.11"

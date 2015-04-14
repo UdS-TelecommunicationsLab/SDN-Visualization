@@ -27,15 +27,9 @@
 
 (function(sdnViz) {
     "use strict";
-    sdnViz.directive("sdnMacDigitBox", function() {
-        return {
-            restrict: "E",
-            replace: true,
-            templateUrl: "/templates/controls/sdn-mac-digit-box",
-            scope: {
-                devicePattern: "=",
-                index: "="
-            }
+    sdnViz.filter("countHosts", function(countTypesFilter) {
+        return function(input) {
+            return countTypesFilter(input, sdn.Host.type);
         };
     });
 })(window.sdnViz);

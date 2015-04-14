@@ -1,17 +1,40 @@
-div
-	div.row
-		div.col-lg-12
-			| Show: 
-			button.btn.btn-default.btn-sm(type="button", ng-model="isClientVisible", btn-checkbox, btn-checkbox-true="true", btn-checkbox-false="false")
-				i.fa.fa-hdd-o
-				|  Clients
-			| 
-			button.btn.btn-default.btn-sm(type="button", ng-model="isNodeVisible", btn-checkbox, btn-checkbox-true="true", btn-checkbox-false="false")
-				i.fa.fa-mobile-phone
-				|  Nodes
-	hr
-	div.row
-		div.col-lg-3.col-md-6(ng-repeat="device in data.nvm.devices | isDeviceType:{'node':isNodeVisible,'client':isClientVisible} | hasIdOrName:deviceFilter | orderBy:'name'")
-			sdn-device(device="device", rename="rename(device)")
-	div.alert.alert-info(ng-show="data.nvm.devices.length == 0")
-		strong There are no devices at the moment.
+div.sdn-devices-table
+    div.panel.panel-default(ng-show="data.nvm.devices.length > 0")
+        div.panel-heading
+            i.fa.fa-fw.fa-hdd-o
+            | &nbsp;Devices
+        table.table.table-striped.table-bordered.table-condensed.table-hover
+            thead
+                tr
+                    th Device
+                    th Addresses
+                    th Ports
+                    th URL
+                    th Username
+                    th Location
+                    th Purpose
+                    th Active Flows
+                    th(style="width: 50px")
+            tbody
+                tr.sdn-flow(ng-repeat="device in data.nvm.devices")
+                    td
+                        sdn-device-thumbnail(device="device", show-border="false")
+                    td
+                        code.dp(ng-repeat="addr in device.internetAddresses") {{ addr }}{{$last ? '': ','}}
+                        span(ng-show="device.internetAddresses.length == 0") none
+                    td
+                        code.dp(ng-repeat="port in device.ports", tooltip="{{port.hardwareAddress}}")
+                            span(style="white-space:nowrap;") {{ port.name || 'unk' }}[{{port.number}}]
+                            span {{$last ? '': ', '}}
+                        span(ng-show="device.ports.length == 0") none
+                    td {{ device.url }}
+                    td {{ device.userName }}
+                    td {{ device.location }}
+                    td {{ device.purpose }}
+                    td {{ device.activeFlows.length }}
+                    td(width="40px")
+                        a.btn.btn-default.btn-xs(href="{{ '/detail/device/' + device.id }}", tooltip="Details")
+                            i.fa.fa-fw.fa-ellipsis-h
+
+    div.alert.alert-info(ng-show="data.nvm.devices.length == 0")
+        strong There are no devices at the moment.

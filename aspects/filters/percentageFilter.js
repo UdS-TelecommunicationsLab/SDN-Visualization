@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2013 - 2015 Saarland University
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,12 +27,12 @@
 
 (function(sdnViz) {
     "use strict";
-    sdnViz.filter("formatDateWithoutYear", function() {
-        return function(input) {
-            if(input === null) {
-                return "UNK";
+    sdnViz.filter("percentage", function(numberToFixedFilter) {
+        return function(input, precision) {
+            if (input !== undefined && input !== null){
+                return (numberToFixedFilter(input * 100, precision || 3)).toString() + "%";
             }
-            return moment(input).format("DD. MMM HH:mm:ss");
+            return "UNK";
         };
     });
 })(window.sdnViz);

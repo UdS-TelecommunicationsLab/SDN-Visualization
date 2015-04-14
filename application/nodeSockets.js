@@ -27,7 +27,7 @@
 
 (function (nodeSockets) {
     "use strict";
-    var config = require("./config"),
+    var config = require("./ui-config"),
         io = require("socket.io"),
         msgpack = require('../lib/msgpack-javascript/msgpack.codec.js').msgpack,
         linkManipulation = require("./ofca/linkManipulation");

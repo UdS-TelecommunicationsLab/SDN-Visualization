@@ -28,7 +28,7 @@
 (function(DEBUG) {
     "use strict";
     var dataSource = require(__dirname + "/dataSources/source"),
-        config = require(__dirname + "/config"),
+        config = require(__dirname + "/ui-config"),
         moment = require("moment"),
         objectDiff = require(__dirname + "/../lib/objectDiff-enhanced/objectDiff"),
         nvm = require(__dirname + "/../public/shared/NVM");
@@ -42,11 +42,12 @@
     var finish = function (errorRaised) {
         if (!errorRaised) {
             model.latestUpdate = new Date();
-            if (model.controller) {
+
+            if (model.controller.started) {
                 model.controller.isReachable = true;
             }
         } else {
-            if (model.controller) {
+            if (!model.controller.started) {
                 model.controller.isReachable = false;
             }
         }

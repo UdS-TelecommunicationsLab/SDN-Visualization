@@ -33,7 +33,6 @@
         var defaultParameters = {
             nodeSize: 10,
             animationDuration: 1000,
-            iconSize: 10,
             inactiveOpacity: 0.25,
             blurOpacity: 0.125,
             colors: {
@@ -85,6 +84,7 @@
         };
 
         var defaultLinkStyle = function (collection, linkStrengthMax) {
+            var dash_length = 12;
             collection
                 .style({
                     "stroke": function (d) {
@@ -94,6 +94,11 @@
                     },
                     "stroke-width": function (d) {
                         return Math.min((d.dr / (2 * linkStrengthMax) * 7 + 3), 10) + "px";
+                    },
+                    "stroke-dasharray": function(d) {
+                        var link = d.link;
+                        var plr = Math.min(1.0, (parseFloat(link.srcPlr) + parseFloat(link.dstPlr)) * 5.0);
+                        return (4 + Math.max(0.0, dash_length*(1-plr))) + "," + dash_length*plr;
                     }
                 });
             return collection;
@@ -128,28 +133,36 @@
             if (obj.link) {
                 if (obj.link.srcHost) {
                     var srcHost = tab.append("tr");
-                    srcHost.append("th").html("Source:");
+                    srcHost.append("th").html("Source (S):");
                     srcHost.append("td").html("<code>" + obj.link.srcHost.name + "</code> [" + obj.link.srcPort + "]");
                 }
                 if (obj.link.dstHost) {
                     var dstHost = tab.append("tr");
-                    dstHost.append("th").html("Destination:");
+                    dstHost.append("th").html("Destination (D):");
                     dstHost.append("td").html("<code>" + obj.link.dstHost.name + "</code> [" + obj.link.dstPort + "]");
                 }
 
-                var plr = tab.append("tr");
-                plr.append("th").html("Packet Loss (S/D):");
-                plr.append("td").html(packetLossRateFilter(obj.link.srcPlr) + " / " + packetLossRateFilter(obj.link.dstPlr));
+                if(obj.link.srcHost.type !== sdn.Host.type) {
+                    var dataRateSrc = tab.append("tr");
+                    dataRateSrc.append("th").html("Data Rate (S) (T/R):");
+                    dataRateSrc.append("td").html(numberToFixedFilter(obj.link.srcTx / 1000, 3) + " / " + numberToFixedFilter(obj.link.srcRx / 1000, 3) + " kbps");
+                }
 
-                var delay = tab.append("tr");
-                delay.append("th").html("Delay:");
-                delay.append("td").html(delayFilter(obj.link.delay));
+                if(obj.link.dstHost.type !== sdn.Host.type) {
+                    var dataRateDst = tab.append("tr");
+                    dataRateDst.append("th").html("Data Rate (D) (T/R):");
+                    dataRateDst.append("td").html(numberToFixedFilter(obj.link.dstTx / 1000, 3) + " / " + numberToFixedFilter(obj.link.dstRx / 1000, 3) + " kbps");
+                }
 
-                var dr = tab.append("tr");
-                dr.append("th").html("Data Rate (S|D) (T/R):");
-                var o = numberToFixedFilter(obj.link.srcTx / 1000, 3) + " / " + numberToFixedFilter(obj.link.srcRx / 1000, 3) + " | " +
-                    numberToFixedFilter(obj.link.srcRx / 1000, 3) + " / " + numberToFixedFilter(obj.link.dstRx / 1000, 3) + " kbps";
-                dr.append("td").html(o);
+                if(obj.link.srcHost.type !== sdn.Host.type && obj.link.dstHost.type !== sdn.Host.type) {
+                    var plr = tab.append("tr");
+                    plr.append("th").html("Packet Loss (S/D):");
+                    plr.append("td").html(packetLossRateFilter(obj.link.srcPlr) + " / " + packetLossRateFilter(obj.link.dstPlr));
+
+                    var delay = tab.append("tr");
+                    delay.append("th").html("Delay (S/D):");
+                    delay.append("td").html(delayFilter(obj.link.srcDelay) + " / " + delayFilter(obj.link.dstDelay));
+                }
             }
         };
         defaultParameters.linkTooltip = createLinkTooltip;

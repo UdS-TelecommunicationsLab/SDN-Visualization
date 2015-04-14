@@ -28,7 +28,13 @@
 (function(sdnViz) {
     "use strict";
     sdnViz.factory("repository", function($rootScope, $http, toastr, websockets, messenger) {
-        var data = { nvm: null, logs: [] };
+        var data = { nvm: null, logs: [], configuration: {} };
+
+        var configurationLoaded = function (response) {
+            _.extend(data.configuration, response.configuration);
+        };
+        $http.get("/api/vizConfiguration?d=" + new Date()).success(configurationLoaded);
+        websockets.subscribe("/configUpdate", configurationLoaded);
 
         // Data Context Functions
         var getDeviceById = function(id) {

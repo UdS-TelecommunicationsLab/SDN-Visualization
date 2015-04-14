@@ -31,6 +31,9 @@ html(ng-app="sdn-visualization",xlink="http://www.w3.org/1999/xlink")
                             | (v
                             span(sdn-app-version)
                             | )&nbsp;
+                        if demoMode
+                            span.label.label-danger DEMO
+                            | &nbsp;
                         | - Created by&nbsp;
                         a(href="http://www.nt.uni-saarland.de/",target="_blank") Telecommunications Lab
                         |  /&nbsp;
@@ -45,11 +48,12 @@ html(ng-app="sdn-visualization",xlink="http://www.w3.org/1999/xlink")
                         scrolling="0",width="170px",height="20px",
                         style="vertical-align: middle; margin-top:-5px")
                     div#logos.row
-                        div.col-sm-3.col-sm-offset-3.col-md-2.col-md-offset-4
+                        div.col-sm-4.col-md-2.col-md-offset-3
                             a.uds(href="http://www.uni-saarland.de/", target="_blank") Saarland University
-                        div.col-sm-3.col-sm-2
+                        div.col-sm-4.col-md-2
                             a.ivci(href="http://www.intel-vci.uni-saarland.de/", target="_blank") Saarland University
-
+                        div.col-sm-4.col-md-2
+                            a.operator(href="/operator", target="_blank") Operator
                     br
 
         block scripts

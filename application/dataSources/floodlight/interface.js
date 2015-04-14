@@ -28,7 +28,7 @@
 (function(exports) {
     "use strict";
     var http = require('http');
-    var config = require("../../config");
+    var config = require("../../ui-config");
 
     exports.getInformation = function (command, onSuccess, onError) {
         var successCallback = function (response) {

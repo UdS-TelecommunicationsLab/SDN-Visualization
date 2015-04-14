@@ -25,34 +25,59 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /node_modules and /lib.
  */
 
-(function() {
+(function () {
     "use strict";
     var fs = require("fs"),
         mime = require("mime");
 
     var config = null;
     var callbacks = [];
-    var sdnConfig = __dirname + "/../sdn-conf.json";
-    var sdnSampleConfig = __dirname + "/../sdn-conf.default.json";
+    var sdnUiConfig = __dirname + "/../sdn-ui-conf.json";
+    var sdnUiSampleConfig = __dirname + "/../sdn-ui-conf.default.json";
 
     var createFileIfNotExistent = function () {
-        if (!fs.existsSync(sdnConfig)) {
-            var sampleConfig = fs.readFileSync(sdnSampleConfig);
-            fs.writeFileSync(sdnConfig, sampleConfig);
+        if (!fs.existsSync(sdnUiConfig)) {
+            var sampleConfig = fs.readFileSync(sdnUiSampleConfig);
+            fs.writeFileSync(sdnUiConfig, sampleConfig);
         }
     };
 
     var readConfig = function () {
-        config = JSON.parse(fs.readFileSync(sdnConfig, { encoding: "utf-8" }));
-        callbacks.forEach(function (cb) { cb(config); });
+        config = JSON.parse(fs.readFileSync(sdnUiConfig, {encoding: "utf-8"}));
+        callbacks.forEach(function (cb) {
+            cb(config);
+        });
     };
 
-    fs.watchFile(sdnConfig, function (curr, prev) {
+    fs.watchFile(sdnUiConfig, function (curr, prev) {
         if (curr.mtime.valueOf() > prev.mtime.valueOf()) {
             createFileIfNotExistent();
             readConfig();
         }
     });
+
+    exports.importConfig = function (request, readErrback, writeErrback, callback) {
+        fs.readFile(request.files.importConfiguration.path, function (readError, data) {
+            if (readError) {
+                readErrback(readError, data);
+                return;
+            }
+
+            fs.writeFile(sdnUiConfig, data, function (writeError) {
+                if (writeError) {
+                    writeErrback(writeError);
+                    return;
+                }
+
+                callback();
+            });
+        });
+    };
+
+    exports.attachToResponse = function (response) {
+        response.setHeader("Content-type", mime.lookup(sdnUiConfig));
+        fs.createReadStream(sdnUiConfig).pipe(response);
+    };
 
     exports.getConfiguration = function () {
         createFileIfNotExistent();
@@ -61,6 +86,10 @@
         }
 
         return config;
+    };
+
+    exports.saveConfiguration = function (configData) {
+        fs.writeFileSync(sdnUiConfig, JSON.stringify(configData));
     };
 
     exports.registerHandler = function (cb) {

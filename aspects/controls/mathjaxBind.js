@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2013 - 2015 Saarland University
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,11 +25,24 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /node_modules and /lib.
  */
 
-(function(sdnViz) {
+(function (sdnViz) {
     "use strict";
-    sdnViz.filter("countClients", function(countTypesFilter) {
-        return function(input) {
-            return countTypesFilter(input, sdn.Client.type);
+
+    // Source: http://stackoverflow.com/questions/16087146/getting-mathjax-to-update-after-changes-to-angularjs-model
+
+    sdnViz.directive("mathjaxBind", function () {
+        return {
+            restrict: "A",
+            controller: ["$scope", "$element", "$attrs",
+                function ($scope, $element, $attrs) {
+                    $scope.$watch($attrs.mathjaxBind, function (texExpression) {
+                        var texScript = angular.element("<script type='math/tex'>")
+                            .html(texExpression ? texExpression : "");
+                        $element.html("");
+                        $element.append(texScript);
+                        MathJax.Hub.Queue(["Reprocess", MathJax.Hub, $element[0]]);
+                    });
+                }]
         };
     });
 })(window.sdnViz);

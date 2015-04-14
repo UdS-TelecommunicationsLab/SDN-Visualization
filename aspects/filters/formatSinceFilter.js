@@ -29,6 +29,9 @@
     "use strict";
     sdnViz.filter("formatSince", function() {
         return function(input) {
+            if(input === null) {
+                return "UNK";
+            }
             return moment(input).fromNow();
         };
     });

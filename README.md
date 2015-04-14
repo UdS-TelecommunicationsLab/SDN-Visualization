@@ -1,6 +1,6 @@
-﻿# Software Defined Networking - Visualization Application
+﻿# SDN-Visualization
 
-Providing a web-based interactive visualization solution for *Software-Defined Networks* (in particular *OpenFlow* driven systems).
+Software Defined Networks monitoring and visualization system
 
 **Authors:** [Andreas Schmidt](mailto:schmidt@nt.uni-saarland.de), [Michael Karl](mailto:karl@nt.uni-saarland.de)
 
@@ -8,7 +8,7 @@ Providing a web-based interactive visualization solution for *Software-Defined N
 
 **Institution:** [Telecommuncations Chair](http://www.nt.uni-saarland.de/) - [Saarland University](http://www.uni-saarland.de/)
 
-**Version:** 2015.1.2
+**Version:** 2015.4.0
 
 ## Installation Guide
 
@@ -23,19 +23,20 @@ It is compatible with most modern browsers (e.g. Chrome >=30, Firefox >=25, Inte
 
 ### Prerequisites
 
-	* nodejs 0.10.20 or newer
-	* npm 1.3.11 or newer
-	* grunt
+    * nodejs 0.10.20 or newer
+    * npm 1.3.11 or newer
 
 These can be installed via your package manager (Linux, e.g. apt-get) or via an installer (Windows).
 
-In order to have `grunt` as a command line utility you have to enter the following: `npm install -g grunt-cli`
+In order to have `grunt` and `bower` as command line utilities, you have to enter the following: `npm install -g grunt-cli bower`
 
 ### Setup Process
-Install Node.js modules as well as build the JavaScript sources:
+Install Node.js packages, bower packages as well as build the JavaScript sources:
 
-	cd <project root>
-	npm install
+    cd <project root>
+    npm install
+    bower install
+    grunt
 
 #### Creating an SSL certificate
 As this program is using HTTPS for secure communication, you are required to use a certificate. This can be an official, commercial one or a self signed.  
@@ -53,19 +54,17 @@ Afterwards enter your organizations details and this should leave you with the f
 
 ### Configuration
 
-Before starting the application, the `package.json` has to be adapted to the application's needs. Therefore the following parameters can be modified:
+Before starting the application, the `sdn-conf.json` has to be in place. The easiest way is to copy the existing `sdn-conf.default.json` to `sdn-conf.json` and adapt the values to the application's needs. Therefore the following parameters can be modified:
 
 * `appPort`: usually set to 443, to allow HTTPS communication on the well-known port.
-* `credentials`: the web interface is secure by a simple name/password check without any sophisticated user management. Therefore one can specify these parameters here. **THE DEFAULT VALUES SHOULD BE CHANGED FOR "PRODUCTIVE" SETUPS**
+* `credentials`: the web interface is secured by a simple name/password check without any sophisticated user management. Therefore one can specify these parameters here. **THE DEFAULT VALUES SHOULD BE CHANGED FOR "PRODUCTIVE" SETUPS**
 * `isHttpRedirectEnabled`: this can be set to false, when the normal port 80 should not be used for redirecting to the SSL encrypted instance of the application.
-* `isDemoMode`: this can be set to true, in order to disable controls for changing connection string and controller type on the configuration page.
-* `operatorUrl`: specify a target URL that is accessed, when a users clicks on the operator logo in the sidebar.
-
-All other parameters should be left in place to ensure proper operation. Especially changing version numbers of dependencies might cause severe interoperability issues, as Node.js packages are not downward-compatible by default.
+* `isDemoMode`: this can be set to true, in order to disable controls for changing connection string and controller type on the configuration page. In this mode, the credentials are shown on the login page for easier access.
+* `operatorUrl`: specify a URL of the institution that operates the visualization.
 
 #### Operator Logo and Link
 
-You might also want to change the logo at `<project root>/public/images/OperatorLogo.jpg`. It should be a JPEG file with 150 x 65 px. The link's target can be changed as specified above.
+You might also want to change the logo at `<project root>/public/images/OperatorLogo.png`. It should be a PNG file with 150 x 130 px and consist of two rows. The upper row contains the image in saturated version and the lower in an desaturated version. Ensure that the images are properly aligned, so that the visual effect behaves properly. The link's target can be changed as specified above.
 
 ### Starting
 

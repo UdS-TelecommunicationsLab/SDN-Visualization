@@ -48,10 +48,10 @@ var __extends = this.__extends || function (d, b) {
      */
     exports.NVM = function (startDate, oldModel) {
         var self = this;
-        self.started = startDate || (new Date());
-        self.latestUpdate = new Date();
+        self.started = startDate || null;
+        self.latestUpdate = null;
 
-        self.controller = new exports.Controller(new Date());
+        self.controller = new exports.Controller();
 
         self.devices = [];
         self.links = [];
@@ -93,12 +93,17 @@ var __extends = this.__extends || function (d, b) {
     /**
      * The Controller type that stores general information like name, type and the monitored networks.
      */
-    exports.Controller = function (type) {
+    exports.Controller = function (started, type) {
         this.name = "UNK";
         this.type = type || "UNK";
+        this.started = started || null;
         this.monitoredNetworks = [];
         this.isReachable = false;
         this.isStandalone = true;
+        this.routing = {
+            availableMetrics: [],
+            currentMetric: ""
+        };
     };
 
     /**
@@ -143,35 +148,35 @@ var __extends = this.__extends || function (d, b) {
         this.hardwareAddress = "";
         this.name = "";
 
-        this.config = undefined;
-        this.state = undefined;
-        this.currentFeatures = undefined;
-        this.advertisedFeatures = undefined;
-        this.supportedFeatures = undefined;
-        this.peerFeatures = undefined;
+        this.config = null;
+        this.state = null;
+        this.currentFeatures = null;
+        this.advertisedFeatures = null;
+        this.supportedFeatures = null;
+        this.peerFeatures = null;
 
-        this.receivePackets = undefined;        // number
-        this.transmitPackets = undefined;       // number
+        this.receivePackets = null;        // number
+        this.transmitPackets = null;       // number
 
-        this.receiveBytes = undefined;          // number
-        this.transmitBytes = undefined;         // number
+        this.receiveBytes = null;          // number
+        this.transmitBytes = null;         // number
 
-        this.receiveDropped = undefined;        // number
-        this.transmitDropped = undefined;       // number
+        this.receiveDropped = null;        // number
+        this.transmitDropped = null;       // number
 
-        this.receiveErrors = undefined;         // number
-        this.transmitErrors = undefined;        // number
+        this.receiveErrors = null;         // number
+        this.transmitErrors = null;        // number
 
-        this.receiveFrameErrors = undefined;    // number
-        this.receiveOverrunErrors = undefined;  // number
-        this.receiveCRCErrors = undefined;      // number
+        this.receiveFrameErrors = null;    // number
+        this.receiveOverrunErrors = null;  // number
+        this.receiveCRCErrors = null;      // number
 
-        this.collisions = undefined;            // number
+        this.collisions = null;            // number
     };
 
 
     /**
-     * The Device represents a common base class for Clients and Switches.
+     * The Device represents a common base class for Hosts and Switches.
      */
     exports.Device = function (id, name, userName, url, location, purpose, color) {
         var self = this;
@@ -194,7 +199,7 @@ var __extends = this.__extends || function (d, b) {
             for(var portNumber in ports) {
                 if (self.ports[portNumber] !== undefined) {
                     self.ports[portNumber] = _.assign(self.ports[portNumber], ports[portNumber], function(value, other) {
-                        return (typeof other === 'undefined') ? value : other;
+                        return (_.isNull(other)) ? value : other;
                     });
                 } else {
                     self.ports[portNumber] = ports[portNumber];
@@ -206,19 +211,19 @@ var __extends = this.__extends || function (d, b) {
 
 
     /**
-     * The Client contains a connected interface as well as general information of devices.
+     * The Host contains a connected interface as well as general information of devices.
      */
-    exports.Client = (function (base) {
+    exports.Host = (function (base) {
         var client = function (id, name, deviceType, userName, url, location, purpose, color, lastSeen) {
             base.call(this, id, name, userName, url, location, purpose, color);
-            this.type = exports.Client.type;
+            this.type = exports.Host.type;
             this.deviceType = deviceType;
             this.lastSeen = lastSeen || new Date(0);
         };
         __extends(client, base);
         return client;
     })(exports.Device);
-    exports.Client.type = "Client";
+    exports.Host.type = "Host";
 
 
     /**
@@ -231,8 +236,8 @@ var __extends = this.__extends || function (d, b) {
             this.deviceType = deviceType || "Node";
             this.connectedSince = new Date(connectedSince);
             this.description = {};
-            this.capabilities = [];
-            this.actions = [];
+            this.capabilities = "";
+            this.actions = "";
             this.attributes = [];
             this.controllerAddress = inetAddress || "UNK";
         };
@@ -246,7 +251,7 @@ var __extends = this.__extends || function (d, b) {
      * The Flow contains information on all layers from data link over network to transport layer.
      */
     exports.Flow = function (id) {
-        this.id = id || 0;
+        this.id = id || "0";
         this.entries = [];
         this.source = "UNK";
         this.destination = "UNK";

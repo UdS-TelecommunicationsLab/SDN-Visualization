@@ -28,7 +28,7 @@
 (function (common) {
     "use strict";
 
-    var config = require("../config");
+    var config = require("../ui-config");
 
     common.evaluatePattern = function (pattern, input) {
         var patternLength = 23;

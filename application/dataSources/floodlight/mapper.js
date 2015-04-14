@@ -29,14 +29,17 @@
     "use strict";
     var _ = require("lodash"),
         common = require("../common"),
-        config = require("../../config"),
+        config = require("../../ui-config"),
         nvm = require("../../../public/shared/NVM");
 
-    var mapEndpoints = function (d) {
-        var fe = new nvm.FlowEntry();
-        fe.deviceId = d;
-        fe.actions = {endpoint: true};
-        return fe;
+    var mapEndpoints = function(flowId) {
+        return function (d) {
+            var fe = new nvm.FlowEntry();
+            fe.id = flowId + "-" + d;
+            fe.deviceId = d;
+            fe.actions = {endpoint: true};
+            return fe;
+        };
     };
 
     var findSourceOrDestination = function (entry, port) {
@@ -47,13 +50,13 @@
 
     var findDestination = function (entry) {
         return function (d) {
-            return (d.dstHost.id === entry.deviceId && d.dstPort === entry.inPort && d.srcHost.type === nvm.Client.type);
+            return (d.dstHost.id === entry.deviceId && d.dstPort === entry.inPort && d.srcHost.type === nvm.Host.type);
         };
     };
 
     var findSource = function (entry) {
         return function (d) {
-            return (d.srcHost.id === entry.deviceId && d.srcPort === entry.inPort && d.dstHost.type === nvm.Client.type);
+            return (d.srcHost.id === entry.deviceId && d.srcPort === entry.inPort && d.dstHost.type === nvm.Host.type);
         };
     };
 
@@ -81,8 +84,8 @@
         };
     };
 
-    // Mapping Clients
-    var clients = {
+    // Mapping Hosts
+    var hosts = {
         map: function (d) {
             var id = "00:00:" + d.mac[0];
             var device = common.getDeviceEntry(id);
@@ -94,37 +97,35 @@
             } else {
                 url = "";
             }
-            var client = new nvm.Client(id, name || id, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color, d.lastSeen);
-            client.internetAddresses = d.ipv4;
-            return client;
+            var host = new nvm.Host(id, name || id, node && node.type, node && node.userName, url, node && node.location, node && node.purpose, node && node.color, d.lastSeen);
+            host.internetAddresses = d.ipv4;
+            return host;
         },
         mapAll: function (rawData, sw) {
-            var lclClients = [];
+            var lclHosts = [];
             var lclLinks = [];
 
             if (rawData) {
-                rawData.forEach(function (rawClient) {
-                    if(rawClient && rawClient.attachmentPoint.length > 0)
+                rawData.forEach(function (rawHost) {
+                    if(rawHost && rawHost.attachmentPoint.length > 0)
                     {
                         var dst = _.find(sw, function (lclSwitch) {
-                            return rawClient.attachmentPoint[0].switchDPID === lclSwitch.id;
+                            return rawHost.attachmentPoint[0].switchDPID === lclSwitch.id;
                         });
                         if (dst) {
-                            var client = clients.map(rawClient);
-                            lclClients.push(client);
-                            var link = new nvm.Link(client, 1, dst, rawClient.attachmentPoint[0].port, "Ethernet");
+                            var host = hosts.map(rawHost);
+                            lclHosts.push(host);
+                            var link = new nvm.Link(host, 1, dst, rawHost.attachmentPoint[0].port, "Ethernet");
                             link.active = dst.active || false;
                             lclLinks.push(link);
                         }
                     }
                 });
-
             }
-
-            return {clients: lclClients, links: lclLinks};
+            return {hosts: lclHosts, links: lclLinks};
         }
     };
-    exports.clients = clients;
+    exports.hosts = hosts;
 
     // Mapping Switches
     var switches = {
@@ -246,6 +247,9 @@
             var allPorts = {};
             for (var i = 0; i < obj.length; i++) {
                 var p = obj[i];
+                if (p.portNumber === "local") {
+                    continue;
+                }
                 var portNumber = parseInt(p.portNumber, 10);
                 allPorts[portNumber] = ports.map(p, device.ports[portNumber], device.id);
             }
@@ -278,7 +282,7 @@
             if (obj.match.arp_opcode) {
                 flowEntry.nw.src = obj.match.arp_spa || "";
                 flowEntry.nw.dst = obj.match.arp_tpa || "";
-                flowEntry.nw.protocol = 0;
+                flowEntry.nw.protocol = -1;
             } else {
                 flowEntry.nw.src = obj.match.ipv4_src || "";
                 flowEntry.nw.dst = obj.match.ipv4_dst || "";
@@ -287,7 +291,7 @@
             flowEntry.nw.typeOfService = parseInt(obj.match.ip_dscp || 0, 10);
 
             flowEntry.tp.src = parseInt(obj.match.tcp_src || obj.match.udp_src || 0, 10);
-            flowEntry.tp.dst = parseInt(obj.match.tcp_dst || obj.match.udp_src || 0, 10);
+            flowEntry.tp.dst = parseInt(obj.match.tcp_dst || obj.match.udp_dst || 0, 10);
 
             flowEntry.actions = _.clone(obj.actions);
 
@@ -305,10 +309,7 @@
                     if (switchFlows !== null) {
                         for (var j = 0; j < switchFlows.length; j++) {
                             var flowObj = switchFlows[j];
-                            var flowId = parseInt(flowObj.cookie, 10);
-                            if (flowId < 0) {
-                                flowId += Math.pow(2, 63);
-                            }
+                            var flowId = flowObj.cookie;
                             if (flowByCookie[flowId] === undefined) {
                                 flowByCookie[flowId] = new nvm.Flow(flowId);
                             }
@@ -352,11 +353,13 @@
                                     linkId: link.id,
                                     direction: "forward"
                                 });
-                                if (link.srcHost.type === nvm.Client.type) {
+                                if (link.srcHost.type === nvm.Host.type) {
                                     endpoints.push(link.srcHost.id);
+                                    link.srcHost.activeFlows.push(flow.id);
                                 }
-                                if (link.dstHost.type === nvm.Client.type) {
+                                if (link.dstHost.type === nvm.Host.type) {
                                     endpoints.push(link.dstHost.id);
+                                    link.dstHost.activeFlows.push(flow.id);
                                 }
                             }
                         } else if(action === "none") {
@@ -377,6 +380,7 @@
                                 direction: "forward" // TODO: properly set direction
                             });
                             endpoints.push(sourceLinks[i].dstHost.id);
+                            sourceLinks[i].dstHost.activeFlows.push(flow.id);
                         }
                         var destinationLinks = _.filter(links, findDestination(entry));
 
@@ -386,9 +390,10 @@
                                 direction: "forward" // TODO: properly set direction
                             });
                             endpoints.push(destinationLinks[n].srcHost.id);
+                            destinationLinks[n].srcHost.activeFlows.push(flow.id);
                         }
                     }
-                    flow.endpoints = _.unique(endpoints).map(mapEndpoints);
+                    flow.endpoints = _.unique(endpoints).map(mapEndpoints(flow.id));
                 }
 
                 var src = _.unique(sources);

@@ -12,7 +12,7 @@ div#sdn-topology
                         span.label.label-primary
                             i.fa.fa-mobile-phone
                             | &nbsp;
-                            span Clients: {{ data.nvm.devices | countClients }}
+                            span Hosts: {{ data.nvm.devices | countHosts }}
                         | &nbsp;
                         span.label.label-primary()
                             i.fa.fa-random
@@ -21,7 +21,7 @@ div#sdn-topology
                     i.fa.fa-globe
                     | &nbsp;Topology
                 div.panel-body
-                    sdn-topology-map(height="{{ height }}", styles="styles", visibility-button="true")
+                    sdn-topology-map(identifier="overviewTopology", height="{{ height }}", styles="styles", visibility-button="true")
         div.col-sm-4.col-md-3
             div.panel.panel-default
                 div.panel-heading
@@ -40,3 +40,7 @@ div#sdn-topology
                                     sdn-flow-label(flow="flow")
                             tr(ng-show="data.nvm.flows.length == 0")
                                 td(colspan=2) No flows at the moment.
+            div.panel.panel-default
+                div.panel-body
+                    span Default Routing Metric:&nbsp;
+                        strong {{ data.nvm.controller.routing.currentMetric}}

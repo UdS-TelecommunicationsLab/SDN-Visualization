@@ -33,7 +33,20 @@
             replace: true,
             templateUrl: "/templates/thumbnails/sdn-device-thumbnail",
             scope: {
-                device: "="
+                device: "=",
+                deviceId: "@",
+                showBorder: "@"
+            },
+            controller: function($scope, repository) {
+                $scope.dev = {};
+                if($scope.device === undefined && $scope.deviceId !== undefined) {
+                    $scope.dev = repository.getDeviceById($scope.deviceId).item;
+                } else {
+                    $scope.dev = $scope.device;
+                }
+                if($scope.showBorder === undefined) {
+                    $scope.showBorder = true;
+                }
             }
         };
     });

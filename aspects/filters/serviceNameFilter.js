@@ -27,12 +27,16 @@
 
 (function(sdnViz) {
     "use strict";
-    sdnViz.filter("serviceName", function() {
+    sdnViz.filter("serviceName", function(repository) {
         return function(input, protocol) {
-            if (protocol !== 6 && protocol !== 17) {
+            if (protocol !== 6 && protocol !== 17 || (repository.data.configuration && !repository.data.configuration.serviceNameTranslation.enabled)) {
                 return input;
             }
-            return sdn.serviceNames[protocol][input] || input;
+            var name = sdn.serviceNames[protocol][input];
+            if(!name) {
+                return input;
+            }
+            return name.toUpperCase();
         };
     });
 })(window.sdnViz);

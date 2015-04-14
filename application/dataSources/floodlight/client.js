@@ -92,6 +92,33 @@
             model.controller.started = started;
         }
 
+        getResource(client.commands.get.routing, processRouting);
+
+        callback();
+    };
+
+    /**
+     * Manipulates the model object during execution.
+     *
+     * @param {Object} data JSON object containing the retrieved information.
+     *
+     */
+    var processRouting = function(data) {
+        if (data === null || data === undefined || data === {}) {
+            console.error("processRouting called without data");
+        } else {
+            var parseMetrics = function(metric) {
+                if (metric == "CONSTANT") {
+                    return "Constant";
+                } else if (metric == "LOW_DELAY") {
+                    return "Low Delay";
+                }
+            };
+
+            model.controller.routing.availableMetrics = _.map(data.availablemetrics, parseMetrics);
+            model.controller.routing.currentMetric = parseMetrics(data.currentdefault);
+        }
+
         callback();
     };
 
@@ -111,8 +138,8 @@
                 var device = _.find(model.devices, findDevice(deviceId));
                 var deviceObj = data[deviceId];
                 if (device && deviceObj !== null) {
-                    device.capabilities = deviceObj.capabilities;
-                    device.actions = deviceObj.actions;
+                    device.capabilities = deviceObj.capabilities || "";
+                    device.actions = deviceObj.actions || "";
                     if (deviceObj.portDesc) {
                         var ports = {};
                         for (var j = 0; j < deviceObj.portDesc.length; j++) {
@@ -145,7 +172,7 @@
             for (var deviceId in data) {
                 var device = _.find(model.devices, findDevice(deviceId));
                 if (device && data[deviceId] != null) {
-                    device.description = data[deviceId].desc;
+                    device.description = data[deviceId].desc || "";
                 }
             }
         }
@@ -184,9 +211,11 @@
         if (data === null || data === undefined || data === {} || (data.code && data.code === 404)) {
             console.error("processDelay called without data");
         } else {
-            for(var k = 0; k < data.length; k++) {
-                var delaySample = data[k];
-                var delay = parseFloat(delaySample.delayMS);
+            var delays = data;
+            for(var k = 0; k < delays.length; k++) {
+                var delaySample = delays[k];
+                // Sw1-Sw2 = C-Sw1-Sw2-C - 0.5*(C-Sw1-C + C-Sw2-C)
+                var delay = (delaySample.inconsistency) ? null : (delaySample.fullDelay - 0.5 * (delaySample["src-ctl-Delay"]  + delaySample["dst-ctl-Delay"]));
                 var srcPort = parseInt(delaySample.srcPort, 10);
                 var dstPort = parseInt(delaySample.dstPort, 10);
 
@@ -358,9 +387,9 @@
         if (data === null) {
             console.error("processHosts called without data");
         } else {
-            var clientData = mapper.clients.mapAll(data, model.devices);
-            model.addDevices(clientData.clients);
-            model.addLinks(clientData.links);
+            var hostData = mapper.hosts.mapAll(data, model.devices);
+            model.addDevices(hostData.hosts);
+            model.addLinks(hostData.links);
         }
 
         callback();
@@ -391,6 +420,7 @@
     client.commands = {
         get: {
             general: "core/controller/summary/json",
+            routing: "uds/routing/metrics/json",
             switches: "core/controller/switches/json",
             hosts: "device/",
             links: "topology/links/json",
