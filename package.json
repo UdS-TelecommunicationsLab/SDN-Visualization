@@ -1,6 +1,6 @@
 {
   "name": "sdn-visualization",
-  "version": "2015.1.2",
+  "version": "2015.4.0",
   "private": true,
   "scripts": {
     "postinstall": "./node_modules/bower/bin/bower install",
