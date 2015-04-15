@@ -30,8 +30,8 @@
     sdnViz.filter("flowLabel", function(networkProtocolFilter, serviceNameFilter) {
         return function(input) {
             var protocolName = networkProtocolFilter(input.protocol);
-            if(input.protocol == 6 || input.protocol == 17) {
-                var serviceName =serviceNameFilter(input.service, input.protocol);
+            if(input.protocol == 6 || input.protocol == 17 || input.protocol == -1) {
+                var serviceName = serviceNameFilter(input.service, input.protocol);
                 if(serviceName == input.service) {
                     return protocolName + " (" + serviceName + ")";
                 } else {

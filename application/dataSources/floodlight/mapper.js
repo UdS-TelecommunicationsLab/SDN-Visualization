@@ -283,15 +283,17 @@
                 flowEntry.nw.src = obj.match.arp_spa || "";
                 flowEntry.nw.dst = obj.match.arp_tpa || "";
                 flowEntry.nw.protocol = -1;
+                flowEntry.tp.src = obj.match.arp_opcode;
+                flowEntry.tp.dst = obj.match.arp_opcode;
             } else {
                 flowEntry.nw.src = obj.match.ipv4_src || "";
                 flowEntry.nw.dst = obj.match.ipv4_dst || "";
                 flowEntry.nw.protocol = parseInt(obj.match.ip_proto || 0, 10);
+
+                flowEntry.tp.src = parseInt(obj.match.tcp_src || obj.match.udp_src || 0, 10);
+                flowEntry.tp.dst = parseInt(obj.match.tcp_dst || obj.match.udp_dst || 0, 10);
             }
             flowEntry.nw.typeOfService = parseInt(obj.match.ip_dscp || 0, 10);
-
-            flowEntry.tp.src = parseInt(obj.match.tcp_src || obj.match.udp_src || 0, 10);
-            flowEntry.tp.dst = parseInt(obj.match.tcp_dst || obj.match.udp_dst || 0, 10);
 
             flowEntry.actions = _.clone(obj.actions);
 
@@ -407,6 +409,9 @@
                 if (protocol.length === 1) {
                     flow.protocol = protocol[0];
 
+                    if (flow.protocol === -1) {
+                        flow.service = services[0];
+                    }
                     if (flow.protocol === 6 || flow.protocol === 17) {
                         var service = _.unique(services);
                         if (service.length === 1) {
