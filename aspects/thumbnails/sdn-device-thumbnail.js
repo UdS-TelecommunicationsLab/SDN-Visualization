@@ -25,7 +25,7 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /node_modules and /lib.
  */
 
-(function(sdnViz) {
+(function(sdnViz, sdn) {
     "use strict";
     sdnViz.directive("sdnDeviceThumbnail", function() {
         return {
@@ -41,6 +41,9 @@
                 $scope.dev = {};
                 if($scope.device === undefined && $scope.deviceId !== undefined) {
                     $scope.dev = repository.getDeviceById($scope.deviceId).item;
+                    if(!$scope.dev) {
+                        $scope.dev = new sdn.Device("00:00:00:00:00:00:00:00", "Unknown Device");
+                    }
                 } else {
                     $scope.dev = $scope.device;
                 }
@@ -50,4 +53,4 @@
             }
         };
     });
-})(window.sdnViz);
+})(window.sdnViz, window.sdn);

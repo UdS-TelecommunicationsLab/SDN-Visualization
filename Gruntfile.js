@@ -100,7 +100,7 @@ module.exports = function(grunt) {
                 sourceMap: true
             },
             dist: {
-                src: ['aspects/**/*.js'],
+                src: ['public/shared/*.js', 'aspects/**/*.js'],
                 dest: 'public/js/dist.js'
             }
         },
@@ -126,7 +126,7 @@ module.exports = function(grunt) {
             }
         },
         watch: {
-            files: "aspects/**/*.js",
+            files: ['aspects/**/*.js', 'public/shared/**/.js'],
             tasks: ["concat", "uglify"],
             options: {
                 interrupt: true
