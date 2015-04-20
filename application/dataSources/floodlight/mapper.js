@@ -308,7 +308,7 @@
                     }
 
                     var switchFlows = rawObject[deviceId].flows;
-                    if (switchFlows !== null) {
+                    if (switchFlows !== null && switchFlows !== undefined) {
                         for (var j = 0; j < switchFlows.length; j++) {
                             var flowObj = switchFlows[j];
                             var flowId = flowObj.cookie;
