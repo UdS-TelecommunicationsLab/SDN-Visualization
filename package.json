@@ -19,7 +19,7 @@
     "grunt": "0.4.1",
     "jade": "~0.31.2",
     "karma": "0.12.31",
-    "lodash": "~2.4.1",
+    "lodash": "3.7.0",
     "method-override": "2.1.1",
     "mime": "1.2.11",
     "moment": "2.3.1",
