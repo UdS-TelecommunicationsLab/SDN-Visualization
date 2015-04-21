@@ -34,8 +34,7 @@
 
     var mapEndpoints = function(flowId) {
         return function (d) {
-            var fe = new nvm.FlowEntry();
-            fe.id = flowId + "-" + d;
+            var fe = new nvm.FlowEntry(flowId + "-" + d);
             fe.deviceId = d;
             fe.actions = {endpoint: true};
             return fe;

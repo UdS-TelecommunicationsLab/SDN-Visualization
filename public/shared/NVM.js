@@ -94,13 +94,14 @@ var __extends = this.__extends || function (d, b) {
      * The Controller type that stores general information like name, type and the monitored networks.
      */
     exports.Controller = function (started, type) {
-        this.name = "UNK";
-        this.type = type || "UNK";
-        this.started = started || null;
-        this.monitoredNetworks = [];
-        this.isReachable = false;
-        this.isStandalone = true;
-        this.routing = {
+        var self = this;
+        self.name = "UNK";
+        self.type = type || "UNK";
+        self.started = started || null;
+        self.monitoredNetworks = [];
+        self.isReachable = false;
+        self.isStandalone = true;
+        self.routing = {
             availableMetrics: [],
             currentMetric: ""
         };
@@ -142,36 +143,37 @@ var __extends = this.__extends || function (d, b) {
      * The Port represents a physical port on a switch, which has some associated statistics.
      */
     exports.Port = function (portNumber, deviceId) {
-        this.id = deviceId + "- + portNumber";
-        this.number = portNumber;
+        var self = this;
+        self.id = deviceId + "- + portNumber";
+        self.number = portNumber;
 
-        this.hardwareAddress = "";
-        this.name = "";
+        self.hardwareAddress = "";
+        self.name = "";
 
-        this.config = null;
-        this.state = null;
-        this.currentFeatures = null;
-        this.advertisedFeatures = null;
-        this.supportedFeatures = null;
-        this.peerFeatures = null;
+        self.config = null;
+        self.state = null;
+        self.currentFeatures = null;
+        self.advertisedFeatures = null;
+        self.supportedFeatures = null;
+        self.peerFeatures = null;
 
-        this.receivePackets = null;        // number
-        this.transmitPackets = null;       // number
+        self.receivePackets = null;        // number
+        self.transmitPackets = null;       // number
 
-        this.receiveBytes = null;          // number
-        this.transmitBytes = null;         // number
+        self.receiveBytes = null;          // number
+        self.transmitBytes = null;         // number
 
-        this.receiveDropped = null;        // number
-        this.transmitDropped = null;       // number
+        self.receiveDropped = null;        // number
+        self.transmitDropped = null;       // number
 
-        this.receiveErrors = null;         // number
-        this.transmitErrors = null;        // number
+        self.receiveErrors = null;         // number
+        self.transmitErrors = null;        // number
 
-        this.receiveFrameErrors = null;    // number
-        this.receiveOverrunErrors = null;  // number
-        this.receiveCRCErrors = null;      // number
+        self.receiveFrameErrors = null;    // number
+        self.receiveOverrunErrors = null;  // number
+        self.receiveCRCErrors = null;      // number
 
-        this.collisions = null;            // number
+        self.collisions = null;            // number
     };
 
 
@@ -251,25 +253,27 @@ var __extends = this.__extends || function (d, b) {
      * The Flow contains information on all layers from data link over network to transport layer.
      */
     exports.Flow = function (id) {
-        this.id = id || "0";
-        this.entries = [];
-        this.source = "UNK";
-        this.destination = "UNK";
-        this.service = 0;
-        this.protocol = "UNK";
-        this.label = "UNK";
-        this.links = [];
+        var self = this;
+        self.id = id || "0";
+        self.entries = [];
+        self.source = "UNK";
+        self.destination = "UNK";
+        self.service = 0;
+        self.protocol = "UNK";
+        self.label = "UNK";
+        self.links = [];
     };
 
     /**
      * The FlowEntry contains information on the match and the associated actions.
      */
-    exports.FlowEntry = function() {
-        this.id = "";
-        this.inPort = 0;
+    exports.FlowEntry = function(id) {
+        var self = this;
+        self.id = id || "";
+        self.inPort = 0;
 
         // Data Link Layer
-        this.dl = {
+        self.dl = {
             src: "00:00:00:00:00:00", // MAC address
             dst: "00:00:00:00:00:00", // MAC address
             type: 0, // Protocol type
@@ -278,7 +282,7 @@ var __extends = this.__extends || function (d, b) {
         };
 
         // Network Layer
-        this.nw = {
+        self.nw = {
             src: "0.0.0.0", // IP address
             dst: "0.0.0.0", // IP address
             typeOfService: 0,
@@ -286,19 +290,19 @@ var __extends = this.__extends || function (d, b) {
         };
 
         // Transport Layer
-        this.tp = {
+        self.tp = {
             src: 0, // Port
             dst: 0 // Port
         };
 
-        this.packetCount = 0;
-        this.byteCount = 0;
-        this.durationSeconds = 0;
-        this.priority = 0;
-        this.idleTimeoutSeconds = 0;
-        this.hardTimeoutSeconds = 0;
+        self.packetCount = 0;
+        self.byteCount = 0;
+        self.durationSeconds = 0;
+        self.priority = 0;
+        self.idleTimeoutSeconds = 0;
+        self.hardTimeoutSeconds = 0;
 
-        this.actions = [];
+        self.actions = [];
     };
 
 })((typeof process === 'undefined' || !process.versions) ? window.sdn = window.sdn || {} : exports,
