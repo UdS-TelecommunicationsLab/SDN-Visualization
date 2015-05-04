@@ -1,10 +1,10 @@
 ﻿# SDN-Visualization
 
-Software Defined Networks monitoring and visualization system
+Software Defined Networks monitoring and visualization system.
 
-**Authors:** [Andreas Schmidt](mailto:schmidt@nt.uni-saarland.de), [Michael Karl](mailto:karl@nt.uni-saarland.de)
+**Authors:** [Andreas Schmidt](mailto:schmidt@nt.uni-saarland.de), [Philipp S. Tennigkeit](mailto:tennigkeit@intel-vci.uni-saarland.de), [Michael Karl](mailto:karl@nt.uni-saarland.de)
 
-**Website:** [OpenFlow @ Saarland University](http://www.openflow.uni-saarland.de/)
+**Website:** [OpenNetworking @ Saarland University](http://www.opennetworking.uni-saarland.de/)
 
 **Institution:** [Telecommuncations Chair](http://www.nt.uni-saarland.de/) - [Saarland University](http://www.uni-saarland.de/)
 

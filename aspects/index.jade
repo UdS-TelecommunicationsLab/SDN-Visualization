@@ -5,10 +5,10 @@ block nav
         ul(class="nav navbar-nav")
             li
                 a(href="/topology", tooltip="Topology", tooltip-placement="bottom")
-                    i.fa.fa-globe
+                    i.fa.fa-fw.fa-globe
             li.dropdown
                 a.dropdown-toggle(href="", data-toggle="dropdown", role="button", aria-expanded="false", tooltip="Statistics", tooltip-placement="bottom")
-                    i.fa.fa-signal
+                    i.fa.fa-fw.fa-signal
                     | &nbsp;
                     span.caret
                 ul.dropdown-menu
@@ -30,10 +30,10 @@ block nav
                             | &nbsp;Flows ({{ data.nvm.flows.length }})
             li
                 a(href="/configuration", tooltip="Configuration", tooltip-placement="bottom")
-                    i.fa.fa-cog
+                    i.fa.fa-fw.fa-cog
             li
                 a(href="/documentation", tooltip="Help", tooltip-placement="bottom")
-                    i.fa.fa-book
+                    i.fa.fa-fw.fa-book
 
         form.navbar-form.navbar-left(role="search", ng-show="isSearchVisible")
             div.form-group
@@ -47,10 +47,10 @@ block nav
         ul.pull-right(class="nav navbar-nav",style="margin-left: 20px;")
             li
                 a(href="/about", tooltip="About", tooltip-placement="bottom")
-                    i.fa.fa-info
+                    i.fa.fa-fw.fa-info
             li
                 a(ng-click="logout()", tooltip="Logout", tooltip-placement="bottom")
-                    i.fa.fa-sign-out
+                    i.fa.fa-fw.fa-sign-out
             li(ng-cloak, ng-class="{ ok: totalStatus, error: !totalStatus}")
                 a(href="/status", ng-show="totalStatus", tooltip="Everything is fine.", tooltip-placement="bottom")
                     i.fa.fa-fw.fa-check-square
