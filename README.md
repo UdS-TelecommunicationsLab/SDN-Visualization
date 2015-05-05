@@ -109,6 +109,19 @@ In order to have `grunt` as a command line utility you have to enter the followi
 
 The code on the server side can be changed at any time. As *Node.js* is requiring subpackages only once, a restart of the application might be necessary.
 
+## Questions?
+
+Please send us feedback via [email](mailto:info@openflow.uni-saarland.de) on any problems you might encounter during installation and operation that are not covered here. The software and documentation are under constant development and improvements are highly appreciated. If you have any questions do not hesitate to ask them.
+
+## FAQ
+
+### I get a EADDRINUSE error when starting the application. What should I do?
+
+This is most likely due to a running webserver on the current system that binds port 80. This can be fixed by setting the isHttpRedirectEnabled flag to false or by disabling the other service, e.g. apache, which binds port 80.
+
+### I make changes to the application code and nothing happens.
+
+Remember to run ``grunt`` whenever you change frontend code and to restart the nodejs server, whenever the backend code is changed.
 
 ## Resources
 
@@ -116,6 +129,3 @@ The code on the server side can be changed at any time. As *Node.js* is requirin
 * [OpenFlow Specification](https://www.opennetworking.org/sdn-resources/onf-specifications/openflow)
 
 
-## Questions?
-
-Please send us feedback via [email](mailto:info@openflow.uni-saarland.de) on any problems you might encounter during installation and operation that are not covered here. The software and documentation are under constant development and improvements are highly appreciated. If you have any questions do not hesitate to ask them.
