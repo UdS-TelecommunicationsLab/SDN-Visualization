@@ -117,9 +117,6 @@
             if (obj.device.internetAddresses.length > 0) {
                 html += "<span>(" + obj.device.internetAddresses + ")</span>";
             }
-            if(obj.device.controllerAddress) {
-                html += "<br/><small>Controller: " + obj.device.controllerAddress + "</small>";
-            }
             html += "<br /><code class='dp'>" + obj.id + "</code></div>";
             tooltip.html(html);
         };

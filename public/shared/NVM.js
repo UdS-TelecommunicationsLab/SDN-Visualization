@@ -241,7 +241,7 @@ var __extends = this.__extends || function (d, b) {
             this.capabilities = "";
             this.actions = "";
             this.attributes = [];
-            this.controllerAddress = inetAddress || "UNK";
+            this.internetAddresses = (inetAddress) ? [inetAddress] : [];
         };
         __extends(lclSwitch, base);
         return lclSwitch;
