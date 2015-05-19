@@ -28,7 +28,7 @@ It is compatible with most modern browsers (e.g. Chrome >=30, Firefox >=25, Inte
 
 These can be installed via your package manager (Linux, e.g. apt-get) or via an installer (Windows).
 
-In order to have `grunt` and `bower` as command line utilities, you have to enter the following: `npm install -g grunt-cli bower`
+In order to have `gulp` and `bower` as command line utilities, you have to enter the following: `npm install -g gulp bower`
 
 ### Setup Process
 Install Node.js packages, bower packages as well as build the JavaScript sources:
@@ -36,7 +36,7 @@ Install Node.js packages, bower packages as well as build the JavaScript sources
     cd <project root>
     npm install
     bower install
-    grunt
+    gulp
 
 #### Creating an SSL certificate
 As this program is using HTTPS for secure communication, you are required to use a certificate. This can be an official, commercial one or a self signed.  
@@ -99,11 +99,11 @@ The main section (Node Information) is later used to augment individual devices 
 ## Modifying Code
 
 ### Client
-The code for client-side is concatenated and uglified using grunt. The package comes with a compiled version of the latest code (`/public/js/dist.min.js`). If you change anything, you have to execute `grunt` in the `<project root>`.
+The code for client-side is concatenated and uglified using gulp. The package comes with a compiled version of the latest code (`/public/dist.min.js`). If you change anything, you have to execute `gulp` in the `<project root>`.
 
-In order to have `grunt` as a command line utility you have to enter the following: 
+In order to have `gulp` as a command line utility you have to enter the following: 
 
-`sudo npm install -g grunt-cli`
+`sudo npm install -g gulp`
 
 ### Server
 
@@ -121,7 +121,7 @@ This is most likely due to a running webserver on the current system that binds 
 
 ### I make changes to the application code and nothing happens.
 
-Remember to run ``grunt`` whenever you change frontend code and to restart the nodejs server, whenever the backend code is changed.
+Remember to run ``gulp`` whenever you change frontend code and to restart the nodejs server, whenever the backend code is changed.
 
 ## Resources
 
