@@ -23,7 +23,7 @@ function defaultTask() {
     return gulp.src(frontendSources)
         .pipe(sourcemaps.init())
         .pipe(concat("dist.min.js"))
-        .pipe(uglify())
+        .pipe(uglify({ mangle: false }))
         .pipe(sourcemaps.write())
         .pipe(header(banner, {pkg: pkg}))
         .pipe(gulp.dest("./public/"));
