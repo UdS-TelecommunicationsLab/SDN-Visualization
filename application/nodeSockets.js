@@ -29,8 +29,7 @@
     "use strict";
     var config = require("./ui-config"),
         io = require("socket.io"),
-        msgpack = require('../lib/msgpack-javascript/msgpack.codec.js').msgpack,
-        linkManipulation = require("./ofca/linkManipulation");
+        msgpack = require('../lib/msgpack-javascript/msgpack.codec.js').msgpack
 
     var connection;
     var worker;
@@ -39,27 +38,6 @@
         // TODO: this method needs some kind of validity check for the sent configuration
         config.saveConfiguration(message.configuration);
         callback({ success: true });
-    };
-
-    var handleSetLinkSpec = function (message, callback) {
-        var srcNode = message.srcNode || "";
-        var dstNode = message.dstNode || "";
-        var user = message.user || "";
-        var iface = "eth" + message.iface;
-        var delay = message.delay || 0;
-        var loss = message.loss || 0;
-
-        var errHandler = function (err) {
-            if (err) {
-                console.log(err);
-                publish("/error", err);
-            }
-        };
-
-        // TODO: readd as soon as security concerns are solved
-        //linkManipulation.manipulateLink(srcNode, user, iface, delay, loss, errHandler);
-        //linkManipulation.manipulateLink(dstNode, user, iface, delay, loss, errHandler);
-        callback({success: true });
     };
 
     var handleNvmReset = function (message, callback) {
@@ -74,7 +52,6 @@
 
         connection.on("connection", function (socket) {
             socket.on("/interact/saveVizConfiguration", handleSaveVizConfiguration);
-            socket.on("/interact/setLinkSpec", handleSetLinkSpec);
             socket.on("/nvm/reset", handleNvmReset);
         });
     };

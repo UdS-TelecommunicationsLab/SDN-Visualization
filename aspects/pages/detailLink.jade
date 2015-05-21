@@ -19,61 +19,29 @@ block body
                     table.table
                         tbody
                             tr
-                                td(ng-show="!editDelay") {{ item.srcDelay | delay }}
+                                td {{ item.srcDelay | delay }}
                                 th
                                     i.fa.fa-clock-o
                                     |  Delay
-                                td(ng-show="!editDelay") {{ item.dstDelay | delay }}
-                                td(ng-show="editDelay")
-                                    div.input-group
-                                        input.form-control(type="number", ng-model="delay",ng-pattern="/^-?(?:[0-9]+|[0-9]*\.[0-9]+)$/", min = "0", ng - required = "true")
-                                        span.input-group-addon ms
-                                td
-                                    div(ng-show="item.type == 'OpenFlow' && isEditable",style="width:80px")
-                                        a.btn.btn-default.btn-sm(ng-click="startEditDelay()",ng-show="!editDelay")
-                                            i.fa.fa-cog
-                                        a.btn.btn-success.btn-sm(ng-click="modifyDelay(delay)",ng-show="editDelay",ng-disabled="editLinkForm.$invalid || editLinkForm.$pristine")
-                                            i.fa.fa-check-circle
-                                        | &nbsp;
-                                        a.btn.btn-danger.btn-sm(ng-click="stopEditDelay()",ng-show="editDelay",ng-disabled="editLinkForm.$pristine")
-                                            i.fa.fa-ban
+                                td {{ item.dstDelay | delay }}
                             tr
-                                td(ng-show="!editLoss") {{ item.srcPlr | packetLossRate }}
-                                td(ng-show="editLoss")
-                                    div.input-group
-                                        input.form-control(type="number", ng-model="loss",ng-pattern="/^-?(?:[0-9]+|[0-9]*\.[0-9]+)$/", ng-required = "true", min = "0", max = "100")
-                                        span.input-group-addon %
+                                td {{ item.srcPlr | packetLossRate }}
                                 th(style="width:180px")
                                     i.fa.fa-trash-o
                                     |  Packet Loss
-                                td(ng-show="!editLoss") {{ item.dstPlr | packetLossRate }}
-                                td(ng-show="editLoss")
-                                    div.input-group
-                                        input.form-control(type="number", ng-model="loss",ng-pattern="/^-?(?:[0-9]+|[0-9]*\.[0-9]+)$/", ng-required="true", min="0", max="100")
-                                        span.input-group-addon %
-                                td
-                                    div(ng-show="item.type == 'OpenFlow' && isEditable",style="width:80px")
-                                        a.btn.btn-default.btn-sm(ng-click="startEditLoss()",ng-show="!editLoss")
-                                            i.fa.fa-cog
-                                        a.btn.btn-success.btn-sm(ng-click="modifyLoss(loss)",ng-show="editLoss",ng-disabled="editLinkForm.$invalid || editLinkForm.$pristine")
-                                            i.fa.fa-check-circle
-                                        | &nbsp;
-                                        a.btn.btn-danger.btn-sm(ng-click="stopEditLoss()",ng-show="editLoss",ng-disabled="editLinkForm.$pristine")
-                                            i.fa.fa-ban
+                                td {{ item.dstPlr | packetLossRate }}
                             tr
                                 td {{ item.srcTx | dataRate }}
                                 th
                                     i.fa.fa-sign-in
                                     |  Transmit Data Rate
                                 td {{ item.dstTx | dataRate }}
-                                td
                             tr
                                 td {{ item.srcRx | dataRate }}
                                 th
                                     i.fa.fa-sign-out
                                     |  Receive Data Rate
                                 td {{ item.dstRx | dataRate }}
-                                td
         div.col-md-4
             h2 Destination
             sdn-device(device="item.dstHost",port="{{ item.dstPort }}")
