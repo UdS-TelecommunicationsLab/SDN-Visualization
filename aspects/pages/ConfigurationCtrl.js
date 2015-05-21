@@ -33,10 +33,7 @@
         $scope.dataSources = [
             {
                 type: "floodlight",
-                title: "Floodlight (HTTP)"
-            }, {
-                type: "nox",
-                title: "NOX (TCP)"
+                title: "Floodlight"
             }];
 
         var createNewEntry = ($routeParams.id) ? true : false;

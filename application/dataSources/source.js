@@ -33,7 +33,7 @@
     };
     source.init = function (dataSource) {
         var sourceIdentifier = dataSource.type;
-        if (sourceIdentifier === "floodlight" || sourceIdentifier === "nox") {
+        if (sourceIdentifier === "floodlight") {
             var client = require(__dirname + "/" + sourceIdentifier + "/client");
             source.getAllData = client.getAllData;
         } else {
