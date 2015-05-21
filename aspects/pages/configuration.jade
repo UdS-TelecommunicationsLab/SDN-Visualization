@@ -56,16 +56,33 @@ div#sdn-configuration
 
                     div.form-group
                         label.col-sm-1.control-label Translate:
-                        div.col-sm-3
+                        div.col-sm-2
                             div.checkbox
                                 label
+                                if demoMode
+                                    input(type="checkbox",ng-model="configuration.serviceNameTranslation.enabled",ng-required="true", disabled="true")
+                                    | Service Names
+                                else
                                     input(type="checkbox",ng-model="configuration.serviceNameTranslation.enabled",ng-required="true",ng-blur="saveConfiguration()")
                                     | Service Names
-                        div.col-sm-3
+                        div.col-sm-2
                             div.checkbox
                                 label
-                                    input(type="checkbox",ng-model="configuration.networkProtocolTranslation.enabled",ng-required="true",ng-blur="saveConfiguration()")
-                                    | Network Protocols
+                                    if demoMode
+                                        input(type="checkbox",ng-model="configuration.networkProtocolTranslation.enabled",ng-required="true", disabled="true")
+                                        | Network Protocols
+                                    else
+                                        input(type="checkbox",ng-model="configuration.networkProtocolTranslation.enabled",ng-required="true",ng-blur="saveConfiguration()")
+                                        | Network Protocols
+
+                        label.col-sm-2.control-label Poll Interval
+                        div.col-sm-2
+                            div.input-group
+                                if demoMode
+                                    input.form-control(type="text", ng-model="configuration.controller.pollInterval", ng-required="true", disabled="true")
+                                else
+                                    input.form-control(type="text", ng-model="configuration.controller.pollInterval", ng-required="true", ng-blur="saveConfiguration()")
+                                div.input-group-addon ms
 
 
         div.panel.panel-default

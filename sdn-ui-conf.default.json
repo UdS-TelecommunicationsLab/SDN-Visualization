@@ -5,7 +5,8 @@
   },
   "controller": {
     "name": "TODO",
-    "contact": "TODO"
+    "contact": "TODO",
+    "pollInterval":1500
   },
   "deviceInformation": [],
   "serviceNameTranslation": {
