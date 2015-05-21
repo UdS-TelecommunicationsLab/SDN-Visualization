@@ -33,7 +33,6 @@
         objectDiff = require(__dirname + "/../lib/objectDiff-enhanced/objectDiff"),
         nvm = require(__dirname + "/../public/shared/NVM");
 
-    var pollingDelay = 1500; // in milliseconds
     var model = new nvm.NVM();
     var oldModel = model;
     var reset = false;
@@ -69,6 +68,9 @@
         var diffMs = (now.getTime() - started.getTime());
         DEBUG && console.log("[Worker] Run finished on " + moment(now).format("dddd, MMMM Do YYYY, HH:mm:ss") + ". Took " + (diffMs/1000) + " seconds."); // jshint ignore:line
 
+        var configuration = config.getConfiguration();
+        var pollingDelay = configuration.controller.pollInterval;
+
         var timeToWait = Math.max(pollingDelay - diffMs, 0);
         setTimeout(loadingProcess, timeToWait);
     };
@@ -85,6 +87,8 @@
             if (isAvailable()) {
                 dataSource.getAllData(model, finish);
             } else {
+                var configuration = config.getConfiguration();
+                var pollingDelay = configuration.controller.pollInterval;
                 setTimeout(loadingProcess, pollingDelay);
             }
         } catch (e) {
