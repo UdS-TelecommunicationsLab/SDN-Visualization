@@ -38,6 +38,7 @@ var bodyParser = require("body-parser"),
     router = require("./application/nodeRouter"),
     security = require("./application/security"),
     session = require("express-session"),
+    FileSessionStore = require("session-file-store")(session),
     server = require("./application/nodeServer");
 
 var app = module.exports = express();
@@ -59,7 +60,12 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(session({
     secret: "df34<ajdrf9364aherf0üqq34a<rh",
     cookie: {secure: true},
-    saveUninitialized: true, resave: true, expires: false
+    saveUninitialized: true,
+    resave: true,
+    expires: false,
+    store: new FileSessionStore({
+        reapAsync: true
+    })
 }));
 app.use(passport.initialize());
 app.use(passport.session());
