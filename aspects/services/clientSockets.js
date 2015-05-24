@@ -28,7 +28,7 @@
 (function(sdnViz) {
     "use strict";
     sdnViz.factory("websockets", function($rootScope, toastr) {
-        var socket = io.connect("/");
+        var socket = io();
 
         var bind = function(channel, callback) {
             socket.on(channel, callback);

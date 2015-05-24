@@ -53,8 +53,7 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(methodOverride());
-app.use(lessMiddleware({src: __dirname + "/public", compress: true}));
-//app.use(express.logger("dev"));
+app.use(lessMiddleware(__dirname + "/public"));
 app.use("/lib", express.static(path.join(__dirname, "lib")));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(session({
