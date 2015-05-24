@@ -30,11 +30,17 @@
   },
   "devDependencies": {
     "gulp": "~3.8.11",
+    "gulp-bump": "^0.3.1",
     "gulp-concat": "~2.5.2",
     "gulp-header": "~1.2.2",
     "gulp-jshint": "~1.11.0",
+    "gulp-load-plugins": "^0.10.0",
+    "gulp-print": "^1.1.0",
     "gulp-sourcemaps": "~1.5.2",
-    "gulp-uglify": "~1.2.0"
+    "gulp-task-listing": "^1.0.0",
+    "gulp-uglify": "~1.2.0",
+    "gulp-util": "^3.0.4",
+    "yargs": "^3.9.1"
   },
   "licenses": [
     "MIT"
