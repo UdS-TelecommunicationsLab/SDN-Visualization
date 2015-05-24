@@ -60,12 +60,12 @@
                 });
 
                 $scope.$watch("showInactive", function () {
-                    $scope.showInactive = !($scope.showInactive != true && $scope.showInactive != "true");
+                    $scope.showInactive = !($scope.showInactive !== true && $scope.showInactive !== "true");
                     restart();
                 });
 
                 $scope.$watch("visibilityButton", function () {
-                    $scope.visibilityButton = !($scope.visibilityButton != true && $scope.visibilityButton != "true");
+                    $scope.visibilityButton = !($scope.visibilityButton !== true && $scope.visibilityButton !== "true");
                 });
 
                 $rootScope.$watch("deviceFilter", function () {
@@ -74,7 +74,7 @@
                         var devices = _.map(hasIdOrNameFilter($scope.data.nvm.devices, $rootScope.deviceFilter), function (d) {
                             return d.id;
                         });
-                        if ($rootScope.deviceFilter != "") {
+                        if ($rootScope.deviceFilter !== "") {
                             highlightDevices(null, devices);
                         } else {
                             resetAll();
@@ -113,7 +113,7 @@
                 var polygonBase = "1.16,0 0.58,1.0 -0.58,1.0 -1.16,0.0 -0.58,-1.0 0.58,-1.0";
 
                 var force = d3.layout.force()
-                    .friction(.8)
+                    .friction(0.8)
                     .linkDistance(1)
                     .linkStrength(function (d) {
                         return ($scope.showInactive || d.link.active) ? 1 : 0;
@@ -416,7 +416,7 @@
                     messenger.subscribe({
                         topic: "/topology/flow/blur",
                         callback: resetAll
-                    })
+                    });
                 };
 
                 // Bootstrapping Visualization and Data

@@ -364,7 +364,7 @@
                                 }
                             }
                         } else if(action === "none") {
-                            entry.actions["drop"] = true;
+                            entry.actions.drop = true;
                         } else {
                             // TODO: handle other actions
                             console.log(action);
@@ -372,7 +372,7 @@
                     }
 
                     if (entry.actions.length === 0) {
-                        entry.actions["drop"] = true;
+                        entry.actions.drop = true;
                     } else {
                         var sourceLinks = _.filter(links, findSource(entry));
                         for (var i = 0; i < sourceLinks.length; i++) {

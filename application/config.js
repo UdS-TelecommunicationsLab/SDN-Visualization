@@ -56,7 +56,7 @@
 
     exports.getConfiguration = function () {
         createFileIfNotExistent();
-        if (config == null) {
+        if (config === null) {
             readConfig();
         }
 

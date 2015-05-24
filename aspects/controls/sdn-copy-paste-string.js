@@ -37,7 +37,7 @@
                     $scope.clipboard.value = angular.copy($scope.device[$scope.field]);
                 };
                 $scope.paste = function() {
-                    if ($scope.clipboard.value != "") {
+                    if ($scope.clipboard.value !== "") {
                         $scope.device[$scope.field] = $scope.clipboard.value;
                     }
                 };

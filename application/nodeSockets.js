@@ -29,7 +29,7 @@
     "use strict";
     var config = require("./ui-config"),
         io = require("socket.io"),
-        msgpack = require('../lib/msgpack-javascript/msgpack.codec.js').msgpack
+        msgpack = require('../lib/msgpack-javascript/msgpack.codec.js').msgpack;
 
     var connection;
     var worker;

@@ -70,7 +70,7 @@
         var defaultDeviceActiveStyle = function (collection) {
             collection
                 .style("opacity", function (d) {
-                    return d.device.active ? 1.0 : defaultParameters.inactiveOpacity
+                    return d.device.active ? 1.0 : defaultParameters.inactiveOpacity;
                 });
             return collection;
         };
@@ -78,7 +78,7 @@
         var defaultLinkActiveStyle = function (collection) {
             collection
                 .style("opacity", function (d) {
-                    return d.link.active ? 1.0 : defaultParameters.inactiveOpacity / 2
+                    return d.link.active ? 1.0 : defaultParameters.inactiveOpacity / 2;
                 });
             return collection;
         };

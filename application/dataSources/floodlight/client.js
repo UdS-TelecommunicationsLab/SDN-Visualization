@@ -171,7 +171,7 @@
         } else {
             for (var deviceId in data) {
                 var device = _.find(model.devices, findDevice(deviceId));
-                if (device && data[deviceId] != null) {
+                if (device && data[deviceId] !== null) {
                     device.description = data[deviceId].desc || "";
                 }
             }
