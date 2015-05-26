@@ -30,6 +30,7 @@
     var fs = require("fs"),
         mime = require("mime");
 
+    var sdnc = __dirname +  "/../sdn-conf.json";
     var config = null;
     var callbacks = [];
     var sdnUiConfig = __dirname + "/../sdn-ui-conf.json";
@@ -89,6 +90,14 @@
     };
 
     exports.saveConfiguration = function (configData) {
+        // read ctrl config
+        var sdncJson = JSON.parse(fs.readFileSync(sdnc, {encoding: "utf-8"}));
+        if(sdncJson.isDemoMode){
+            // in demo mode (.isDemoMode == true) rewrite old config
+            var configOld = JSON.parse(fs.readFileSync(sdnUiConfig, {encoding: "utf-8"}));
+            fs.writeFileSync(sdnUiConfig, JSON.stringify(configOld));
+            return; // and get out
+        }
         fs.writeFileSync(sdnUiConfig, JSON.stringify(configData));
     };
 
