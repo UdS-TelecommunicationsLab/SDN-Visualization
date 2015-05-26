@@ -95,7 +95,9 @@
         if(sdncJson.isDemoMode){
             // in demo mode (.isDemoMode == true) rewrite old config
             var configOld = JSON.parse(fs.readFileSync(sdnUiConfig, {encoding: "utf-8"}));
-            fs.writeFileSync(sdnUiConfig, JSON.stringify(configOld));
+            configData.dataSource.type = configOld.dataSource.type;
+            configData.dataSource.connectionString = configOld.dataSource.connectionString;
+            fs.writeFileSync(sdnUiConfig, JSON.stringify(configData));
             return; // and get out
         }
         fs.writeFileSync(sdnUiConfig, JSON.stringify(configData));
