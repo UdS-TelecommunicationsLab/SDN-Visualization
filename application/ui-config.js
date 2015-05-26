@@ -28,9 +28,11 @@
 (function () {
     "use strict";
     var fs = require("fs"),
+        config = require("./config"),
         mime = require("mime");
 
-    var config = null;
+    var sdnc = __dirname +  "/../sdn-conf.json";
+    var uiConfigurationObject = null;
     var callbacks = [];
     var sdnUiConfig = __dirname + "/../sdn-ui-conf.json";
     var sdnUiSampleConfig = __dirname + "/../sdn-ui-conf.default.json";
@@ -43,9 +45,9 @@
     };
 
     var readConfig = function () {
-        config = JSON.parse(fs.readFileSync(sdnUiConfig, {encoding: "utf-8"}));
+        uiConfigurationObject = JSON.parse(fs.readFileSync(sdnUiConfig, {encoding: "utf-8"}));
         callbacks.forEach(function (cb) {
-            cb(config);
+            cb(uiConfigurationObject);
         });
     };
 
@@ -81,15 +83,25 @@
 
     exports.getConfiguration = function () {
         createFileIfNotExistent();
-        if (config === null) {
+        if (uiConfigurationObject === null) {
             readConfig();
         }
 
-        return config;
+        return uiConfigurationObject;
     };
 
     exports.saveConfiguration = function (configData) {
-        fs.writeFileSync(sdnUiConfig, JSON.stringify(configData));
+        // read ctrl config
+        var sdncJson = config.getConfiguration();
+        if(sdncJson.isDemoMode){
+            // in demo mode (.isDemoMode == true) rewrite old config
+            var configOld = exports.getConfiguration();
+            configData.dataSource.type = configOld.dataSource.type;
+            configData.dataSource.connectionString = configOld.dataSource.connectionString;
+            fs.writeFileSync(sdnUiConfig, JSON.stringify(configData));
+        } else {
+            fs.writeFileSync(sdnUiConfig, JSON.stringify(configData));
+        }
     };
 
     exports.registerHandler = function (cb) {
