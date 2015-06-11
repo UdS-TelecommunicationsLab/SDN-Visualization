@@ -25,9 +25,14 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /node_modules and /lib.
  */
 
-(function(sdnViz) {
+(function() {
     "use strict";
-    sdnViz.controller("AboutCtrl", function() {
 
-    });
-})(window.sdnViz);
+    angular
+        .module("sdn-visualization")
+        .controller("AboutCtrl", AboutCtrl);
+
+    function AboutCtrl() {
+
+    }
+})();

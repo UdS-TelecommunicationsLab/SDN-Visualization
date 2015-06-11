@@ -25,21 +25,30 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /node_modules and /lib.
  */
 
-(function(sdnViz) {
+(function () {
     "use strict";
-    sdnViz.controller("NavCtrl", function($scope, $window, $rootScope, repository) {
+
+    angular
+        .module("sdn-visualization")
+        .controller("NavCtrl", NavCtrl);
+
+    NavCtrl.$inject = ["$window", "$rootScope", "repository"];
+
+    function NavCtrl($window, $rootScope, repository) {
+        var vm = this;
+        vm.data = repository.data;
+        vm.logout = logout;
+
         $rootScope.deviceFilter = "";
         $rootScope.isSearchVisible = false;
 
-        $scope.data = repository.data;
 
         $rootScope.clearDeviceFilter = function() {
             $rootScope.deviceFilter = "";
         };
 
-        $scope.logout = function() {
+        function logout() {
             $window.location = "/logout";
-        };
-
-    });
-})(window.sdnViz);
+        }
+    }
+})();

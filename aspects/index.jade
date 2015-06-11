@@ -1,7 +1,7 @@
 extend layout
 
 block nav
-    div(ng-controller="NavCtrl")
+    div(ng-controller="NavCtrl as nav")
         ul(class="nav navbar-nav")
             li
                 a(href="/topology", tooltip="Topology", tooltip-placement="bottom")
@@ -19,15 +19,15 @@ block nav
                     li
                         a(href="/statistics/devices")
                             i.fa.fa-fw.fa-hdd-o
-                            | &nbsp;Devices ({{ data.nvm.devices.length }})
+                            | &nbsp;Devices ({{ nav.data.nvm.devices.length }})
                     li
                         a(href="/statistics/links")
                             i.fa.fa-fw.fa-link
-                            | &nbsp;Links ({{ data.nvm.links.length }})
+                            | &nbsp;Links ({{ nav.data.nvm.links.length }})
                     li
                         a(href="/statistics/flows")
                             i.fa.fa-fw.fa-random
-                            | &nbsp;Flows ({{ data.nvm.flows.length }})
+                            | &nbsp;Flows ({{ nav.data.nvm.flows.length }})
             li
                 a(href="/configuration", tooltip="Configuration", tooltip-placement="bottom")
                     i.fa.fa-fw.fa-cog
@@ -49,7 +49,7 @@ block nav
                 a(href="/about", tooltip="About", tooltip-placement="bottom")
                     i.fa.fa-fw.fa-info
             li
-                a(ng-click="logout()", tooltip="Logout", tooltip-placement="bottom")
+                a(ng-click="nav.logout()", tooltip="Logout", tooltip-placement="bottom")
                     i.fa.fa-fw.fa-sign-out
             li(ng-cloak, ng-class="{ ok: totalStatus, error: !totalStatus}")
                 a(href="/status", ng-show="totalStatus", tooltip="Everything is fine.", tooltip-placement="bottom")
