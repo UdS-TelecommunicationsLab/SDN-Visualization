@@ -31,6 +31,30 @@ div#sdn-status
                             td
                                 span(ng-repeat="metric in data.nvm.controller.routing.availableMetrics",
                                     ng-style="{ 'font-weight': (metric == data.nvm.controller.routing.currentMetric) ? 'bold' : 'normal' }") {{ metric }}{{$last ? '': ','}}&nbsp;
+
+                        tr
+                            td(rowspan=2) UDP Relaying:
+                            td
+                                |  Global Status:&nbsp;
+                                sdn-ui-on-off-label(field="data.nvm.controller.relaying.udp.enabled")
+                        tr
+                            td
+                                span
+                                    |  Registered:&nbsp;
+                                    b {{data.nvm.controller.relaying.udp.count}}&nbsp;
+                                    | {{data.nvm.controller.relaying.udp.count == 1 ? 'relay' : 'relays'}}
+                        tr
+                            td(rowspan=2) TCP Relaying:
+                            td
+                                |  Global Status:&nbsp;
+                                sdn-ui-on-off-label(field="data.nvm.controller.relaying.tcp.enabled")
+                        tr
+                            td
+                                span
+                                    |  Registered:&nbsp;
+                                    b {{data.nvm.controller.relaying.tcp.count}}&nbsp;
+                                    | {{data.nvm.controller.relaying.tcp.count == 1 ? 'relay' : 'relays'}}
+
                         tr
                             td Monitored Networks
                             td(colspan=2)

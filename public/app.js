@@ -67,6 +67,11 @@ sdnViz.config(function($routeProvider, $locationProvider, lockerProvider) {
             templateUrl: "templates/pages/about",
             controller: "AboutCtrl"
         }).
+        when("/relaying", {
+            templateUrl: "templates/relaying/relaying",
+            controller: "RelayingCtrl",
+            controllerAs: "vm"
+        }).
         when("/status", {
             templateUrl: "templates/pages/status",
             controller: "StatusCtrl"

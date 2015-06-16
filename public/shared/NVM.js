@@ -58,9 +58,9 @@ var __extends = this.__extends || function (d, b) {
         self.flows = [];
 
         if (oldModel) {
-        var setInactive = function (d) {
-            return _.extend(d, {active: false});
-        };
+            var setInactive = function (d) {
+                return _.extend(d, {active: false});
+            };
             self.devices = _.cloneDeep(oldModel.devices).map(setInactive);
             self.links = _.cloneDeep(oldModel.links).map(setInactive);
         }
@@ -105,13 +105,25 @@ var __extends = this.__extends || function (d, b) {
             availableMetrics: [],
             currentMetric: ""
         };
+        self.relaying = {
+            tcp: {
+                enabled: false,
+                count: 0,
+                relays: []
+            },
+            udp: {
+                enabled: false,
+                count: 0,
+                relays: []
+            }
+        };
     };
 
     /**
      * The Link contains two connected hosts and some statistics about the connection in between.
      */
     exports.Link = function (srcHost, srcPort, dstHost, dstPort, type) {
-        if(srcHost.id > dstHost.id) {
+        if (srcHost.id > dstHost.id) {
             var tmpHost = srcHost;
             srcHost = dstHost;
             dstHost = tmpHost;
@@ -197,10 +209,10 @@ var __extends = this.__extends || function (d, b) {
         self.internetAddresses = [];
         self.ports = {};
 
-        self.updatePorts = function(ports) {
-            for(var portNumber in ports) {
+        self.updatePorts = function (ports) {
+            for (var portNumber in ports) {
                 if (self.ports[portNumber] !== undefined) {
-                    self.ports[portNumber] = _.assign(self.ports[portNumber], ports[portNumber], function(value, other) {
+                    self.ports[portNumber] = _.assign(self.ports[portNumber], ports[portNumber], function (value, other) {
                         return (_.isNull(other)) ? value : other;
                     });
                 } else {
@@ -267,7 +279,7 @@ var __extends = this.__extends || function (d, b) {
     /**
      * The FlowEntry contains information on the match and the associated actions.
      */
-    exports.FlowEntry = function(id) {
+    exports.FlowEntry = function (id) {
         var self = this;
         self.id = id || "";
         self.inPort = 0;

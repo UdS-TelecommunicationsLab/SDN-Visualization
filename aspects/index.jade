@@ -25,6 +25,10 @@ block nav
                             i.fa.fa-fw.fa-link
                             | &nbsp;Links ({{ nav.data.nvm.links.length }})
                     li
+                        a(href="/relaying")
+                            i.fa.fa-fw.fa-retweet
+                            | &nbsp;Relaying ({{ nav.data.nvm.controller.relaying.udp.count }} / {{ nav.data.nvm.controller.relaying.tcp.count }})
+                    li
                         a(href="/statistics/flows")
                             i.fa.fa-fw.fa-random
                             | &nbsp;Flows ({{ nav.data.nvm.flows.length }})
@@ -71,6 +75,7 @@ block scripts
     script(src="/lib/angular-locker/dist/angular-locker.min.js")
     script(src="/lib/angular-route/angular-route.min.js")
     script(src="/lib/bootstrap/dist/js/bootstrap.min.js")
+    script(src="/lib/bootbox/bootbox.js")
     script(src="/lib/angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module.js")
     script(src="/lib/angular-ui-bootstrap-bower/ui-bootstrap-tpls.min.js")
     script(src="/lib/moment/min/moment.min.js")
@@ -82,9 +87,9 @@ block scripts
     script(src="/lib/msgpack-javascript/msgpack.codec.js")
     script(src="/lib/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML", type="text/javascript")
     script(src="/socket.io/socket.io.js")
-    script(src="/app.js")
-    script(src="/dist.min.js")
     script(src="/shared/crypt.js")
     script(src="/shared/enumerations.js")
     script(src="/shared/network.js")
     script(src="/shared/NVM.js")
+    script(src="/app.js")
+    script(src="/dist.min.js")

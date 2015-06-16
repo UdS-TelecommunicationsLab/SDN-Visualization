@@ -25,61 +25,62 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /node_modules and /lib.
  */
 
-(function(sdnViz) {
+(function () {
     "use strict";
     sdnViz.factory("websockets", function($rootScope, toastr) {
         var socket = io();
 
-        var bind = function(channel, callback) {
+        var bind = function (channel, callback) {
             socket.on(channel, callback);
         };
 
-        bind("connect", function() {
+        bind("connect", function () {
             $rootScope.status.transport = true;
             $rootScope.$digest();
         });
 
-        bind("disconnect", function() {
+        bind("disconnect", function () {
             $rootScope.status.transport = false;
             $rootScope.$digest();
         });
 
-        bind("/error", function(message) {
+        bind("/error", function (message) {
             toastr.error(message);
         });
 
         return {
             bind: bind,
-            publish: function(channel, data, onSuccess, onError) {
-                socket.emit(channel, data, function(res) {
+            publish: function (channel, data, onSuccess, onError) {
+                socket.emit(channel, data, function (res) {
                     if (res.success) {
-                        $rootScope.$apply(function() {
-                            if (onSuccess)
+                        $rootScope.$apply(function () {
+                            if (onSuccess) {
                                 onSuccess(res.data);
+                            }
                         });
                     } else {
-                        toastr.error("WebSockets: An error occurred.");
-                        $rootScope.$apply(function() {
-                            if (onError)
-                                onError(res);
+                        $rootScope.$apply(function () {
+                            if (onError) {
+                                onError(res.data);
+                            }
                         });
                     }
                 });
             },
-            subscribe: function(channel, callback) {
-                socket.on(channel, function() {
+            subscribe: function (channel, callback) {
+                socket.on(channel, function () {
                     var args = arguments;
-                    $rootScope.$apply(function() {
+                    $rootScope.$apply(function () {
                         callback.apply(null, args);
                     });
                 });
             },
-            subscribeModelUpdate: function(callback) {
-                socket.on("/modelUpdate", function() {
+            subscribeModelUpdate: function (callback) {
+                socket.on("/modelUpdate", function () {
                     var args = arguments;
                     var changes = args[0].diff;
                     args[0].changes = msgpack.unpack(changes);
-                    $rootScope.$apply(function() {
+                    $rootScope.$apply(function () {
                         callback.apply(null, args);
                     });
                 });

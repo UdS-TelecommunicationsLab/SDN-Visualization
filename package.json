@@ -25,6 +25,7 @@
     "moment": "2.10.3",
     "passport": "0.2.2",
     "passport-local": "1.0.0",
+    "request": "~2.55.0",
     "session-file-store": "0.0.11",
     "socket.io": "1.3.5"
   },
@@ -46,9 +47,15 @@
     "MIT"
   ],
   "author": "Andreas Schmidt <schmidt@nt.uni-saarland.de>",
+  "contributors": [
+    {
+      "name": "Philipp Sebastian Tennigkeit",
+      "email": "tennigkeit@intel-vci.uni-saarland.de"
+    }
+  ],
   "engines": {
     "node": "0.10.20",
     "npm": "1.3.11"
   },
-  "homepage": "http://www.opennetworking.uni-saarland.de"
+  "homepage": "http://www.on.uni-saarland.de"
 }

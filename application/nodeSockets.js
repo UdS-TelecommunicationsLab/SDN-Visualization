@@ -29,6 +29,7 @@
     "use strict";
     var config = require("./ui-config"),
         io = require("socket.io"),
+        relaying = require("./relaying/relaying"),
         msgpack = require('../lib/msgpack-javascript/msgpack.codec.js').msgpack;
 
     var connection;
@@ -37,7 +38,7 @@
     var handleSaveVizConfiguration = function (message, callback) {
         // TODO: this method needs some kind of validity check for the sent configuration
         config.saveConfiguration(message.configuration);
-        callback({ success: true });
+        callback({success: true});
     };
 
     var handleNvmReset = function (message, callback) {
@@ -53,6 +54,7 @@
         connection.on("connection", function (socket) {
             socket.on("/interact/saveVizConfiguration", handleSaveVizConfiguration);
             socket.on("/nvm/reset", handleNvmReset);
+            relaying.registerSockets(socket);
         });
     };
 
