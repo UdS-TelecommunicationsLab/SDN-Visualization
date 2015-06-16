@@ -27,7 +27,7 @@
         // data to submit
         var data = {
             ip: message.relayIP,
-            port: message.transportPort,
+            port: message.transportPort.toString(),
             relayMac: message.relayMAC,
             switchDpid: message.switchDPID,
             switchPort: message.switchPort,
@@ -73,4 +73,4 @@
             callback({success: isSuccess, data: isSuccess});
         });
     }
-})(exports, true);
+})(exports, false);
