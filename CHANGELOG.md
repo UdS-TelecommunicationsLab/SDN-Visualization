@@ -1,0 +1,22 @@
+<a name="2015.6.0"></a>
+# 2015.6.0
+
+## Features
+
+- Relaying Feature introduced. The visualization can now be used to inform the Floodlight controller of existing relays inside the network. Check out https://www.on.uni-saarland.de/start for more information.
+- Device thumbnails can now be initialized by a deviceId.
+- ARP opcodes are properly displayed.
+- Worker's poll interval is now configurable.
+- Sessions are now persisted as files and are not dropped by restarting the server.
+
+## Improvements
+
+- README contains frequently asked questions.
+- Update third party libraries (lodash, AngularJS).
+- Replace Grunt task runner with Gulp.
+- NOX support is dropped to unify interfaces.
+- Link manipulation code removed.
+- Demo mode restrictions are now also enforced on the server side.
+- Used JSHint and removed several problems.
+- Several bug fixes.
+- Start applying an Angular Style guide to the code.
