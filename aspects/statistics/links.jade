@@ -1,5 +1,5 @@
 div.sdn-link-table
-    div.panel.panel-default(ng-show="data.nvm.links.length > 0")
+    div.panel.panel-default(ng-show="vm.data.nvm.links.length > 0")
         div.panel-heading
             i.fa.fa-fw.fa-link
             | &nbsp;Links
@@ -12,8 +12,8 @@ div.sdn-link-table
             thead
                 tr
                     th(rowspan=2)
-                    th(colspan=5) Source
-                    th(colspan=5) Destination
+                    th(colspan=6) Source
+                    th(colspan=6) Destination
                     th(rowspan=2)
                 tr
                     th Name [Port]
@@ -28,7 +28,7 @@ div.sdn-link-table
                     th.linkParameter.loss Loss
                     th.linkParameter.delay Delay
             tbody
-                tr(ng-repeat="link in data.nvm.links | srcOrDstId:deviceFilter")
+                tr(ng-repeat="link in vm.data.nvm.links | srcOrDstId:deviceFilter")
                     td(width="20px")
                         sdn-ui-on-off-label(field="link.active")
 
@@ -38,36 +38,38 @@ div.sdn-link-table
                             code.dp {{ link.srcHost.name }}
                         span.middle [{{ link.srcPort }}]
                     td.linkParameter
-                        span.label(ng-class="rateClass(link.srcTx)") {{ link.srcTx | dataRate }}
+                        span.label(ng-class="vm.rateClass(link.srcTx)") {{ link.srcTx | dataRate }}
                     td.linkParameter
-                        span.label(ng-class="rateClass(link.srcRx)") {{ link.srcRx | dataRate }}
+                        span.label(ng-class="vm.rateClass(link.srcRx)") {{ link.srcRx | dataRate }}
                     td.linkParameter.loss
-                        span.label(ng-class="lossClass(link.srcPlr)") {{ link.srcPlr | packetLossRate }}
+                        span.label(ng-class="vm.lossClass(link.srcPlr)") {{ link.srcPlr | packetLossRate }}
                     td.linkParameter.delay
-                        span.label(ng-class="delayClass(link.srcDelay)") {{ link.srcDelay | delay }}
-
+                        span.label(ng-class="vm.delayClass(link.srcDelay)")
+                            sdn-delay-tag(delay="link.srcDelay", deviation="link.srcDeviation")
                     td
                         a(href="{{ '/detail/device/' + link.dstHost.id }}")
                             sdn-device-type-icon(device="link.dstHost")
                             code.dp {{ link.dstHost.name }}
                         span.middle [{{ link.dstPort }}]
                     td.linkParameter
-                        span.label(ng-class="rateClass(link.dstTx)") {{ link.dstTx | dataRate }}
+                        span.label(ng-class="vm.rateClass(link.dstTx)") {{ link.dstTx | dataRate }}
                     td.linkParameter
-                        span.label(ng-class="rateClass(link.dstRx)") {{ link.dstRx | dataRate }}
+                        span.label(ng-class="vm.rateClass(link.dstRx)") {{ link.dstRx | dataRate }}
                     td.linkParameter.loss
-                        span.label(ng-class="lossClass(link.dstPlr)") {{ link.dstPlr | packetLossRate }}
+                        span.label(ng-class="vm.lossClass(link.dstPlr)") {{ link.dstPlr | packetLossRate }}
                     td.linkParameter.delay
-                        span.label(ng-class="delayClass(link.dstDelay)") {{ link.dstDelay | delay }}
+                        span.label(ng-class="vm.delayClass(link.srcDelay)")
+                            sdn-delay-tag(delay="link.dstDelay", deviation="link.dstDeviation")
+
 
                     td(width="40px")
                         a.btn.btn-default.btn-xs(href="{{ '/detail/link/' + link.id }}", tooltip="Details")
                             i.fa.fa-fw.fa-ellipsis-h
 
-    div.panel.panel-default(ng-show="data.nvm.links.length > 0")
+    div.panel.panel-default(ng-show="vm.data.nvm.links.length > 0")
         div.panel-body
             small All links are symmetric, so the inverse direction is also connected.
 
 
-    div.alert.alert-info(ng-show="data.nvm.links.length == 0")
+    div.alert.alert-info(ng-show="vm.data.nvm.links.length == 0")
         strong There are no links at the moment.

@@ -284,18 +284,21 @@
             for (var k = 0; k < delays.length; k++) {
                 var delaySample = delays[k];
                 // Sw1-Sw2 = C-Sw1-Sw2-C - 0.5*(C-Sw1-C + C-Sw2-C)
-                var delay = (delaySample.inconsistency) ? null : (delaySample.fullDelay - 0.5 * (delaySample["src-ctl-Delay"] + delaySample["dst-ctl-Delay"]));
+                var delay = (delaySample.inconsistency) ? null : (delaySample.fullDelay - 0.5 * (delaySample.srcCtrlDelay + delaySample.dstCtrlDelay));
                 var srcPort = parseInt(delaySample.srcPort, 10);
                 var dstPort = parseInt(delaySample.dstPort, 10);
+                var deviation = delaySample.fullDeviation + (delaySample.srcCtrlDeviation + delaySample.dstCtrlDeviation)*0.5;
 
                 var srcLinks = _.filter(model.links, findLink(delaySample.srcDpid, srcPort, delaySample.dstDpid, dstPort));
                 for (var i = 0; i < srcLinks.length; i++) {
                     srcLinks[i].srcDelay = delay;
+                    srcLinks[i].srcDeviation = deviation;
                 }
 
-                var links = _.filter(model.links, findLink(delaySample.dstDpid, dstPort, delaySample.srcDpid, srcPort));
-                for (var j = 0; j < links.length; j++) {
-                    links[j].dstDelay = delay;
+                var dstLinks = _.filter(model.links, findLink(delaySample.dstDpid, dstPort, delaySample.srcDpid, srcPort));
+                for (var j = 0; j < dstLinks.length; j++) {
+                    dstLinks[j].dstDelay = delay;
+                    dstLinks[j].dstDeviation = deviation;
                 }
             }
         }

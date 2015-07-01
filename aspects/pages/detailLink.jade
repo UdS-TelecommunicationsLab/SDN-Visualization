@@ -19,11 +19,13 @@ block body
                     table.table
                         tbody
                             tr
-                                td {{ item.srcDelay | delay }}
+                                td
+                                    sdn-delay-tag(delay="item.srcDelay", deviation="item.srcDeviation")
                                 th
                                     i.fa.fa-clock-o
-                                    |  Delay
-                                td {{ item.dstDelay | delay }}
+                                    |  Delay &plusmn; Deviation
+                                td
+                                    sdn-delay-tag(delay="item.dstDelay", deviation="item.dstDeviation")
                             tr
                                 td {{ item.srcPlr | packetLossRate }}
                                 th(style="width:180px")

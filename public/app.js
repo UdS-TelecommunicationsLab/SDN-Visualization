@@ -37,19 +37,23 @@ sdnViz.config(function($routeProvider, $locationProvider, lockerProvider) {
         }).
         when("/statistics/overview", {
             templateUrl: "templates/statistics/overview",
-            controller: "StatisticsCtrl"
+            controller: "StatisticsCtrl",
+            controllerAs: "vm"
         }).
         when("/statistics/devices", {
             templateUrl: "templates/statistics/devices",
-            controller: "StatisticsCtrl"
+            controller: "StatisticsCtrl",
+            controllerAs: "vm"
         }).
         when("/statistics/links", {
             templateUrl: "templates/statistics/links",
-            controller: "StatisticsCtrl"
+            controller: "StatisticsCtrl",
+            controllerAs: "vm"
         }).
         when("/statistics/flows", {
             templateUrl: "templates/statistics/flows",
-            controller: "StatisticsCtrl"
+            controller: "StatisticsCtrl",
+            controllerAs: "vm"
         }).
         when("/documentation", {
             templateUrl: "templates/pages/documentation",
