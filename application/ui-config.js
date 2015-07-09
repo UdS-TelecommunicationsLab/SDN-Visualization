@@ -97,7 +97,9 @@
             // in demo mode (.isDemoMode == true) rewrite old config
             var configOld = exports.getConfiguration();
             configData.dataSource.type = configOld.dataSource.type;
-            configData.dataSource.connectionString = configOld.dataSource.connectionString;
+            configData.dataSource.host = configOld.dataSource.host;
+            configData.dataSource.ports.restAPI = configOld.dataSource.ports.restAPI;
+            configData.dataSource.ports.wsAPI = configOld.dataSource.ports.wsAPI;
             fs.writeFileSync(sdnUiConfig, JSON.stringify(configData));
         } else {
             fs.writeFileSync(sdnUiConfig, JSON.stringify(configData));

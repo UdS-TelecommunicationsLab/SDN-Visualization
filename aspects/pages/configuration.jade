@@ -22,19 +22,35 @@ div#sdn-configuration
         div
             div.panel.panel-default
                 div.panel-body
+
                     div.form-group
-                        label.col-sm-1.control-label Name:
+                        label.col-sm-2.control-label Name:
                         div.col-sm-4
                             input.form-control(type="text",ng-model="configuration.controller.name",ng-required="true",ng-blur="saveConfiguration()")
 
+                        label.col-sm-2.control-label Controller Host:
+                        div.col-sm-4
+                            if demoMode
+                                input.form-control(type="text",ng-model="configuration.dataSource.host",disabled="true",placeholder="e.g. localhost")
+                            else
+                                input.form-control(type="text",ng-model="configuration.dataSource.host",ng-required="true",ng-blur="saveConfiguration()")
+
+                    div.form-group
                         label.col-sm-2.control-label Contact Mail:
-                        div.col-sm-5
+                        div.col-sm-4
                             input.form-control(type="text",
                             ng-model="configuration.controller.contact",
                             ng-blur="saveConfiguration()")
 
+                        label.col-sm-2.control-label REST API Port:
+                        div.col-sm-4
+                            if demoMode
+                                input.form-control(type="text",ng-model="configuration.dataSource.ports.restAPI",disabled="true",placeholder="e.g. 8080")
+                            else
+                                input.form-control(type="text",ng-model="configuration.dataSource.ports.restAPI",ng-required="true",ng-blur="saveConfiguration()")
+
                     div.form-group
-                        label.col-sm-1.control-label Type:
+                        label.col-sm-2.control-label Type:
                         div.col-sm-4
                             if demoMode
                                 select.form-control(ng-model="configuration.dataSource.type",
@@ -46,16 +62,16 @@ div#sdn-configuration
                                     ng-required="true",
                                     ng-blur="saveConfiguration()")
 
-
-                        label.col-sm-2.control-label Connection:
-                        div.col-sm-5
+                        label.col-sm-2.control-label WebSocket API Port:
+                        div.col-sm-4
                             if demoMode
-                                input.form-control(type="text",ng-model="configuration.dataSource.connectionString",disabled="true")
+                                input.form-control(type="text",ng-model="configuration.dataSource.ports.wsAPI",disabled="true",placeholder="e.g. 8081")
                             else
-                                input.form-control(type="text",ng-model="configuration.dataSource.connectionString",ng-required="true",ng-blur="saveConfiguration()")
+                                input.form-control(type="text",ng-model="configuration.dataSource.ports.wsAPI",ng-required="true",ng-blur="saveConfiguration()")
+
 
                     div.form-group
-                        label.col-sm-1.control-label Translate:
+                        label.col-sm-2.control-label Translate:
                         div.col-sm-2
                             div.checkbox
                                 label
@@ -76,7 +92,7 @@ div#sdn-configuration
                                         | Network Protocols
 
                         label.col-sm-2.control-label Poll Interval
-                        div.col-sm-2
+                        div.col-sm-4
                             div.input-group
                                 if demoMode
                                     input.form-control(type="text", ng-model="configuration.controller.pollInterval", ng-required="true", disabled="true")

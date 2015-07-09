@@ -51,13 +51,12 @@
         };
 
         var configuration = config.getConfiguration();
-        var connectionString = configuration.dataSource && configuration.dataSource.connectionString;
-
-        var address = connectionString.split(":");
+        var host = configuration.dataSource && configuration.dataSource.host;
+        var restPort = configuration.dataSource && configuration.dataSource.ports.restAPI;
 
         var options = {
-            host: address[0],
-            port: address[1],
+            host: host,
+            port: restPort,
             path: "/wm/" + command
         };
         var req = http.request(options, successCallback);

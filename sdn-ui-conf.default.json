@@ -1,7 +1,11 @@
 {
   "dataSource": {
     "type": "floodlight",
-    "connectionString": "localhost:8080"
+    "host": "localhost",
+    "ports": {
+      "restAPI": 8080,
+      "wsAPI": 8081
+    }
   },
   "controller": {
     "name": "TODO",

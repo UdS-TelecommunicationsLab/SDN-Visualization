@@ -30,6 +30,7 @@
     var config = require("./ui-config"),
         io = require("socket.io"),
         relaying = require("./relaying/relaying"),
+        logging = require("./logging"),
         msgpack = require('../lib/msgpack-javascript/msgpack.codec.js').msgpack;
 
     var connection;
@@ -65,6 +66,8 @@
     var publish = function (channel, message) {
         connection.emit(channel, message);
     };
+
+    nodeSockets.publish = publish;
 
     nodeSockets.publishModelUpdate = function (changes, checksum) {
         publish("/modelUpdate", {diff: msgpack.pack(changes, true), checksum: checksum});

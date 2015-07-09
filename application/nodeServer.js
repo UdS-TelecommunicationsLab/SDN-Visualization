@@ -33,6 +33,7 @@
         http = require("http"),
         https = require("https"),
         nodeSockets = require("./nodeSockets"),
+        logging = require("./logging"),
         storage = require("./storage");
 
     var registerRedirect = function(app) {
@@ -81,6 +82,7 @@
 
             startWorker();
             nodeSockets.bind(server);
+            logging.init();
         });
     };
 })(exports);

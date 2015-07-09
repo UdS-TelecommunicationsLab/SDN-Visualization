@@ -47,7 +47,7 @@
             return d;
         };
 
-        $scope.configuration = {deviceInformation: [], dataSource: {type: "none", connectionString: ""}};
+        $scope.configuration = {deviceInformation: [], dataSource: {type: "none", host: "", ports: {restAPI: "", wsAPI: ""}}};
 
         var onConfigLoaded = function (data) {
             $scope.configuration = data.configuration || {};

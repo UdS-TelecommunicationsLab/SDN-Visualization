@@ -78,7 +78,8 @@ sdnViz.config(function($routeProvider, $locationProvider, lockerProvider) {
         }).
         when("/status", {
             templateUrl: "templates/pages/status",
-            controller: "StatusCtrl"
+            controller: "StatusCtrl",
+            controllerAs: "vm"
         });
 
     // Detail Views
