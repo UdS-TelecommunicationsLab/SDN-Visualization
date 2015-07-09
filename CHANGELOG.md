@@ -4,6 +4,8 @@
 ## Features
 
 - Relaying Feature introduced. The visualization can now be used to inform the Floodlight controller of existing relays inside the network. Check out https://www.on.uni-saarland.de/start for more information.
+- Controller Logs are now displayed on the Status page to give information on events that happen inside the controller software.
+- Delay Measurement now gives more information by measuring derivation and using an exponentially weighted moving average.  
 - Device thumbnails can now be initialized by a deviceId.
 - ARP opcodes are properly displayed.
 - Worker's poll interval is now configurable.
