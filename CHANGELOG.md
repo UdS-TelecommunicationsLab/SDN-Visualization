@@ -3,6 +3,7 @@
 
 ## Features
 
+- Analytics feature introduced. Using the `sdnalytics` library (also available on GitHub), the network can be analyzed and results are displayed in the visualization.
 - Relaying Feature introduced. The visualization can now be used to inform the Floodlight controller of existing relays inside the network. Check out https://www.on.uni-saarland.de/start for more information.
 - Controller Logs are now displayed on the Status page to give information on events that happen inside the controller software.
 - Delay Measurement now gives more information by measuring derivation and using an exponentially weighted moving average.  
