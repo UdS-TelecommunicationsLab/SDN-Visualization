@@ -148,6 +148,7 @@ a.thumbnail {
 }
 
 @import "topology.less";
+@import "reports.less";
 
 span.device {
   display: inline-block;
@@ -190,6 +191,10 @@ span.device.Flow {
 
 a.sdn-flow:hover {
   text-decoration: none;
+}
+
+span.device.Report {
+    background: #b52a2b !important;
 }
 
 #sdn-about {
@@ -255,8 +260,8 @@ a.sdn-flow:hover {
   display: inline-block;
 }
 
-th.linkParameter, td.linkParameter {
-  width: 140px;
+th.linkParameter, td.linkParameter, th.parameter, td.parameter {
+  width: 180px;
   text-align: right;
 }
 

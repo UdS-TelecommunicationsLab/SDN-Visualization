@@ -31,6 +31,8 @@
 
     var config = require("./ui-config"),
         moment = require("moment"),
+        DBWrapper = require('node-dbi').DBWrapper,
+        DBExpr = require('node-dbi').DBExpr,
         msgpack = require("../lib/msgpack-javascript/msgpack.codec.js").msgpack,
         passport = require("passport"),
         ensureLoggedIn = require("connect-ensure-login").ensureLoggedIn,
@@ -38,6 +40,10 @@
         storage = require("./storage");
 
     var conf = require("./config").getConfiguration();
+
+    var dbConnectionConfig = conf.databaseConnection || {host: 'localhost:54320', user: 'postgres', password: 'sdn', database: 'sdn'};
+    var dbWrapper = new DBWrapper('pg', dbConnectionConfig);
+    dbWrapper.connect();
 
     var loginUrl = "/login";
     var multipartMiddleware = multipart();
@@ -83,6 +89,39 @@
                     nvm: storage.getNVM(),
                     checksum: storage.getChecksum()
                 }, true)
+            });
+        });
+
+        app.get("/api/reports/all", ensureLoggedIn(loginUrl), function (request, response) {
+            dbWrapper.fetchAll('SELECT id, created, type FROM report ORDER BY created DESC', null, function (err, result) {
+                if (err) {
+                    console.log(err);
+                    response.json([]);
+                } else {
+                    response.json(result);
+                }
+            });
+        });
+
+        app.get("/api/reports/type/:type", ensureLoggedIn(loginUrl), function (request, response) {
+            dbWrapper.fetchAll('SELECT id, created, type, sample_start, sample_stop, sample_count, sample_interval, execution_duration FROM report WHERE type=? ORDER BY created DESC', [request.params.type], function (err, result) {
+                if (err) {
+                    console.log(err);
+                    response.json([]);
+                } else {
+                    response.json(result);
+                }
+            });
+        });
+
+        app.get("/api/reports/:id", ensureLoggedIn(loginUrl), function (request, response) {
+            dbWrapper.fetchRow('SELECT id, created, type, content, sample_start, sample_stop, sample_count, sample_interval, execution_duration FROM report WHERE id=?', [request.params.id], function (err, result) {
+                if (err) {
+                    console.log(err);
+                    response.json({});
+                } else {
+                    response.json(result);
+                }
             });
         });
 

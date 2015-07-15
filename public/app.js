@@ -55,6 +55,18 @@ sdnViz.config(function($routeProvider, $locationProvider, lockerProvider) {
             controller: "StatisticsCtrl",
             controllerAs: "vm"
         }).
+        when("/analytics", {
+            templateUrl: "templates/reports/reports",
+            controller: "ReportsCtrl"
+        }).
+        when("/reports/:id", {
+            templateUrl: "templates/reports/reports",
+            controller: "ReportsCtrl"
+        }).
+        when("/reports/type/:type", {
+            templateUrl: "templates/reports/reports",
+            controller: "ReportsCtrl"
+        }).
         when("/documentation", {
             templateUrl: "templates/pages/documentation",
             controller: "DocumentationCtrl"

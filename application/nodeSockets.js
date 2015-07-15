@@ -29,6 +29,7 @@
     "use strict";
     var config = require("./ui-config"),
         io = require("socket.io"),
+        analyticsApi = require(__dirname + "/analyticsApi"),
         relaying = require("./relaying/relaying"),
         logging = require("./logging"),
         msgpack = require('../lib/msgpack-javascript/msgpack.codec.js').msgpack;
@@ -47,6 +48,18 @@
         callback({success: true});
     };
 
+    var handleAnalyzerRun = function(message, callback) {
+        var configuration = config.getConfiguration();
+        var task = (message && message.task) || 'all';
+        if (configuration && configuration.analytics && configuration.analytics.enabled && configuration.analytics.analyzer) {
+            analyticsApi.getRoute("analyzer", "/run/" + task, function(data) {
+                callback({ success: true, data: data });
+            });
+        } else {
+            callback({ success: false });
+        }
+    };
+
     var registerHandles = function () {
         config.registerHandler(function (config) {
             nodeSockets.publishConfigUpdate(config);
@@ -55,6 +68,7 @@
         connection.on("connection", function (socket) {
             socket.on("/interact/saveVizConfiguration", handleSaveVizConfiguration);
             socket.on("/nvm/reset", handleNvmReset);
+            socket.on("/analytics/runAnalyzer", handleAnalyzerRun);
             relaying.registerSockets(socket);
         });
     };

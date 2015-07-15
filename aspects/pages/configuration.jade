@@ -8,7 +8,7 @@ div#sdn-configuration
                             div.col-md-2
                                 button.btn.btn-default(type="button",ng-click="exportConfig()",ng-disabled="!configForm.$pristine")
                                     i.fa.fa-upload
-                                    |  Export
+                                    | &nbsp;Export
                             if !demoMode
                                 div.col-md-8
                                     div.input-group(style="width:350px")
@@ -21,6 +21,9 @@ div#sdn-configuration
     form.form.form-horizontal(name="configForm")
         div
             div.panel.panel-default
+                div.panel-heading
+                    i.fa.fa-fw.fa-sitemap
+                    | &nbsp;Controller
                 div.panel-body
 
                     div.form-group
@@ -70,6 +73,11 @@ div#sdn-configuration
                                 input.form-control(type="text",ng-model="configuration.dataSource.ports.wsAPI",ng-required="true",ng-blur="saveConfiguration()")
 
 
+            div.panel.panel-default
+                div.panel-heading
+                    i.fa.fa-fw.fa-search
+                    | &nbsp;Visualization
+                div.panel-body
                     div.form-group
                         label.col-sm-2.control-label Translate:
                         div.col-sm-2
@@ -100,8 +108,26 @@ div#sdn-configuration
                                     input.form-control(type="text", ng-model="configuration.controller.pollInterval", ng-required="true", ng-blur="saveConfiguration()")
                                 div.input-group-addon ms
 
+            div.panel.panel-default
+                div.panel-heading
+                    i.fa.fa-fw.fa-line-chart
+                    | &nbsp;Analytics
+                div.panel-body
+                    div.form-group
+                        label.col-sm-1.control-label Enabled:
+                        div.col-sm-1
+                            input(type="checkbox",ng-model="configuration.analytics.enabled",ng-required="true",ng-blur="saveConfiguration()")
+                        label.col-sm-1.control-label Observer:
+                        div.col-sm-4
+                            input.form-control(type="text",ng-model="configuration.analytics.observer",ng-required="true",ng-blur="saveConfiguration()", placeholder="username:password@host:port")
+                        label.col-sm-1.control-label Analyzer:
+                        div.col-sm-4
+                            input.form-control(type="text",ng-model="configuration.analytics.analyzer",ng-required="true",ng-blur="saveConfiguration()", placeholder="username:password@host:port")
 
-        div.panel.panel-default
+            div.panel.panel-default
+                div.panel-heading
+                    i.fa.fa-fw.fa-hdd-o
+                    | &nbsp;Devices
                 div.table-responsive
                     table.table.table-bordered.table-striped
                         thead

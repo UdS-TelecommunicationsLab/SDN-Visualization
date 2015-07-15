@@ -1,0 +1,116 @@
+div.report-topology-centrality
+    div.row
+        div.col-md-4
+            div.panel.panel-default
+                div.panel-heading Degree
+                div.panel-body
+                    sdn-topology-map(styles="degreeStyles", height="400")
+                    h3 Node Degree:
+                    div.row
+                        div.col-md-3
+                            span.legendBlock(ng-style="{ 'background-color': unknownColor}")
+                            span.legendLabel UNK
+                        div.col-md-4
+                            span.legendBlock(ng-style="{ 'background-color': minColor}")
+                            span.legendLabel Min ({{ degree[0] }})
+                        div.col-md-5
+                            span.legendBlock(ng-style="{ 'background-color': maxColor}")
+                            span.legendLabel Max ({{ degree[1] }})
+        div.col-md-4
+            div.panel.panel-default
+                div.panel-heading Betweenness
+                div.panel-body
+                    sdn-topology-map(styles="betweennessStyles", height="400")
+                    div.row
+                        div.col-xs-6
+                            h3 Node Betweenness:
+                            div.row
+                                div.col-sm-12
+                                    span.legendBlock(ng-style="{ 'background-color': unknownColor}")
+                                    span.legendLabel UNK
+                                div.col-sm-12
+                                    span.legendBlock(ng-style="{ 'background-color': minColor}")
+                                    span.legendLabel Min ({{ nodeBetweenness[0] | numberToFixed:3 }})
+                                div.col-sm-12
+                                    span.legendBlock(ng-style="{ 'background-color': maxColor}")
+                                    span.legendLabel Max ({{ nodeBetweenness[1] | numberToFixed:3 }})
+                        div.col-xs-6
+                            h3 Link Betweenness:
+                            div.row
+                                div.col-sm-12
+                                    span.legendBlock(ng-style="{ 'background-color': unknownColor}")
+                                    span.legendLabel UNK
+                                div.col-sm-12
+                                    span.legendBlock(ng-style="{ 'background-color': minColor}")
+                                    span.legendLabel Min ({{ linkBetweenness[0] | numberToFixed:3 }})
+                                div.col-sm-12
+                                    span.legendBlock(ng-style="{ 'background-color': maxColor}")
+                                    span.legendLabel Max ({{ linkBetweenness[1] | numberToFixed:3 }})
+        div.col-md-4
+            div.panel.panel-default
+                div.panel-heading Closeness
+                div.panel-body
+                    sdn-topology-map(styles="closenessStyles", height="400")
+                    h3 Node Closeness:
+                    div.row
+                        div.col-md-3
+                            span.legendBlock(ng-style="{ 'background-color': unknownColor}")
+                            span.legendLabel UNK
+                        div.col-md-4
+                            span.legendBlock(ng-style="{ 'background-color': minColor}")
+                            span.legendLabel Min ({{ closeness[0] | numberToFixed:3 }})
+                        div.col-md-5
+                            span.legendBlock(ng-style="{ 'background-color': maxColor}")
+                            span.legendLabel Max ({{ closeness[1] | numberToFixed:3 }})
+
+    div.row
+        div.col-md-6
+            div.panel.panel-default
+                div.panel-heading
+                    | Devices
+                table.table.table-striped.table-condensed
+                    thead
+                        tr
+                            th Device
+                            th(style="width:40px") D
+                                sdn-help-tooltip(tooltip="Degree", tooltip-placement="bottom")
+                            th(style="width:40px") B
+                                sdn-help-tooltip(tooltip="Betweenness", tooltip-placement="bottom")
+                            th(style="width:40px") C
+                                sdn-help-tooltip(tooltip="Closeness", tooltip-placement="bottom")
+
+                    tbody
+                        tr(ng-repeat="(deviceId, device) in content.devices")
+                            td
+                                sdn-device-thumbnail(device-id="{{deviceId}}", show-border="false")
+                            td(style="width:40px")
+                                span.label(ng-style="{ 'background-color': degreeScale(device.degree) }") {{ device.degree }}
+                            td(style="width:40px")
+                                span.label(ng-style="{ 'background-color': deviceBetweennessScale(device.betweenness) }") {{ device.betweenness | numberToFixed:3 }}
+                            td(style="width:40px")
+                                span.label(ng-style="{ 'background-color': closenessScale(device.closeness) }") {{ device.closeness | numberToFixed:3 }}
+        div.col-md-6
+            div.panel.panel-default
+                div.panel-heading
+                    | Links
+                table.table.table-striped.table-condensed
+                    thead
+                        tr
+                            th Link Source
+                            th Link Destination
+                            th(style="width:40px") B
+                                sdn-help-tooltip(tooltip="Betweenness")
+                    tbody
+                        tr(ng-repeat="(linkId, link) in content.links")
+                            td
+                                a(href="{{ '/detail/device/' + link.srcHost.id }}")
+                                    sdn-device-type-icon(device="link.srcHost")
+                                    code.dp {{ link.srcHost.name }}
+                                span.middle [{{ link.srcPort }}]
+                            td
+                                a(href="{{ '/detail/device/' + link.dstHost.id }}")
+                                    sdn-device-type-icon(device="link.dstHost")
+                                    code.dp {{ link.dstHost.name }}
+                                span.middle [{{ link.dstPort }}]
+                            td(style="width:40px")
+                                span.label(ng-style="{ 'background-color': linkBetweennessScale(link.betweenness) }") {{ link.betweenness | numberToFixed:3 }}

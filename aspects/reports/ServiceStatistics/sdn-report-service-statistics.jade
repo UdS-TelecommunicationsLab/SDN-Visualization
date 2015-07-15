@@ -1,0 +1,59 @@
+div.report-service-statistics
+    div.panel.panel-default
+        div.panel-body
+            div
+                strong Explanation:&nbsp;
+                span The measures are calculated based on the flow entry statistics at the providers attachment point. It is differentiated between&nbsp;
+                strong Incoming
+                | &nbsp;
+                i.fa.fa-fw.fa-sign-in
+                |  and&nbsp;
+                strong Outgoing
+                | &nbsp;
+                i.fa.fa-fw.fa-sign-out
+                |  traffic.
+
+    div.panel.panel-default
+        div.table-responsive
+            table.table.table-condensed.table-bordered.table-striped
+                thead
+                    tr
+                        th Provider
+                        th Activity
+                        th Sessions
+                            sdn-help-tooltip(tooltip="Average Concurrent Sessions")
+                        th Rate [kbps]
+                            sdn-help-tooltip(tooltip="Average Data Rate")
+                        th Duration [s]
+                            sdn-help-tooltip(tooltip="Average Duration")
+                tbody
+                    tr(ng-repeat="service in content")
+                        td
+                            sdn-device-thumbnail(device-id="{{ service.device_id }}", show-border="false")
+                            code.dp {{ service.ip }}
+                            | &nbsp;|&nbsp;
+                            span.label.label-default {{ service.port | serviceName:service.protocol }}
+                        td.parameter
+                            | {{ service.consume.activity_actual }} / {{ service.consume.activity_max }} ({{ (service.consume.activity_actual / service.consume.activity_max) | percentage:1 }})&nbsp;
+                            i.fa.fa-fw.fa-sign-in
+                            | <br/>
+                            | {{ service.provide.activity_actual }} / {{ service.provide.activity_max }} ({{ (service.provide.activity_actual / service.provide.activity_max) | percentage:1 }})&nbsp;
+                            i.fa.fa-fw.fa-sign-out
+                        td.parameter
+                            | {{ service.consume.count_avg | numberToFixed:3 }} &plusmn; {{ service.consume.count_std | numberToFixed:3 }}&nbsp;
+                            i.fa.fa-fw.fa-sign-in
+                            | <br/>
+                            | {{ service.provide.count_avg | numberToFixed:3 }} &plusmn; {{ service.provide.count_std | numberToFixed:3 }}&nbsp;
+                            i.fa.fa-fw.fa-sign-out
+                        td.parameter
+                            | {{ service.consume.rate_avg / 1000 | numberToFixed:3 }} &plusmn; {{ service.consume.rate_std / 1000  | numberToFixed:3 }}&nbsp;
+                            i.fa.fa-fw.fa-sign-in
+                            | <br/>
+                            | {{ service.provide.rate_avg / 1000  | numberToFixed:3 }} &plusmn; {{ service.provide.rate_std / 1000  | numberToFixed:3 }}&nbsp;
+                            i.fa.fa-fw.fa-sign-out
+                        td.parameter
+                            | {{ service.consume.duration_avg | numberToFixed:3 }} &plusmn; {{ service.consume.duration_std | numberToFixed:3 }}&nbsp;
+                            i.fa.fa-fw.fa-sign-in
+                            | <br/>
+                            | {{ service.provide.duration_avg | numberToFixed:3 }} &plusmn; {{ service.provide.duration_std | numberToFixed:3 }}&nbsp;
+                            i.fa.fa-fw.fa-sign-out

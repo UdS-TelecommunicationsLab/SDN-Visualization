@@ -28,7 +28,7 @@
 (function(sdnViz) {
     "use strict";
     sdnViz.factory("repository", function($rootScope, $http, toastr, websockets, messenger) {
-        var data = { nvm: null, logs: [], configuration: {} };
+        var data = { nvm: null, logs: [], configuration: {}, debugMode: false };
 
         var configurationLoaded = function (response) {
             _.extend(data.configuration, response.configuration);
@@ -59,10 +59,11 @@
         };
 
         var getLinkById = function(id) {
+            var parts = id.split(".");
+            var id_rev = parts[1] + "." + parts[0];
             var link = _.find(data.nvm.links, function(e) {
-                return e.id == id;
+                return e.id == id || e.id == id_rev;
             });
-
             return { item: link };
         };
 
@@ -111,6 +112,13 @@
                 $rootScope.isStandalone = model.controller.isStandalone;
             }
 
+            if(model.analytics.enabled) {
+                $rootScope.status.analyzer =  (model.analyzer.started !== null && model.analyzer.healthy);
+                $rootScope.status.observer = (model.observer.started !== null && model.observer.healthy);
+            } else {
+                $rootScope.status.analyzer = true;
+                $rootScope.status.observer = true;
+            }
             $rootScope.status.noDivergence = ($rootScope.serverCRC === $rootScope.localCRC);
 
             return $rootScope.status.noDivergence;
@@ -132,6 +140,12 @@
                 }
                 if (!$rootScope.status.noDivergence) {
                     $rootScope.systemError = "Local model diverged.";
+                }
+                if (!$rootScope.status.analyzer) {
+                    $rootScope.systemError = "Analyzer not running smoothly.";
+                }
+                if (!$rootScope.status.observer) {
+                    $rootScope.systemError = "Observer not running smoothly.";
                 }
 
                 data.logs.splice(0, 0, new Log($rootScope.systemErrorStamp, $rootScope.systemError, 'error'));
@@ -193,15 +207,15 @@
                 controller: true,
                 transport: true,
                 noDivergence: true,
+                observer: true,
+                analyzer: true
             };
             $rootScope.totalStatus = true;
             $rootScope.isStandalone = true;
 
             data.logs.push(new Log(new Date(), "Client started.", ''));
 
-            $rootScope.$watch("status.controller", updateStatus);
-            $rootScope.$watch("status.transport", updateStatus);
-            $rootScope.$watch("status.noDivergence", updateStatus);
+            $rootScope.$watch("status", updateStatus, true);
 
             $rootScope.contactInformation = "";
             $rootScope.systemError = "";

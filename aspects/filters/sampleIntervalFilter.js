@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2013 - 2015 Saarland University
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,59 +25,15 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /node_modules and /lib.
  */
 
-(function () {
+(function(sdnViz) {
     "use strict";
-
-    angular
-        .module("sdn-visualization")
-        .controller("StatusCtrl", StatusCtrl);
-
-    StatusCtrl.$inject = ["$window", "repository", "toastr", "websockets"];
-
-    function StatusCtrl($window, repository, toastr, websockets) {
-        var vm = this;
-        vm.data = repository.data;
-        vm.logging = [];
-        vm.maxLog = 10;
-        vm.newestFirst = true;
-        vm.reload = reload;
-        vm.clearLog = clearLog;
-        vm.resetModel = resetModel;
-        vm.enterDebugMode = enterDebugMode;
-
-        var idx = 0;
-
-        activate();
-
-        /////////////
-        function activate() {
-            websockets.subscribe("/logging/update", function (data) {
-                // crop the log
-                while (vm.logging.length >= vm.maxLog) {
-                    vm.logging.pop();
-                }
-
-                // append new data
-                vm.logging.push({index: idx++, message: data});
-            });
-        }
-
-        function reload() {
-            $window.location = "/status";
-        }
-
-        function clearLog() {
-            repository.clearLog();
-        }
-
-        function resetModel() {
-            websockets.publish("/nvm/reset", null, function () {
-                toastr.success("Successfully reset NVM.");
-            });
-        }
-
-        function enterDebugMode() {
-            repository.data.debugMode = true;
-        }
-    }
-})();
+    sdnViz.filter("sampleInterval", function() {
+        return function(input) {
+            if(!input) {
+                return "UNK";
+            } else {
+                return input + "s";
+            }
+        };
+    });
+})(window.sdnViz);

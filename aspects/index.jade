@@ -32,6 +32,9 @@ block nav
                         a(href="/statistics/flows")
                             i.fa.fa-fw.fa-random
                             | &nbsp;Flows ({{ nav.data.nvm.flows.length }})
+            li(ng-show="nav.data.nvm.analytics.enabled")
+                a(href="/analytics", tooltip="Analytics", tooltip-placement="bottom")
+                    i.fa.fa-line-chart
             li
                 a(href="/configuration", tooltip="Configuration", tooltip-placement="bottom")
                     i.fa.fa-fw.fa-cog
@@ -47,7 +50,6 @@ block nav
                         span.input-group-btn
                             button.btn.btn-default(type="button",ng-click="clearDeviceFilter()",ng-disabled="deviceFilter == ''")
                                 i.fa.fa-times
-                            
         ul.pull-right(class="nav navbar-nav",style="margin-left: 20px;")
             li
                 a(href="/about", tooltip="About", tooltip-placement="bottom")

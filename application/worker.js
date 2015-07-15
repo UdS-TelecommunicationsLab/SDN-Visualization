@@ -25,9 +25,10 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /node_modules and /lib.
  */
 
-(function(DEBUG) {
+(function (DEBUG) {
     "use strict";
     var dataSource = require(__dirname + "/dataSources/source"),
+        analyticsApi = require(__dirname + "/analyticsApi"),
         config = require(__dirname + "/ui-config"),
         moment = require("moment"),
         objectDiff = require(__dirname + "/../lib/objectDiff-enhanced/objectDiff"),
@@ -38,7 +39,34 @@
     var reset = false;
     var started = new Date();
 
-    var finish = function (errorRaised) {
+    var finish = function () {
+        var configuration = config.getConfiguration();
+        model.analytics.enabled = configuration.analytics && configuration.analytics.enabled;
+
+        var changes = objectDiff.diff(oldModel, model);
+
+        process.send({model: model, changes: changes});
+
+        oldModel = model;
+        if (reset) {
+            DEBUG && console.log("[Worker] Reset NVM."); // jshint ignore:line
+            model = new nvm.NVM(model.started);
+            reset = false;
+        } else {
+            model = new nvm.NVM(oldModel.started, oldModel);
+        }
+
+        var now = new Date();
+        var diffMs = (now.getTime() - started.getTime());
+        DEBUG && console.log("[Worker] Run finished on " + moment(now).format("dddd, MMMM Do YYYY, HH:mm:ss") + ". Took " + (diffMs / 1000) + " seconds."); // jshint ignore:line
+
+        var pollingDelay = configuration.controller.pollInterval;
+
+        var timeToWait = Math.max(pollingDelay - diffMs, 0);
+        setTimeout(loadingProcess, timeToWait);
+    };
+
+    var dataRetrievalDone = function (errorRaised) {
         if (!errorRaised) {
             model.latestUpdate = new Date();
 
@@ -50,29 +78,7 @@
                 model.controller.isReachable = false;
             }
         }
-
-        var changes = objectDiff.diff(oldModel, model);
-
-        process.send({ model: model, changes: changes });
-
-        oldModel = model;
-        if(reset) {
-            DEBUG && console.log("[Worker] Reset NVM."); // jshint ignore:line
-            model = new nvm.NVM(model.started);
-            reset = false;
-        } else {
-            model = new nvm.NVM(oldModel.started, oldModel);
-        }
-
-        var now = new Date();
-        var diffMs = (now.getTime() - started.getTime());
-        DEBUG && console.log("[Worker] Run finished on " + moment(now).format("dddd, MMMM Do YYYY, HH:mm:ss") + ". Took " + (diffMs/1000) + " seconds."); // jshint ignore:line
-
-        var configuration = config.getConfiguration();
-        var pollingDelay = configuration.controller.pollInterval;
-
-        var timeToWait = Math.max(pollingDelay - diffMs, 0);
-        setTimeout(loadingProcess, timeToWait);
+        checkAnalyticsProcesses(finish);
     };
 
     var isAvailable = function () {
@@ -80,12 +86,12 @@
         return (configuration && configuration.dataSource && configuration.dataSource.type && configuration.dataSource.host+':'+configuration.dataSource.ports.restAPI) ? true : false;
     };
 
-    var loadingProcess = function() {
+    var loadingProcess = function () {
         started = new Date();
         DEBUG && console.log("[Worker] Run started on " + moment(started).format("dddd, MMMM Do YYYY, HH:mm:ss") + "."); // jshint ignore:line
         try {
             if (isAvailable()) {
-                dataSource.getAllData(model, finish);
+                dataSource.getAllData(model, dataRetrievalDone);
             } else {
                 var configuration = config.getConfiguration();
                 var pollingDelay = configuration.controller.pollInterval;
@@ -96,7 +102,42 @@
         }
     };
 
-    process.on("message", function(m) {
+    var getProcessStatus = function (key, configuration, callback) {
+        var handleResponse = function (error, response, data) {
+            if (!error) {
+                var jsonData = JSON.parse(data);
+                if (jsonData["app"] == key) {
+                    model[key] = jsonData;
+                    callback();
+                    return;
+                } else {
+                    DEBUG && console.log("[Worker] Misconfigured connection to " + key + ".");
+                }
+            }
+            model[key] = {
+                "app": key,
+                "started": null,
+                "healthy": false
+            };
+            callback();
+        };
+        analyticsApi.getRoute(key, "/status", handleResponse);
+    };
+
+    var checkAnalyticsProcesses = function (callback) {
+        var configuration = config.getConfiguration();
+        if (configuration && configuration.analytics && configuration.analytics.enabled) {
+            var observerCheckFinished = function () {
+                getProcessStatus("analyzer", configuration.analytics, callback);
+            };
+            getProcessStatus("observer", configuration.analytics, observerCheckFinished);
+        } else {
+            DEBUG && console.log("[Worker] Analytics are not configured or disabled.");
+            callback();
+        }
+    };
+
+    process.on("message", function (m) {
         // starting the worker
         if (m && m.start) {
             var configuration = config.getConfiguration();

@@ -1,0 +1,52 @@
+div.report-link-improvement-analysis
+    form.form-horizontal(ng-submit="calculate()")
+        div.row
+            div.col-sm-6
+                div.panel.panel-default
+                    div.panel-body
+                        small
+                            strong Formula:&nbsp;
+                            span(mathjax-bind="formula")
+                div.panel.panel-default
+                    table.table.table-striped.table-condensed
+                        thead
+                            tr
+                                th(colspan="2") Link
+                                th.linkParameter(style="width:100px") Centrality
+                                    sdn-help-tooltip(tooltip="Normalized values for link betweenness (mean and deviation)")
+                                th.linkParameter(style="width:100px") Reliability
+                                    sdn-help-tooltip(tooltip="Inverse of link loss  (mean and deviation)")
+                                th.linkParameter(style="width:80px") Index
+                        tbody
+                            tr(ng-repeat="link in series | orderBy:'-index'", ng-mouseover="highlight(link)", ng-mouseout="blur()")
+                                td
+                                    sdn-device-thumbnail(device="link.link.srcHost", show-border="false")
+                                td
+                                    sdn-device-thumbnail(device="link.link.dstHost", show-border="false")
+                                td.linkParameter(style="width:100px")
+                                    small {{ link.centrality | numberToFixed:3}} &plusmn; {{ link.centralitySDev | numberToFixed:3}}
+                                td.linkParameter(style="width:100px")
+                                    small {{ link.reliability | numberToFixed:3}} &plusmn; {{ link.reliabilitySDev | numberToFixed:3}}
+                                td.linkParameter(style="width:80px")
+                                    span.label(ng-style="{ 'background-color': colorScale(link.index) }") {{ link.index | numberToFixed:5}}
+            div.col-sm-6
+                div.panel.panel-default
+                    div.panel-heading Topology
+                    div.panel-body
+                        sdn-topology-map(height="500", styles="styles")
+                        h3 Index:
+                        div.row
+                            div.col-sm-4.col-md-2
+                                span.legendBlock(ng-style="{ 'background-color': pc0}")
+                                span.legendLabel {{ indexExtent[0] | numberToFixed:3 }}
+                            div.col-sm-4.col-md-2
+                                span.legendBlock(ng-style="{ 'background-color': pc50}")
+                                span.legendLabel {{ ((indexExtent[1] + indexExtent[0]) / 2) | numberToFixed:3 }}
+                            div.col-sm-4.col-md-2
+                                span.legendBlock(ng-style="{ 'background-color': pc100}")
+                                span.legendLabel {{ indexExtent[1] | numberToFixed:3 }}
+                div.panel.panel-default
+                    div.panel-body
+                        div
+                            strong Explanation:&nbsp;
+                            span Improving links with a higher index will have more impact on the network's reliability than changing those with a lower index.

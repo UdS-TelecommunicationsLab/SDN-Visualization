@@ -57,11 +57,27 @@ div#sdn-status
                             td Monitored Networks
                             td(colspan=2)
                                 p(ng-repeat="network in vm.data.nvm.controller.monitoredNetworks") {{ network }}
-                        tr
+                        tr(ng-show="vm.data.nvm.analytics.enabled")
+                            td Observer
+                            td(colspan=2)
+                                p Started:&nbsp;
+                                    span(ng-show="vm.data.nvm.observer.started") {{ vm.data.nvm.observer.started | formatDateShort }}
+                                    span(ng-hide="vm.data.nvm.observer.started") Not running.
+                                p Healthy:&nbsp;
+                                    sdn-ui-on-off-label(field="vm.data.nvm.observer.healthy")
+                        tr(ng-show="vm.data.nvm.analytics.enabled")
+                            td Analyzer
+                            td(colspan=2)
+                                p Started:&nbsp;
+                                    span(ng-show="vm.data.nvm.analyzer.started") {{ vm.data.nvm.analyzer.started | formatDateShort  }}
+                                    span(ng-hide="vm.data.nvm.analyzer.started") Not running.
+                                p Healthy:&nbsp;
+                                    sdn-ui-on-off-label(field="vm.data.nvm.analyzer.healthy")
+                        tr(ng-show="vm.data.debugMode")
                             td Local CRC
                             td(colspan=2)
                                 sdn-crc-box(crc="localCRC")
-                        tr
+                        tr(ng-show="vm.data.debugMode")
                             td Server CRC
                             td(colspan=2)
                                 sdn-crc-box(crc="serverCRC")
@@ -70,9 +86,12 @@ div#sdn-status
                     i.fa.fa-flash
                     | &nbsp;Actions
                 div.panel-body
-                    button.btn.btn-danger(ng-click="resetModel()")
+                    button.btn.btn-danger(ng-click="vm.resetModel()")
                         i.fa.fa-fw.fa-trash-o
                         | &nbsp;Invalidate Model
+                    | &nbsp;
+                    button.btn.btn-default(ng-click="vm.enterDebugMode()",tooltip="Enter Debug Mode")
+                        i.fa.fa-fw.fa-bug
         div.col-sm-5.col-md-8
             div.panel.panel-default
                 div.panel-heading

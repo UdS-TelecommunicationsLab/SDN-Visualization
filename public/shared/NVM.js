@@ -53,6 +53,12 @@ var __extends = this.__extends || function (d, b) {
 
         self.controller = new exports.Controller();
 
+        self.analytics = {
+            "enabled": false
+        };
+        self.analyzer = {};
+        self.observer = {};
+
         self.devices = [];
         self.links = [];
         self.flows = [];
