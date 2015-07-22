@@ -17,7 +17,7 @@ The next few simple steps will guide you through the installation process. Typic
 We assume the sources are extracted and reside in the folder `<project root>`. We recommend putting the sources in a subdirectory of `/opt`, but this depends on your setup.
 
 ### Platform Compatibility
-The software is regularly tested on a *Windows 8.1*, *Windows 10*, *Ubuntu 14.04*, *Fedora 20*, *Fedora 21* and *Fedora 22*.
+The software is regularly tested on a *Windows 8.1*, *Windows 10*, *Mac OS X 10.10.3*, *Ubuntu 14.04*, *Fedora 20*, *Fedora 21* and *Fedora 22*.
 Other operating systems might require different steps than these mentioned here.
 
 It is compatible with most modern browsers (e.g. Chrome >=30, Firefox >=25, Internet Explorer >=11, Opera >=17, Edge).
