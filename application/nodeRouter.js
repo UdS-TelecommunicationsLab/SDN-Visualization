@@ -32,7 +32,6 @@
     var config = require("./ui-config"),
         moment = require("moment"),
         DBWrapper = require('node-dbi').DBWrapper,
-        DBExpr = require('node-dbi').DBExpr,
         msgpack = require("../lib/msgpack-javascript/msgpack.codec.js").msgpack,
         passport = require("passport"),
         ensureLoggedIn = require("connect-ensure-login").ensureLoggedIn,
@@ -41,12 +40,9 @@
 
     var conf = require("./config").getConfiguration();
 
-    var dbConnectionConfig = conf.databaseConnection || {host: 'localhost:54320', user: 'postgres', password: 'sdn', database: 'sdn'};
-    var dbWrapper = new DBWrapper('pg', dbConnectionConfig);
-    dbWrapper.connect();
-
     var loginUrl = "/login";
     var multipartMiddleware = multipart();
+    var dbWrapper = null;
 
     var index = function (request, response) {
         response.render("index", {demoMode: conf.isDemoMode || false});
@@ -54,14 +50,24 @@
 
     var login = function (req, res) {
         if (!req.user) {
-            var credentials = { name: "", pass: ""};
+            var credentials = {name: "", pass: ""};
             var demoMode = conf.isDemoMode || false;
-            if(demoMode) {
+            if (demoMode) {
                 credentials = conf.credentials;
             }
             res.render('login', {message: req.flash("loginMessage"), demoMode: demoMode, credentials: credentials});
         } else {
             res.redirect("/");
+        }
+    };
+
+    var connectToDatabase = function () {
+        if(dbWrapper === null) {
+            var conf = require("./config").getConfiguration();
+            if (conf.databaseConnection) {
+                dbWrapper = new DBWrapper('pg', conf.databaseConnection);
+                dbWrapper.connect();
+            }
         }
     };
 
@@ -93,6 +99,7 @@
         });
 
         app.get("/api/reports/all", ensureLoggedIn(loginUrl), function (request, response) {
+            connectToDatabase();
             dbWrapper.fetchAll('SELECT id, created, type FROM report ORDER BY created DESC', null, function (err, result) {
                 if (err) {
                     console.log(err);
@@ -104,6 +111,7 @@
         });
 
         app.get("/api/reports/type/:type", ensureLoggedIn(loginUrl), function (request, response) {
+            connectToDatabase();
             dbWrapper.fetchAll('SELECT id, created, type, sample_start, sample_stop, sample_count, sample_interval, execution_duration FROM report WHERE type=? ORDER BY created DESC', [request.params.type], function (err, result) {
                 if (err) {
                     console.log(err);
@@ -115,6 +123,7 @@
         });
 
         app.get("/api/reports/:id", ensureLoggedIn(loginUrl), function (request, response) {
+            connectToDatabase();
             dbWrapper.fetchRow('SELECT id, created, type, content, sample_start, sample_stop, sample_count, sample_interval, execution_duration FROM report WHERE id=?', [request.params.id], function (err, result) {
                 if (err) {
                     console.log(err);
