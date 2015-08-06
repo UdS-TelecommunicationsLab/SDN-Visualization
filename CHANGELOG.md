@@ -1,5 +1,5 @@
-<a name="2015.6.0"></a>
-# 2015.6.0
+<a name="2015.8.0"></a>
+# 2015.8.0
 
 ## Features
 
@@ -23,3 +23,8 @@
 - Used JSHint and removed several problems.
 - Several bug fixes.
 - Start applying an Angular Style guide to the code.
+
+<a name="2015.4.0"></a>
+# 2015.4.0
+
+First version with new schema and CHANGELOG.

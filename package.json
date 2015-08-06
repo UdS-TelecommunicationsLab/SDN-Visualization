@@ -1,6 +1,6 @@
 {
   "name": "sdn-visualization",
-  "version": "2015.4.0",
+  "version": "2015.8.0",
   "private": true,
   "scripts": {
     "start": "node main.js"
