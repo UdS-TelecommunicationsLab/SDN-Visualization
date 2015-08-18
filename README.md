@@ -8,7 +8,7 @@ Software Defined Networks monitoring and visualization system.
 
 **Institution:** [Telecommuncations Chair](http://www.nt.uni-saarland.de/) - [Saarland University](http://www.uni-saarland.de/)
 
-**Version:** 2015.4.0
+**Version:** 2015.8.0
 
 ## Installation Guide
 
@@ -96,7 +96,7 @@ You might also want to change the logo at `<project root>/public/images/Operator
 
 There are two common options for running the application. In either case there will be an application running under `localhost:appPort`.
 
-#### Foreground 
+#### Foreground
 
 **Linux**
 
@@ -104,7 +104,7 @@ There are two common options for running the application. In either case there w
 	sudo /usr/bin/nodejs main.js
 
 **Windows**
-	
+
 	cd <project root>
 	node main.js
 
@@ -118,7 +118,7 @@ There are two common options for running the application. In either case there w
 	sudo nohup /usr/bin/nodejs main.js > output.log &
 
 ##### Upstart Script
-The package includes the file `sdn-viz.conf`, which is a prepared for copying it into `/etc/init/`. It requires the npm package `forever` to be installed globally, which can be done via `npm install -g forever`. 
+The package includes the file `sdn-viz.conf`, which is a prepared for copying it into `/etc/init/`. It requires the npm package `forever` to be installed globally, which can be done via `npm install -g forever`.
 
 The only required modification to the file is the directory (`<project root>`), which you have to specify. The respective line contains a `TODO` comment. You might also consider to change the logs output.
 
@@ -129,14 +129,14 @@ As soon as the application is running, the connection to the controller has to b
 
 It is also recommended to specify a controller name and contact mail address.
 
-The main section (Node Information) is later used to augment individual devices and groups of those with additional information (type, color, URL, location and purpose). 
+The main section (Node Information) is later used to augment individual devices and groups of those with additional information (type, color, URL, location and purpose).
 
 ## Modifying Code
 
 ### Client
 The code for client-side is concatenated and uglified using gulp. The package comes with a compiled version of the latest code (`/public/dist.min.js`). If you change anything, you have to execute `gulp` in the `<project root>`.
 
-In order to have `gulp` as a command line utility you have to enter the following: 
+In order to have `gulp` as a command line utility you have to enter the following:
 
 `sudo npm install -g gulp`
 
@@ -162,5 +162,3 @@ Remember to run ``gulp`` whenever you change frontend code and to restart the no
 
 * [Open Networking Foundation](https://www.opennetworking.org/)
 * [OpenFlow Specification](https://www.opennetworking.org/sdn-resources/onf-specifications/openflow)
-
-
