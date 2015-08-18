@@ -11,7 +11,7 @@
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  * 
- * Contributor(s): Andreas Schmidt (Saarland University), Michael Karl (Saarland University)
+ * Contributor(s): Andreas Schmidt (Saarland University), Philipp S. Tennigkeit (Saarland University), Michael Karl (Saarland University)
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -30,8 +30,8 @@
     sdnViz.filter("flowLabel", function(networkProtocolFilter, serviceNameFilter) {
         return function(input) {
             var protocolName = networkProtocolFilter(input.protocol);
-            if(input.protocol == 6 || input.protocol == 17) {
-                var serviceName =serviceNameFilter(input.service, input.protocol);
+            if(input.protocol == 6 || input.protocol == 17 || input.protocol == -1) {
+                var serviceName = serviceNameFilter(input.service, input.protocol);
                 if(serviceName == input.service) {
                     return protocolName + " (" + serviceName + ")";
                 } else {

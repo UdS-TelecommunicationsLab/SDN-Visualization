@@ -1,8 +1,7 @@
 node_modules/
 sdn-conf.json
 sdn-ui-conf.json
-public/js/dist.js
-public/js/dist.min.js
+public/dist.min.js
 public/css/app.css
 lib/
 .idea/

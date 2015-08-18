@@ -8,7 +8,7 @@ div#sdn-configuration
                             div.col-md-2
                                 button.btn.btn-default(type="button",ng-click="exportConfig()",ng-disabled="!configForm.$pristine")
                                     i.fa.fa-upload
-                                    |  Export
+                                    | &nbsp;Export
                             if !demoMode
                                 div.col-md-8
                                     div.input-group(style="width:350px")
@@ -21,20 +21,39 @@ div#sdn-configuration
     form.form.form-horizontal(name="configForm")
         div
             div.panel.panel-default
+                div.panel-heading
+                    i.fa.fa-fw.fa-sitemap
+                    | &nbsp;Controller
                 div.panel-body
+
                     div.form-group
-                        label.col-sm-1.control-label Name:
+                        label.col-sm-2.control-label Name:
                         div.col-sm-4
                             input.form-control(type="text",ng-model="configuration.controller.name",ng-required="true",ng-blur="saveConfiguration()")
 
+                        label.col-sm-2.control-label Controller Host:
+                        div.col-sm-4
+                            if demoMode
+                                input.form-control(type="text",ng-model="configuration.dataSource.host",disabled="true",placeholder="e.g. localhost")
+                            else
+                                input.form-control(type="text",ng-model="configuration.dataSource.host",ng-required="true",ng-blur="saveConfiguration()")
+
+                    div.form-group
                         label.col-sm-2.control-label Contact Mail:
-                        div.col-sm-5
+                        div.col-sm-4
                             input.form-control(type="text",
                             ng-model="configuration.controller.contact",
                             ng-blur="saveConfiguration()")
 
+                        label.col-sm-2.control-label REST API Port:
+                        div.col-sm-4
+                            if demoMode
+                                input.form-control(type="text",ng-model="configuration.dataSource.ports.restAPI",disabled="true",placeholder="e.g. 8080")
+                            else
+                                input.form-control(type="text",ng-model="configuration.dataSource.ports.restAPI",ng-required="true",ng-blur="saveConfiguration()")
+
                     div.form-group
-                        label.col-sm-1.control-label Type:
+                        label.col-sm-2.control-label Type:
                         div.col-sm-4
                             if demoMode
                                 select.form-control(ng-model="configuration.dataSource.type",
@@ -46,29 +65,69 @@ div#sdn-configuration
                                     ng-required="true",
                                     ng-blur="saveConfiguration()")
 
-
-                        label.col-sm-2.control-label Connection:
-                        div.col-sm-5
+                        label.col-sm-2.control-label WebSocket API Port:
+                        div.col-sm-4
                             if demoMode
-                                input.form-control(type="text",ng-model="configuration.dataSource.connectionString",disabled="true")
+                                input.form-control(type="text",ng-model="configuration.dataSource.ports.wsAPI",disabled="true",placeholder="e.g. 8081")
                             else
-                                input.form-control(type="text",ng-model="configuration.dataSource.connectionString",ng-required="true",ng-blur="saveConfiguration()")
+                                input.form-control(type="text",ng-model="configuration.dataSource.ports.wsAPI",ng-required="true",ng-blur="saveConfiguration()")
 
+
+            div.panel.panel-default
+                div.panel-heading
+                    i.fa.fa-fw.fa-search
+                    | &nbsp;Visualization
+                div.panel-body
                     div.form-group
-                        label.col-sm-1.control-label Translate:
-                        div.col-sm-3
+                        label.col-sm-2.control-label Translate:
+                        div.col-sm-2
                             div.checkbox
                                 label
+                                if demoMode
+                                    input(type="checkbox",ng-model="configuration.serviceNameTranslation.enabled",ng-required="true", disabled="true")
+                                    | Service Names
+                                else
                                     input(type="checkbox",ng-model="configuration.serviceNameTranslation.enabled",ng-required="true",ng-blur="saveConfiguration()")
                                     | Service Names
-                        div.col-sm-3
+                        div.col-sm-2
                             div.checkbox
                                 label
-                                    input(type="checkbox",ng-model="configuration.networkProtocolTranslation.enabled",ng-required="true",ng-blur="saveConfiguration()")
-                                    | Network Protocols
+                                    if demoMode
+                                        input(type="checkbox",ng-model="configuration.networkProtocolTranslation.enabled",ng-required="true", disabled="true")
+                                        | Network Protocols
+                                    else
+                                        input(type="checkbox",ng-model="configuration.networkProtocolTranslation.enabled",ng-required="true",ng-blur="saveConfiguration()")
+                                        | Network Protocols
 
+                        label.col-sm-2.control-label Poll Interval
+                        div.col-sm-4
+                            div.input-group
+                                if demoMode
+                                    input.form-control(type="text", ng-model="configuration.controller.pollInterval", ng-required="true", disabled="true")
+                                else
+                                    input.form-control(type="text", ng-model="configuration.controller.pollInterval", ng-required="true", ng-blur="saveConfiguration()")
+                                div.input-group-addon ms
 
-        div.panel.panel-default
+            div.panel.panel-default
+                div.panel-heading
+                    i.fa.fa-fw.fa-line-chart
+                    | &nbsp;Analytics
+                div.panel-body
+                    div.form-group
+                        label.col-sm-1.control-label Enabled:
+                        div.col-sm-1
+                            input(type="checkbox",ng-model="configuration.analytics.enabled",ng-required="true",ng-blur="saveConfiguration()")
+                        label.col-sm-1.control-label Observer:
+                        div.col-sm-4
+                            input.form-control(type="text",ng-model="configuration.analytics.observer",ng-required="true",ng-blur="saveConfiguration()", placeholder="username:password@host:port")
+                        label.col-sm-1.control-label Analyzer:
+                        div.col-sm-4
+                            input.form-control(type="text",ng-model="configuration.analytics.analyzer",ng-required="true",ng-blur="saveConfiguration()", placeholder="username:password@host:port")
+
+            div.panel.panel-default
+                div.panel-heading
+                    i.fa.fa-fw.fa-hdd-o
+                    | &nbsp;Devices
                 div.table-responsive
                     table.table.table-bordered.table-striped
                         thead

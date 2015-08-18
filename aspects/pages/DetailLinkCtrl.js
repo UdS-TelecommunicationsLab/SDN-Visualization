@@ -11,7 +11,7 @@
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  * 
- * Contributor(s): Andreas Schmidt (Saarland University), Michael Karl (Saarland University)
+ * Contributor(s): Andreas Schmidt (Saarland University), Philipp S. Tennigkeit (Saarland University), Michael Karl (Saarland University)
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -27,49 +27,8 @@
 
 (function(sdnViz) {
     "use strict";
-    sdnViz.controller("DetailLinkCtrl", function(DetailView, $rootScope, $scope, $routeParams, repository, websockets) {
+    sdnViz.controller("DetailLinkCtrl", function(DetailView, $rootScope, $scope, $routeParams, repository) {
         DetailView.init($scope, $routeParams.id, repository.getLinkById);
-        $scope.isEditable = !$rootScope.isStandalone;
-
-        // LOSS
-        $scope.editLoss = false;
-        $scope.loss = 0;
-        $scope.startEditLoss = function() {
-            $scope.loss = $scope.item.plr * 1000;
-            $scope.editLoss = true;
-        };
-        $scope.stopEditLoss = function() { $scope.editLoss = false; };
-
-        $scope.modifyLoss = function(loss) {
-            websockets.publish("/interact/setLinkSpec", {
-                loss: loss,
-                user: $scope.item.srcHost.userName,
-                srcNode: $scope.item.srcHost.url,
-                dstNode: $scope.item.dstHost.url,
-                iface: $scope.item.srcPort
-            });
-            $scope.stopEditLoss();
-        };
-
-        // DELAY
-        $scope.editDelay = false;
-        $scope.delay = 0;
-        $scope.startEditDelay = function() {
-            $scope.delay = $scope.item.delay * 1000;
-            $scope.editDelay = true;
-        };
-        $scope.stopEditDelay = function() { $scope.editDelay = false; };
-
-        $scope.modifyDelay = function(delay) {
-            websockets.publish("/interact/setLinkSpec", {
-                delay: delay,
-                user: $scope.item.srcHost.userName,
-                srcNode: $scope.item.srcHost.url,
-                dstNode: $scope.item.dstHost.url,
-                iface: $scope.item.srcPort
-            });
-            $scope.stopEditDelay();
-        };
 
         $scope.load();
     });

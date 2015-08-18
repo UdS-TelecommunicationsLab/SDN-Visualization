@@ -1,14 +1,14 @@
 extend layout
 
 block nav
-    div(ng-controller="NavCtrl")
+    div(ng-controller="NavCtrl as nav")
         ul(class="nav navbar-nav")
             li
                 a(href="/topology", tooltip="Topology", tooltip-placement="bottom")
-                    i.fa.fa-globe
+                    i.fa.fa-fw.fa-globe
             li.dropdown
                 a.dropdown-toggle(href="", data-toggle="dropdown", role="button", aria-expanded="false", tooltip="Statistics", tooltip-placement="bottom")
-                    i.fa.fa-signal
+                    i.fa.fa-fw.fa-signal
                     | &nbsp;
                     span.caret
                 ul.dropdown-menu
@@ -19,21 +19,28 @@ block nav
                     li
                         a(href="/statistics/devices")
                             i.fa.fa-fw.fa-hdd-o
-                            | &nbsp;Devices ({{ data.nvm.devices.length }})
+                            | &nbsp;Devices ({{ nav.data.nvm.devices.length }})
                     li
                         a(href="/statistics/links")
                             i.fa.fa-fw.fa-link
-                            | &nbsp;Links ({{ data.nvm.links.length }})
+                            | &nbsp;Links ({{ nav.data.nvm.links.length }})
+                    li
+                        a(href="/relaying")
+                            i.fa.fa-fw.fa-retweet
+                            | &nbsp;Relaying ({{ nav.data.nvm.controller.relaying.udp.count }} / {{ nav.data.nvm.controller.relaying.tcp.count }})
                     li
                         a(href="/statistics/flows")
                             i.fa.fa-fw.fa-random
-                            | &nbsp;Flows ({{ data.nvm.flows.length }})
+                            | &nbsp;Flows ({{ nav.data.nvm.flows.length }})
+            li(ng-show="nav.data.nvm.analytics.enabled")
+                a(href="/analytics", tooltip="Analytics", tooltip-placement="bottom")
+                    i.fa.fa-line-chart
             li
                 a(href="/configuration", tooltip="Configuration", tooltip-placement="bottom")
-                    i.fa.fa-cog
+                    i.fa.fa-fw.fa-cog
             li
                 a(href="/documentation", tooltip="Help", tooltip-placement="bottom")
-                    i.fa.fa-book
+                    i.fa.fa-fw.fa-book
 
         form.navbar-form.navbar-left(role="search", ng-show="isSearchVisible")
             div.form-group
@@ -43,14 +50,13 @@ block nav
                         span.input-group-btn
                             button.btn.btn-default(type="button",ng-click="clearDeviceFilter()",ng-disabled="deviceFilter == ''")
                                 i.fa.fa-times
-                            
         ul.pull-right(class="nav navbar-nav",style="margin-left: 20px;")
             li
                 a(href="/about", tooltip="About", tooltip-placement="bottom")
-                    i.fa.fa-info
+                    i.fa.fa-fw.fa-info
             li
-                a(ng-click="logout()", tooltip="Logout", tooltip-placement="bottom")
-                    i.fa.fa-sign-out
+                a(ng-click="nav.logout()", tooltip="Logout", tooltip-placement="bottom")
+                    i.fa.fa-fw.fa-sign-out
             li(ng-cloak, ng-class="{ ok: totalStatus, error: !totalStatus}")
                 a(href="/status", ng-show="totalStatus", tooltip="Everything is fine.", tooltip-placement="bottom")
                     i.fa.fa-fw.fa-check-square
@@ -71,6 +77,7 @@ block scripts
     script(src="/lib/angular-locker/dist/angular-locker.min.js")
     script(src="/lib/angular-route/angular-route.min.js")
     script(src="/lib/bootstrap/dist/js/bootstrap.min.js")
+    script(src="/lib/bootbox/bootbox.js")
     script(src="/lib/angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module.js")
     script(src="/lib/angular-ui-bootstrap-bower/ui-bootstrap-tpls.min.js")
     script(src="/lib/moment/min/moment.min.js")
@@ -82,9 +89,9 @@ block scripts
     script(src="/lib/msgpack-javascript/msgpack.codec.js")
     script(src="/lib/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML", type="text/javascript")
     script(src="/socket.io/socket.io.js")
-    script(src="/js/app.js")
-    script(src="/js/dist.min.js")
     script(src="/shared/crypt.js")
     script(src="/shared/enumerations.js")
     script(src="/shared/network.js")
     script(src="/shared/NVM.js")
+    script(src="/app.js")
+    script(src="/dist.min.js")

@@ -1,5 +1,5 @@
 div.sdn-flow-table
-    div.panel.panel-default(ng-show="data.nvm.flows.length > 0")
+    div.panel.panel-default(ng-show="vm.data.nvm.flows.length > 0")
         div.panel-heading
             i.fa.fa-fw.fa-random
             | &nbsp;Flows
@@ -15,7 +15,7 @@ div.sdn-flow-table
                     th Destination
                     th Protocol
             tbody
-                tr.sdn-flow(ng-repeat="flow in data.nvm.flows")
+                tr.sdn-flow(ng-repeat="flow in vm.data.nvm.flows")
                     td
                         code.dp {{ flow.source }}
                     td
@@ -29,5 +29,5 @@ div.sdn-flow-table
                         a.btn.btn-default.btn-xs(href="{{ '/detail/flow/' + flow.id }}", tooltip="Details")
                             i.fa.fa-fw.fa-ellipsis-h
 
-    div.alert.alert-info(ng-show="data.nvm.flows.length == 0")
+    div.alert.alert-info(ng-show="vm.data.nvm.flows.length == 0")
         strong There are no flows at the moment.

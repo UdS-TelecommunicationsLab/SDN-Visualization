@@ -1,0 +1,89 @@
+div#sdn-reports
+    div#sdn-reports-type-list(ng-switch="mode")
+        div(ng-switch-when="all")
+            ol.breadcrumb
+                li
+                    a(href="/analytics") Reports
+                div.pull-right
+                    a.btn.btn-default.btn-xs(ng-click="runAnalyzer('all')", tooltip="Run Analyzer", tooltip-placement="bottom", ng-disabled="running")
+                        i.fa.fa-fw.fa-play-circle-o
+            div.row
+                div.col-lg-4.col-sm-6(ng-repeat="type in reportTypes")
+                    a.thumbnail(href="{{ '/reports/type/' + type.type }}")
+                        span.fa-stack.fa-lg.pull-left.fa-3x.fa-fw
+                            i.fa.fa-stack-2x(ng-class="{{ [(type.icon && type.icon[0]) || 'fa-file-text']}}")
+                            i.fa.fa-stack-1x(ng-if="type.icon && type.icon.length > 1", ng-class="{{ [type.icon[1] || ['fa-file-text']] }}",style="color:white")
+                        h3 {{ type.name }}
+                        p
+                            small {{ type.description }}
+                    | <br>
+        div(ng-switch-when="type")
+            ol.breadcrumb
+                li
+                    a(href="/analytics") Reports
+                li {{ selectedType.name }}
+                div.pull-right
+                    a.btn.btn-default.btn-xs(ng-click="runAnalyzer(selectedType.type)", tooltip="Run Analyzer", tooltip-placement="bottom", ng-disabled="running")
+                        i.fa.fa-fw.fa-play-circle-o
+                    | &nbsp;
+                    a.btn.btn-default.btn-xs(ng-click="refresh()", tooltip="Refresh View", tooltip-placement="bottom")
+                        i.fa.fa-fw.fa-refresh
+            div.panel.panel-default
+                table.table.table-condensed.table-striped.table-bordered
+                    thead
+                        tr
+                            th(rowspan=2, width="20px")
+                            th(rowspan=2) Created
+                            th(colspan=4) Observation Window
+                            th(rowspan=4) Execution Duration
+                            th(rowspan=2) Details
+                        tr
+                            th Start
+                            th Stop
+                            th Interval
+                            th Sample Count
+
+                    tbody
+                        tr(ng-repeat="report in reports")
+                            td
+                                a(href="{{ 'reports/' + report.id }}")
+                                    span(class="device Report")
+                                        i.fa.fa-fw.fa-file-text
+                            td
+                                a(href="{{ 'reports/' + report.id }}") {{ report.created | formatDate }}
+                            td {{ report.sample_start | formatDate }}
+                            td {{ report.sample_stop | formatDate }}
+                            td {{ report.sample_interval | sampleInterval }}
+                            td {{ report.sample_count }}
+                            td {{ report.execution_duration | numberToFixed:3 }}s
+                            td
+
+        div(ng-switch-when="detail")
+            ol.breadcrumb
+                li
+                    a(href="/analytics") Reports
+                li
+                    a(href="{{ '/reports/type/' + selectedType.type }}") {{ selectedType.name }}
+                li
+                    strong {{ report.created | formatDate }}
+                    | &nbsp;&nbsp;
+                    a.btn.btn-default.btn-xs(popover="Start: {{ report.sample_start | formatDate}}, Stop: {{ report.sample_stop | formatDate }}, Interval: {{ report.sample_interval | sampleInterval }}, ID: {{report.id}}",
+                        popover-placement="bottom")
+                        i.fa.fa-info-circle
+
+            div(ng-switch="report.type")
+                div(ng-switch-when="ServiceStatistics")
+                    sdn-report-service-statistics(content="report.content")
+                div(ng-switch-when="LinkImprovementAnalysis")
+                    sdn-report-link-improvement-analysis(content="report.content")
+                div(ng-switch-when="PathSplitRecommendations")
+                    sdn-report-path-split-recommendations(content="report.content")
+                div(ng-switch-when="TopologyCentrality")
+                    sdn-report-topology-centrality(content="report.content")
+                div(ng-switch-when="ServiceUsage")
+                    sdn-report-service-usage(content="report.content")
+                div(ng-switch-when="LinkReliabilityStatistics")
+                    sdn-report-link-reliability-statistics(content="report.content")
+                div(ng-switch-default="")
+                    strong Raw Content:
+                    pre {{ report.content | jsonPretty }}

@@ -1,0 +1,86 @@
+div.report-path-split-recommendations
+    div.row
+        div.col-md-6
+            div.panel.panel-default
+                div.panel-heading
+                    | Recommendations
+                div.table-responsive
+                    table.table.table-condensed.table-striped.table-bordered
+                        thead
+                            tr
+                                th(rowspan="2", width="200px") Device
+                                th(colspan="3") Split Information
+                            tr
+                                th(width="50px") Distance
+                                    sdn-help-tooltip(tooltip="Maximum of all splits")
+                                th Details
+                                th(width="30px")
+                        tbody
+                            tr(ng-repeat="(device_id, node) in content.nodes", ng-mouseover="highlight(device_id)", ng-mouseout="blur()")
+                                td
+                                    sdn-device-thumbnail(device-id="{{ device_id }}", show-border="false")
+                                td
+                                    span.label.label-default(ng-style="{ 'background-color': colorScale(node.max_distance) }")
+                                        small {{ node.max_distance | numberToFixed:5}}
+                                td.details
+                                    em(ng-hide="node.visible")
+                                        small Click button on the right to expand.
+                                    table.table.table-condensed.table-bordered(ng-show="node.visible")
+                                        thead
+                                            tr
+                                                th
+                                                    small Ports:
+                                                th(ng-repeat="(port_no, port) in node.ports")
+                                                    small
+                                                        a(href="{{ '/detail/link/' + port.link_id }}") P{{ port_no }}
+                                                th
+                                                    small Distance
+                                                        sdn-help-tooltip(tooltip="Standardized Euclidean")
+                                        tbody
+                                            tr
+                                                th
+                                                    small Delay
+                                                td(ng-repeat="(port_no, port) in node.ports")
+                                                    small {{ port.delay | delay }}
+                                                td
+                                            tr
+                                                th
+                                                    small Loss
+                                                td(ng-repeat="(port_no, port) in node.ports")
+                                                    small {{ port.loss | packetLossRate }}
+                                                td
+                                            tr(ng-repeat="split in node.splits")
+                                                th
+                                                    small
+                                                td(ng-repeat="(port_no, _) in node.ports")
+                                                    small(ng-show="port_no == split.left || port_no == split.right") &bull;
+                                                td
+                                                    span.label.label-default(ng-style="{ 'background-color': colorScale(split.distance) }")
+                                                        small {{ split.distance | numberToFixed:5}}
+                                td
+                                    a.btn.btn-default.btn-xs(ng-hide="node.visible", ng-click="node.visible = !node.visible", tooltip="Show details", tooltip-placement="bottom")
+                                        i.fa.fa-fw.fa-chevron-down
+                                    a.btn.btn-default.btn-xs(ng-show="node.visible", ng-click="node.visible = !node.visible", tooltip="Hide details", tooltip-placement="bottom")
+                                        i.fa.fa-fw.fa-chevron-up
+
+
+        div.col-md-6
+            div.panel.panel-default
+                div.panel-heading Topology
+                div.panel-body
+                    sdn-topology-map(height="500")
+            div.panel.panel-default
+                div.panel-body
+                    strong Explanation:&nbsp;
+                    p The table gives recommendations on the the placement of Relays for splitting transmission paths. It detects links connected to a device which have highly heterogeneous link parameters.
+                        | Therefore, the placement of a Relay at this device is recommended, which terminates traffic that would cross the switch from Port A to Port B and vice-versa.
+                    p The distance is calculated as follows:
+                    p
+                        span(mathjax-bind="formula")
+                    p
+                        span(mathjax-bind="'u'")
+                        |  and&nbsp;
+                        span(mathjax-bind="'v'")
+                        |  denote port vectors with loss and delay as coordinates. The&nbsp;
+                        span(mathjax-bind="'V[x_i]'")
+                        |  denotes the variance of loss and delay respectively.

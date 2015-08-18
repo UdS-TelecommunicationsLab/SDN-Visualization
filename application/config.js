@@ -11,7 +11,7 @@
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  * 
- * Contributor(s): Andreas Schmidt (Saarland University), Michael Karl (Saarland University)
+ * Contributor(s): Andreas Schmidt (Saarland University), Philipp S. Tennigkeit (Saarland University), Michael Karl (Saarland University)
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -30,7 +30,7 @@
     var fs = require("fs"),
         mime = require("mime");
 
-    var config = null;
+    var configurationObject = null;
     var callbacks = [];
     var sdnConfig = __dirname + "/../sdn-conf.json";
     var sdnSampleConfig = __dirname + "/../sdn-conf.default.json";
@@ -43,8 +43,8 @@
     };
 
     var readConfig = function () {
-        config = JSON.parse(fs.readFileSync(sdnConfig, { encoding: "utf-8" }));
-        callbacks.forEach(function (cb) { cb(config); });
+        configurationObject = JSON.parse(fs.readFileSync(sdnConfig, { encoding: "utf-8" }));
+        callbacks.forEach(function (cb) { cb(configurationObject); });
     };
 
     fs.watchFile(sdnConfig, function (curr, prev) {
@@ -56,11 +56,11 @@
 
     exports.getConfiguration = function () {
         createFileIfNotExistent();
-        if (config == null) {
+        if (configurationObject === null) {
             readConfig();
         }
 
-        return config;
+        return configurationObject;
     };
 
     exports.registerHandler = function (cb) {

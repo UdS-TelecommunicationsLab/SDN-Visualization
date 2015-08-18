@@ -11,7 +11,7 @@
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  * 
- * Contributor(s): Andreas Schmidt (Saarland University), Michael Karl (Saarland University)
+ * Contributor(s): Andreas Schmidt (Saarland University), Philipp S. Tennigkeit (Saarland University), Michael Karl (Saarland University)
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -70,7 +70,7 @@
         var defaultDeviceActiveStyle = function (collection) {
             collection
                 .style("opacity", function (d) {
-                    return d.device.active ? 1.0 : defaultParameters.inactiveOpacity
+                    return d.device.active ? 1.0 : defaultParameters.inactiveOpacity;
                 });
             return collection;
         };
@@ -78,7 +78,7 @@
         var defaultLinkActiveStyle = function (collection) {
             collection
                 .style("opacity", function (d) {
-                    return d.link.active ? 1.0 : defaultParameters.inactiveOpacity / 2
+                    return d.link.active ? 1.0 : defaultParameters.inactiveOpacity / 2;
                 });
             return collection;
         };
@@ -95,10 +95,10 @@
                     "stroke-width": function (d) {
                         return Math.min((d.dr / (2 * linkStrengthMax) * 7 + 3), 10) + "px";
                     },
-                    "stroke-dasharray": function(d) {
+                    "stroke-dasharray": function (d) {
                         var link = d.link;
                         var plr = Math.min(1.0, (parseFloat(link.srcPlr) + parseFloat(link.dstPlr)) * 5.0);
-                        return (4 + Math.max(0.0, dash_length*(1-plr))) + "," + dash_length*plr;
+                        return (4 + Math.max(0.0, dash_length * (1 - plr))) + "," + dash_length * plr;
                     }
                 });
             return collection;
@@ -116,9 +116,6 @@
             var html = "<div><strong>" + ((obj.id !== obj.device.name) ? obj.device.name : "Unknown Device") + "</strong> ";
             if (obj.device.internetAddresses.length > 0) {
                 html += "<span>(" + obj.device.internetAddresses + ")</span>";
-            }
-            if(obj.device.controllerAddress) {
-                html += "<br/><small>Controller: " + obj.device.controllerAddress + "</small>";
             }
             html += "<br /><code class='dp'>" + obj.id + "</code></div>";
             tooltip.html(html);
@@ -142,26 +139,26 @@
                     dstHost.append("td").html("<code>" + obj.link.dstHost.name + "</code> [" + obj.link.dstPort + "]");
                 }
 
-                if(obj.link.srcHost.type !== sdn.Host.type) {
+                if (obj.link.srcHost.type !== sdn.Host.type) {
                     var dataRateSrc = tab.append("tr");
                     dataRateSrc.append("th").html("Data Rate (S) (T/R):");
                     dataRateSrc.append("td").html(numberToFixedFilter(obj.link.srcTx / 1000, 3) + " / " + numberToFixedFilter(obj.link.srcRx / 1000, 3) + " kbps");
                 }
 
-                if(obj.link.dstHost.type !== sdn.Host.type) {
+                if (obj.link.dstHost.type !== sdn.Host.type) {
                     var dataRateDst = tab.append("tr");
                     dataRateDst.append("th").html("Data Rate (D) (T/R):");
                     dataRateDst.append("td").html(numberToFixedFilter(obj.link.dstTx / 1000, 3) + " / " + numberToFixedFilter(obj.link.dstRx / 1000, 3) + " kbps");
                 }
 
-                if(obj.link.srcHost.type !== sdn.Host.type && obj.link.dstHost.type !== sdn.Host.type) {
+                if (obj.link.srcHost.type !== sdn.Host.type && obj.link.dstHost.type !== sdn.Host.type) {
                     var plr = tab.append("tr");
                     plr.append("th").html("Packet Loss (S/D):");
                     plr.append("td").html(packetLossRateFilter(obj.link.srcPlr) + " / " + packetLossRateFilter(obj.link.dstPlr));
 
                     var delay = tab.append("tr");
                     delay.append("th").html("Delay (S/D):");
-                    delay.append("td").html(delayFilter(obj.link.srcDelay) + " / " + delayFilter(obj.link.dstDelay));
+                    delay.append("td").html(delayFilter(obj.link.srcDelay, obj.link.srcDeviation) + " / " + delayFilter(obj.link.dstDelay, obj.link.dstDeviation));
                 }
             }
         };

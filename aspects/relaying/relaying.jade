@@ -1,0 +1,140 @@
+﻿div#sdn-relaying
+    div.panel.panel-default
+        div.panel-heading
+            i.fa.fa-fw.fa-retweet
+            |  Relaying
+        div.panel-body
+            tabset(type="pills", justified="true")
+                tab
+                    tab-heading
+                        | UDP&nbsp;
+                        span.badge {{ vm.data.nvm.controller.relaying.udp.enabled ? 'ON' : 'OFF'}} | {{ vm.data.nvm.controller.relaying.udp.count}}
+                    hr
+                    sdn-relay-table(protocol="udp")
+                tab
+                    tab-heading
+                        | TCP&nbsp;
+                        span.badge {{vm.data.nvm.controller.relaying.tcp.enabled ? 'ON' : 'OFF'}} | {{vm.data.nvm.controller.relaying.tcp.count}}
+                    hr
+                    sdn-relay-table(protocol="tcp")
+                tab
+                    tab-heading
+                        i.fa.fa-fw.fa-plus
+                        |  Add new Relay
+                    hr
+                    div.row
+                        form(ng-submit="createRelay()", name="createRelayForm")
+                            div.col-md-2
+                                div
+                                    p Information:
+                                    ul
+                                        li(ng-hide="!vm.allLegit()",ng-show="vm.allLegit()")
+                                            div.fa.fa-check
+                                            | all fields verified.
+                                        li(ng-hide="createRelayForm.transport.$valid") Choose a valid Transport.
+                                        li(ng-hide="createRelayForm.transportPort.$valid") Choose a valid Transport Port.
+                                        li(ng-hide="createRelayForm.filterIP.$valid") Choose a valid Filter IP.
+                                        li(ng-hide="createRelayForm.filterPort.$valid") Choose a valid Filter Port.
+                                        li(ng-hide="createRelayForm.switchDPID.$valid") Choose a valid Switch DPID.
+                                        li(ng-hide="createRelayForm.switchPort.$valid") Choose a valid Switch Port.
+                                        li(ng-hide="createRelayForm.relayIP.$valid") Choose a valid Relay IP.
+                                        li(ng-hide="createRelayForm.relayMAC.$valid") Choose a valid Relay MAC.
+                            div.col-md-10
+                                div.from-group
+                                    div.row
+                                        div.col-md-6
+                                            label(for="transport") Transport
+                                        div.col-md-6
+                                            label(for="transportPort") Transport Port
+                                    div.row
+                                        div.col-md-5
+                                            select.form-control(required, ng-model="vm.relaying.transport", name="transport", id="transport", placeholder="Transport")
+                                                option(value= "", selected="true", disabled="true", style="display:none") Select a Transport protocol
+                                                option(value="tcp") TCP
+                                                option(value="udp") UDP
+                                        div.col-md-1
+                                            span.fa.fa-check-circle-o(ng-show="createRelayForm.transport.$valid")
+                                        div.col-md-5
+                                            input.form-control(value="",
+                                            required,
+                                            type="number",
+                                            min="0",
+                                            max="65535",
+                                            ng-model="vm.relaying.transportPort", name="transportPort", id="transportPort", placeholder="Transport Port")
+                                        div.col-md-1
+                                            span.fa.fa-check-circle-o(ng-show="createRelayForm.transportPort.$valid")
+                                    div.row
+                                        div.col-md-6
+                                            label(for="filterIP") Filter IP
+                                        div.col-md-6
+                                            label(for="filterPort") Filter Port
+                                    div.row
+                                        div.col-md-5
+                                            input.form-control(value="",
+                                            type="text",
+                                            id="filterIP", placeholder="IP",
+                                            required,
+                                            ng-pattern="vm.ipAddressPattern"
+                                            ng-model="vm.relaying.filterIP", name="filterIP")
+                                        div.col-md-1
+                                            span.fa.fa-check-circle-o(ng-show="createRelayForm.filterIP.$valid")
+                                        div.col-md-5
+                                            input.form-control(value="", required,
+                                            type="number", id="filterPort", placeholder="Port",
+                                            min="0",
+                                            max="65535",
+                                            ng-model="vm.relaying.filterPort", name="filterPort")
+                                        div.col-md-1
+                                            span.fa.fa-check-circle-o(ng-show="createRelayForm.filterPort.$valid")
+                                div.from-group
+                                    div.row
+                                        div.col-md-6
+                                            label(for="switchDPID") Switch DPID
+                                        div.col-md-6
+                                            label(for="switchPort") Switch Port
+                                    div.row
+                                        div.col-md-5
+                                            input.form-control(value="", required, type="text", id="switchDPID",
+                                            ng-pattern="vm.dpidPattern",
+                                            placeholder="Switch DPID", ng-model="vm.relaying.switchDPID", name="switchDPID")
+                                        div.col-md-1
+                                            span.fa.fa-check-circle-o(ng-show="createRelayForm.switchDPID.$valid")
+                                        div.col-md-5
+                                            input.form-control(value="",
+                                            required,
+                                            type="text",
+                                            pattern="^\\d?\\d*$",
+                                            id = "switchPort", placeholder = "Switch Port", ng-model = "vm.relaying.switchPort", name = "switchPort")
+                                        div.col-md-1
+                                            span.fa.fa-check-circle-o(ng-show="createRelayForm.switchPort.$valid")
+                                div.from-group
+                                    div.row
+                                        div.col-md-6
+                                            label(for="relayIP") Relay IP
+                                        div.col-md-6
+                                            label(for="relayMAC") Relay MAC
+                                    div.row
+                                        div.col-md-5
+                                            input.form-control(value="", required, type="text", id="relayIP",
+                                            ng-pattern="vm.ipAddressPattern",
+                                            placeholder="Relay IP", ng-model="vm.relaying.relayIP", name="relayIP")
+                                        div.col-md-1
+                                            span.fa.fa-check-circle-o(ng-show="createRelayForm.relayIP.$valid")
+                                        div.col-md-5
+                                            input.form-control(value="", required, type="text", id="relayMAC",
+                                            ng-pattern="vm.macPattern",
+                                            placeholder="Relay MAC", ng-model="vm.relaying.relayMAC", name="relayMAC")
+                                        div.col-md-1
+                                            span.fa.fa-check-circle-o(ng-show="createRelayForm.relayMAC.$valid")
+                                div.from-group
+                                    div.row
+                                        div.col-md-6
+                                            label(for="enabled") Status
+                                    div.row
+                                        div.col-md-6
+                                            input.pull-left(type="checkbox", id="enabled", value="true", checked="{{vm.relaying.enabled}}", ng-model="vm.relaying.enabled", name="enabled")
+                                            | &nbsp;enabled
+                                        div.col-md-6
+                                            div
+                                                a.pull-left.btn.btn-success.btn-l(ng-click="vm.createRelay()",
+                                                ng-disabled="createRelayForm.$invalid", tooltip="creates the specified relay", tooltip-placement="bottom") Create

@@ -11,7 +11,7 @@
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  * 
- * Contributor(s): Andreas Schmidt (Saarland University), Michael Karl (Saarland University)
+ * Contributor(s): Andreas Schmidt (Saarland University), Philipp S. Tennigkeit (Saarland University), Michael Karl (Saarland University)
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,24 +25,59 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /node_modules and /lib.
  */
 
-(function(sdnViz) {
+(function () {
     "use strict";
-    sdnViz.controller("StatusCtrl", function($scope, $window, repository, toastr, websockets) {
-        $scope.data = repository.data;
-        $scope.isInteracting = false;
 
-        $scope.reload = function() {
+    angular
+        .module("sdn-visualization")
+        .controller("StatusCtrl", StatusCtrl);
+
+    StatusCtrl.$inject = ["$window", "repository", "toastr", "websockets"];
+
+    function StatusCtrl($window, repository, toastr, websockets) {
+        var vm = this;
+        vm.data = repository.data;
+        vm.logging = [];
+        vm.maxLog = 10;
+        vm.newestFirst = true;
+        vm.reload = reload;
+        vm.clearLog = clearLog;
+        vm.resetModel = resetModel;
+        vm.enterDebugMode = enterDebugMode;
+
+        var idx = 0;
+
+        activate();
+
+        /////////////
+        function activate() {
+            websockets.subscribe("/logging/update", function (data) {
+                // crop the log
+                while (vm.logging.length >= vm.maxLog) {
+                    vm.logging.pop();
+                }
+
+                // append new data
+                vm.logging.push({index: idx++, message: data});
+            });
+        }
+
+        function reload() {
             $window.location = "/status";
-        };
+        }
 
-        $scope.clearLog = function() {
+        function clearLog() {
             repository.clearLog();
-        };
+        }
 
-        $scope.resetModel = function() {
-            websockets.publish("/nvm/reset", null, function() {
+        function resetModel() {
+            websockets.publish("/nvm/reset", null, function () {
                 toastr.success("Successfully reset NVM.");
             });
-        };
-    });
-})(window.sdnViz);
+        }
+
+        function enterDebugMode() {
+            repository.data.debugMode = true;
+        }
+    }
+})();

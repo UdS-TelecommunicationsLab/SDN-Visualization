@@ -11,7 +11,7 @@
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  * 
- * Contributor(s): Andreas Schmidt (Saarland University), Michael Karl (Saarland University)
+ * Contributor(s): Andreas Schmidt (Saarland University), Philipp S. Tennigkeit (Saarland University), Michael Karl (Saarland University)
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,15 +25,39 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /node_modules and /lib.
  */
 
-(function(sdnViz) {
+(function() {
     "use strict";
-    sdnViz.controller("StatisticsCtrl", function($scope, repository) {
-        $scope.isClientVisible = true;
-        $scope.isNodeVisible = true;
 
-        $scope.data = repository.data;
+    angular
+        .module("sdn-visualization")
+        .controller("StatisticsCtrl", StatisticsCtrl);
 
-        $scope.lossClass = function(value) {
+    StatisticsCtrl.$inject = ["repository", "numberToFixedFilter"];
+
+    function StatisticsCtrl(repository, numberToFixedFilter) {
+        var vm = this;
+        vm.data = repository.data;
+        vm.delayClass = delayClass;
+        vm.isClientVisible = true;
+        vm.isNodeVisible = true;
+        vm.lossClass = lossClass;
+        vm.numberToFixed = numberToFixedFilter;
+        vm.rateClass = rateClass;
+
+        /////////////
+        function rateClass(value) {
+            if(value !== null) {
+                if(value > 4000) {
+                    return ["label-danger"];
+                } else if (value > 1000) {
+                    return ["label-warning"];
+                }
+                return ["label-success"];
+            }
+            return ["hidden"];
+        }
+
+        function lossClass (value) {
             if(value !== null) {
                 if(value > 0.1) {
                     return ["label-danger"];
@@ -44,21 +68,9 @@
                 }
             }
             return ["hidden"];
-        };
+        }
 
-        $scope.rateClass = function(value) {
-            if(value !== null) {
-                if(value > 4000) {
-                    return ["label-danger"];
-                } else if (value > 1000) {
-                    return ["label-warning"];
-                }
-                return ["label-success"];
-            }
-            return ["hidden"];
-        };
-
-        $scope.delayClass = function(value) {
+        function delayClass(value) {
             if(value !== null) {
                 if(value > 75) {
                     return ["label-danger"];
@@ -68,7 +80,6 @@
                 return ["label-default"];
             }
             return ["hidden"];
-        };
-
-    });
-})(window.sdnViz);
+        }
+    }
+})();

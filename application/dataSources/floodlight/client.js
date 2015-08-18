@@ -11,7 +11,7 @@
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  * 
- * Contributor(s): Andreas Schmidt (Saarland University), Michael Karl (Saarland University)
+ * Contributor(s): Andreas Schmidt (Saarland University), Philipp S. Tennigkeit (Saarland University), Michael Karl (Saarland University)
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -30,6 +30,7 @@
     "use strict";
     var mapper = require("./mapper"),
         _ = require("lodash"),
+        request = require("request"),
         intf = require("./interface");
 
     var resourceCount = 0;
@@ -42,7 +43,6 @@
     var callback = function () {
         resourceCount--;
         if (resourceCount === 0) {
-
             if (call) {
                 call(errorRaised);
             }
@@ -93,6 +93,7 @@
         }
 
         getResource(client.commands.get.routing, processRouting);
+        getResource(client.commands.get.relaying, processRelaying);
 
         callback();
     };
@@ -103,11 +104,79 @@
      * @param {Object} data JSON object containing the retrieved information.
      *
      */
-    var processRouting = function(data) {
+    var processRelaying = function (data) {
+        if (data === null || data === undefined || data === {}) {
+            console.error("processRelaying called without data");
+        } else {
+            // initialize model
+            model.controller.relaying.tcp.enabled = data.tcp.enabled;
+            model.controller.relaying.udp.enabled = data.udp.enabled;
+            model.controller.relaying.tcp.count = data.tcp.count;
+            model.controller.relaying.udp.count = data.udp.count;
+
+            // trigger inserting the filters
+            getResource(client.commands.get.relayingUDP, getProcessRelayingFunction("udp"));
+            getResource(client.commands.get.relayingTCP, getProcessRelayingFunction("tcp"));
+        }
+        callback();
+    };
+
+    var getProcessRelayingFunction = function(protocol) {
+        return function(data) {
+            if (data === null || data === undefined || data === {}) {
+                console.error("processRelaying called without data");
+            } else {
+                requestRelays(data, protocol);
+            }
+            callback();
+        };
+    };
+
+    /**
+     * Manipulates the model object during execution.
+     *
+     * @param {Object} data JSON object containing the retrieved information.
+     *
+     */
+    var requestRelays = function (data, transport) {
+        data.forEach(function (filterData) {
+            var url = "uds/relaying/" + transport + "/" + filterData.filterIP + "/" + filterData.filterPort + "/json";
+            getResource(url, function (relayData) {
+                if (relayData === null || relayData === undefined || relayData === {}) {
+                    console.log("requestRelays did not return useful data for individual relays");
+                } else {
+                    var relay = {
+                        filterIP: filterData.filterIP,
+                        filterPort: filterData.filterPort,
+                        relayIP: relayData.relayip,
+                        relayMAC: relayData.relaymac,
+                        switchDPID: relayData.swdpid,
+                        switchPort: relayData.swport,
+                        transportPort: relayData.transportport,
+                        enabled: relayData.enabled
+                    };
+                    if (transport === "tcp") {
+                        model.controller.relaying.tcp.relays.push(relay);
+                    } else if (transport === "udp") {
+                        model.controller.relaying.udp.relays.push(relay);
+                    }
+                }
+                callback();
+            });
+        });
+    };
+
+    /**
+     * Manipulates the model object during execution.
+     *
+     * @param {Object} data JSON object containing the retrieved information.
+     *
+     */
+    var processRouting = function (data) {
         if (data === null || data === undefined || data === {}) {
             console.error("processRouting called without data");
         } else {
-            var parseMetrics = function(metric) {
+            var parseMetrics = function (metric) {
                 if (metric == "CONSTANT") {
                     return "Constant";
                 } else if (metric == "LOW_DELAY") {
@@ -171,7 +240,7 @@
         } else {
             for (var deviceId in data) {
                 var device = _.find(model.devices, findDevice(deviceId));
-                if (device && data[deviceId] != null) {
+                if (device && data[deviceId] !== null) {
                     device.description = data[deviceId].desc || "";
                 }
             }
@@ -212,21 +281,24 @@
             console.error("processDelay called without data");
         } else {
             var delays = data;
-            for(var k = 0; k < delays.length; k++) {
+            for (var k = 0; k < delays.length; k++) {
                 var delaySample = delays[k];
                 // Sw1-Sw2 = C-Sw1-Sw2-C - 0.5*(C-Sw1-C + C-Sw2-C)
-                var delay = (delaySample.inconsistency) ? null : (delaySample.fullDelay - 0.5 * (delaySample["src-ctl-Delay"]  + delaySample["dst-ctl-Delay"]));
+                var delay = (delaySample.inconsistency) ? null : (delaySample.fullDelay - 0.5 * (delaySample.srcCtrlDelay + delaySample.dstCtrlDelay));
                 var srcPort = parseInt(delaySample.srcPort, 10);
                 var dstPort = parseInt(delaySample.dstPort, 10);
+                var deviation = delaySample.fullDeviation + (delaySample.srcCtrlDeviation + delaySample.dstCtrlDeviation)*0.5;
 
                 var srcLinks = _.filter(model.links, findLink(delaySample.srcDpid, srcPort, delaySample.dstDpid, dstPort));
                 for (var i = 0; i < srcLinks.length; i++) {
                     srcLinks[i].srcDelay = delay;
+                    srcLinks[i].srcDeviation = deviation;
                 }
 
-                var links = _.filter(model.links, findLink(delaySample.dstDpid, dstPort, delaySample.srcDpid, srcPort));
-                for (var j = 0; j < links.length; j++) {
-                    links[j].dstDelay = delay;
+                var dstLinks = _.filter(model.links, findLink(delaySample.dstDpid, dstPort, delaySample.srcDpid, srcPort));
+                for (var j = 0; j < dstLinks.length; j++) {
+                    dstLinks[j].dstDelay = delay;
+                    dstLinks[j].dstDeviation = deviation;
                 }
             }
         }
@@ -421,6 +493,9 @@
         get: {
             general: "core/controller/summary/json",
             routing: "uds/routing/metrics/json",
+            relaying: "uds/relaying/json",
+            relayingUDP: "uds/relaying/udp/json",
+            relayingTCP: "uds/relaying/tcp/json",
             switches: "core/controller/switches/json",
             hosts: "device/",
             links: "topology/links/json",

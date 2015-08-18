@@ -1,0 +1,85 @@
+﻿/**
+ * reports.less
+ */
+
+#sdn-reports {
+  col:nth-child(even) {
+    background-color: #f9f9f9 !important;
+  }
+
+  #sdn-reports-type-list {
+    .thumbnail {
+      height: 120px;
+      padding-top: 10px;
+      padding-left: 10px;
+
+      h3 {
+        margin-top: 0;
+        margin-left: 110px;
+      }
+      i {
+
+      }
+      p {
+        margin-left: 110px;
+      }
+    }
+  }
+}
+
+.report-service-usage-detection {
+  .protocol {
+    margin-right: 10px;
+    display: inline-block;
+  }
+}
+
+.legendBlock {
+  display: inline-block;
+  width: 10px;
+  vertical-align: middle;
+  height: 14px;
+}
+
+.legendLabel {
+  display: inline-block;
+  font-size: 0.8em;
+  margin-left: 5px;
+}
+
+.report-link-statistics {
+  .legendDataRateBlock {
+    .legendBlock;
+    width: 10px;
+    background-color: #CCC;
+    height: 0;
+  }
+
+  .legendPacketLossBlock {
+    .legendBlock;
+    height: 2px;
+    background-color: #CCC;
+    width: 0;
+  }
+
+  .legendPacketLossGap {
+    background-color: transparent;
+  }
+}
+
+.report-link-reliability-statistics {
+  h3 {
+    margin-top: 10px;
+  }
+}
+
+.report-path-split-recommendations {
+  .details {
+    .table {
+      margin-bottom: 0;
+    }
+  }
+  td, th {
+    padding: 2px 3px !important;
+  }
+}

@@ -1,0 +1,29 @@
+div.report-link-reliability-statistics
+    div.row
+        div.col-md-6
+            div.panel.panel-default
+                div.panel-heading Reliability Ranking
+                div.graph
+                div.panel-body
+                    h3 Reliability:
+                    div.row
+                        div.col-sm-1.col-xs-2
+                            span.legendBlock(ng-style="{ 'background-color': pc0}") &nbsp;
+                            span.legendLabel 0%
+                        div.col-sm-1.col-xs-2
+                            span.legendBlock(ng-style="{ 'background-color': pc25}") &nbsp;
+                            span.legendLabel 25%
+                        div.col-sm-1.col-xs-2
+                            span.legendBlock(ng-style="{ 'background-color': pc50}") &nbsp;
+                            span.legendLabel 50%
+                        div.col-sm-1.col-xs-2
+                            span.legendBlock(ng-style="{ 'background-color': pc75}") &nbsp;
+                            span.legendLabel 75%
+                        div.col-sm-1.col-xs-2
+                            span.legendBlock(ng-style="{ 'background-color': pc100}") &nbsp;
+                            span.legendLabel 100%
+        div.col-md-6
+            div.panel.panel-default
+                div.panel-heading Topology
+                div.panel-body
+                    sdn-topology-map(height="500", styles="styles")

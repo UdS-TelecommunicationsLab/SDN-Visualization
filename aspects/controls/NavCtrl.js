@@ -11,7 +11,7 @@
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  * 
- * Contributor(s): Andreas Schmidt (Saarland University), Michael Karl (Saarland University)
+ * Contributor(s): Andreas Schmidt (Saarland University), Philipp S. Tennigkeit (Saarland University), Michael Karl (Saarland University)
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,21 +25,30 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /node_modules and /lib.
  */
 
-(function(sdnViz) {
+(function () {
     "use strict";
-    sdnViz.controller("NavCtrl", function($scope, $window, $rootScope, repository) {
+
+    angular
+        .module("sdn-visualization")
+        .controller("NavCtrl", NavCtrl);
+
+    NavCtrl.$inject = ["$window", "$rootScope", "repository"];
+
+    function NavCtrl($window, $rootScope, repository) {
+        var vm = this;
+        vm.data = repository.data;
+        vm.logout = logout;
+
         $rootScope.deviceFilter = "";
         $rootScope.isSearchVisible = false;
 
-        $scope.data = repository.data;
 
         $rootScope.clearDeviceFilter = function() {
             $rootScope.deviceFilter = "";
         };
 
-        $scope.logout = function() {
+        function logout() {
             $window.location = "/logout";
-        };
-
-    });
-})(window.sdnViz);
+        }
+    }
+})();

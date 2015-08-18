@@ -1,5 +1,5 @@
 div.sdn-devices-table
-    div.panel.panel-default(ng-show="data.nvm.devices.length > 0")
+    div.panel.panel-default(ng-show="vm.data.nvm.devices.length > 0")
         div.panel-heading
             i.fa.fa-fw.fa-hdd-o
             | &nbsp;Devices
@@ -16,7 +16,7 @@ div.sdn-devices-table
                     th Active Flows
                     th(style="width: 50px")
             tbody
-                tr.sdn-flow(ng-repeat="device in data.nvm.devices")
+                tr.sdn-flow(ng-repeat="device in vm.data.nvm.devices")
                     td
                         sdn-device-thumbnail(device="device", show-border="false")
                     td
@@ -36,5 +36,5 @@ div.sdn-devices-table
                         a.btn.btn-default.btn-xs(href="{{ '/detail/device/' + device.id }}", tooltip="Details")
                             i.fa.fa-fw.fa-ellipsis-h
 
-    div.alert.alert-info(ng-show="data.nvm.devices.length == 0")
+    div.alert.alert-info(ng-show="vm.data.nvm.devices.length == 0")
         strong There are no devices at the moment.

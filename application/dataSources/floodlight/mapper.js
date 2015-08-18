@@ -11,7 +11,7 @@
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  * 
- * Contributor(s): Andreas Schmidt (Saarland University), Michael Karl (Saarland University)
+ * Contributor(s): Andreas Schmidt (Saarland University), Philipp S. Tennigkeit (Saarland University), Michael Karl (Saarland University)
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -34,8 +34,7 @@
 
     var mapEndpoints = function(flowId) {
         return function (d) {
-            var fe = new nvm.FlowEntry();
-            fe.id = flowId + "-" + d;
+            var fe = new nvm.FlowEntry(flowId + "-" + d);
             fe.deviceId = d;
             fe.actions = {endpoint: true};
             return fe;
@@ -283,15 +282,17 @@
                 flowEntry.nw.src = obj.match.arp_spa || "";
                 flowEntry.nw.dst = obj.match.arp_tpa || "";
                 flowEntry.nw.protocol = -1;
+                flowEntry.tp.src = obj.match.arp_opcode;
+                flowEntry.tp.dst = obj.match.arp_opcode;
             } else {
                 flowEntry.nw.src = obj.match.ipv4_src || "";
                 flowEntry.nw.dst = obj.match.ipv4_dst || "";
                 flowEntry.nw.protocol = parseInt(obj.match.ip_proto || 0, 10);
+
+                flowEntry.tp.src = parseInt(obj.match.tcp_src || obj.match.udp_src || 0, 10);
+                flowEntry.tp.dst = parseInt(obj.match.tcp_dst || obj.match.udp_dst || 0, 10);
             }
             flowEntry.nw.typeOfService = parseInt(obj.match.ip_dscp || 0, 10);
-
-            flowEntry.tp.src = parseInt(obj.match.tcp_src || obj.match.udp_src || 0, 10);
-            flowEntry.tp.dst = parseInt(obj.match.tcp_dst || obj.match.udp_dst || 0, 10);
 
             flowEntry.actions = _.clone(obj.actions);
 
@@ -306,7 +307,7 @@
                     }
 
                     var switchFlows = rawObject[deviceId].flows;
-                    if (switchFlows !== null) {
+                    if (switchFlows !== null && switchFlows !== undefined) {
                         for (var j = 0; j < switchFlows.length; j++) {
                             var flowObj = switchFlows[j];
                             var flowId = flowObj.cookie;
@@ -363,7 +364,7 @@
                                 }
                             }
                         } else if(action === "none") {
-                            entry.actions["drop"] = true;
+                            entry.actions.drop = true;
                         } else {
                             // TODO: handle other actions
                             console.log(action);
@@ -371,7 +372,7 @@
                     }
 
                     if (entry.actions.length === 0) {
-                        entry.actions["drop"] = true;
+                        entry.actions.drop = true;
                     } else {
                         var sourceLinks = _.filter(links, findSource(entry));
                         for (var i = 0; i < sourceLinks.length; i++) {
@@ -407,6 +408,9 @@
                 if (protocol.length === 1) {
                     flow.protocol = protocol[0];
 
+                    if (flow.protocol === -1) {
+                        flow.service = services[0];
+                    }
                     if (flow.protocol === 6 || flow.protocol === 17) {
                         var service = _.unique(services);
                         if (service.length === 1) {

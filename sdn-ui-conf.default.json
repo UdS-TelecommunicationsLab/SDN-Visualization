@@ -1,11 +1,21 @@
 {
   "dataSource": {
     "type": "floodlight",
-    "connectionString": "localhost:8080"
+    "host": "localhost",
+    "ports": {
+      "restAPI": 8080,
+      "wsAPI": 8081
+    }
   },
   "controller": {
     "name": "TODO",
-    "contact": "TODO"
+    "contact": "TODO",
+    "pollInterval":1500
+  },
+  "analytics": {
+    "enabled": false,
+    "observer": "username:password@localhost:port",
+    "analyzer": "username:password@localhost:port"
   },
   "deviceInformation": [],
   "serviceNameTranslation": {

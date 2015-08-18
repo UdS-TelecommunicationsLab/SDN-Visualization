@@ -1,0 +1,44 @@
+div
+   p
+      a.btn.btn-xs(
+      ng-class="{true: 'btn-success', false: 'btn-warning'}[vm.relayingData.enabled]",
+      ng-click="vm.toggleGlobalRelaying()", tooltip="{{ 'Toggle ' + vm.protocol.toUpperCase() + ' Relaying status' }}",
+      tooltip-placement="right")
+         i.fa.fa-fw.fa-toggle-on(ng-show="vm.relayingData.enabled")
+         i.fa.fa-fw.fa-toggle-off(ng-hide="vm.relayingData.enabled")
+      | &nbsp;
+      em Global {{ vm.protocol | uppercase }} Relaying
+
+   div.table-responsive
+      table.table.table-bordered.table-condensed.table-striped.sdn-relaying-relaytable.table-hover
+         thead
+            tr
+               th Filter
+               th Relay IP
+               th Relay MAC
+               th Switch
+               th Transport Port
+               th Options
+         tbody
+            tr(ng-repeat="relay in vm.relayingData.relays | orderBy:vm.relayKey")
+               td
+                  code.dp {{relay.filterIP}} : {{relay.filterPort}}
+               td
+                  code.dp {{relay.relayIP}}
+               td
+                  code.dp {{relay.relayMAC}}
+               td
+                  sdn-device-thumbnail(device-id="{{ relay.switchDPID }}", show-border="false")
+                  code.dp : {{relay.switchPort}}
+               td
+                  code.dp {{relay.transportPort}}
+               td
+                  a.btn.btn-xs(
+                  ng-class="{true: 'btn-success', false: 'btn-warning'}[relay.enabled]",
+                  ng-click="vm.updateRelay(relay)",
+                  tooltip="Toggle Relay status", tooltip-placement="top")
+                     i.fa.fa-fw.fa-toggle-on(ng-show="relay.enabled")
+                     i.fa.fa-fw.fa-toggle-off(ng-hide="relay.enabled")
+                  | &nbsp;
+                  a.btn.btn-danger.btn-xs(ng-click="vm.removeRelay(relay.filterIP, relay.filterPort)")
+                     i.fa.fa-fw.fa-trash-o

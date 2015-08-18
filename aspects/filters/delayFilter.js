@@ -11,7 +11,7 @@
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  * 
- * Contributor(s): Andreas Schmidt (Saarland University), Michael Karl (Saarland University)
+ * Contributor(s): Andreas Schmidt (Saarland University), Philipp S. Tennigkeit (Saarland University), Michael Karl (Saarland University)
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,13 +25,23 @@
  * maintained libraries. The licenses of externally maintained libraries can be found in /node_modules and /lib.
  */
 
-(function(sdnViz) {
+(function() {
     "use strict";
-    sdnViz.filter("delay", function(numberToFixedFilter) {
-        return function(input) {
-            if (input !== null)
-                return (numberToFixedFilter(input, 1)).toString() + " ms";
+
+    angular
+        .module("sdn-visualization")
+        .filter("delay", delayFilter);
+
+    delayFilter.$inject = ["numberToFixedFilter"];
+
+    function delayFilter(numberToFixedFilter) {
+        return function(delay, deviation) {
+            if (delay !== null)
+                {
+                    var deviationStr = (deviation !== null) ?  numberToFixedFilter(deviation, 1).toString() : "?";
+                    return(numberToFixedFilter(delay, 1)).toString() +  "&plusmn;" + deviationStr + "ms";
+                }
             return "-/-";
         };
-    });
-})(window.sdnViz);
+    }
+})();

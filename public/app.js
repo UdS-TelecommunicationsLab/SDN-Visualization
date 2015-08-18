@@ -11,7 +11,7 @@
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  * 
- * Contributor(s): Andreas Schmidt (Saarland University), Michael Karl (Saarland University)
+ * Contributor(s): Andreas Schmidt (Saarland University), Philipp S. Tennigkeit (Saarland University), Michael Karl (Saarland University)
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -37,19 +37,35 @@ sdnViz.config(function($routeProvider, $locationProvider, lockerProvider) {
         }).
         when("/statistics/overview", {
             templateUrl: "templates/statistics/overview",
-            controller: "StatisticsCtrl"
+            controller: "StatisticsCtrl",
+            controllerAs: "vm"
         }).
         when("/statistics/devices", {
             templateUrl: "templates/statistics/devices",
-            controller: "StatisticsCtrl"
+            controller: "StatisticsCtrl",
+            controllerAs: "vm"
         }).
         when("/statistics/links", {
             templateUrl: "templates/statistics/links",
-            controller: "StatisticsCtrl"
+            controller: "StatisticsCtrl",
+            controllerAs: "vm"
         }).
         when("/statistics/flows", {
             templateUrl: "templates/statistics/flows",
-            controller: "StatisticsCtrl"
+            controller: "StatisticsCtrl",
+            controllerAs: "vm"
+        }).
+        when("/analytics", {
+            templateUrl: "templates/reports/reports",
+            controller: "ReportsCtrl"
+        }).
+        when("/reports/:id", {
+            templateUrl: "templates/reports/reports",
+            controller: "ReportsCtrl"
+        }).
+        when("/reports/type/:type", {
+            templateUrl: "templates/reports/reports",
+            controller: "ReportsCtrl"
         }).
         when("/documentation", {
             templateUrl: "templates/pages/documentation",
@@ -67,9 +83,15 @@ sdnViz.config(function($routeProvider, $locationProvider, lockerProvider) {
             templateUrl: "templates/pages/about",
             controller: "AboutCtrl"
         }).
+        when("/relaying", {
+            templateUrl: "templates/relaying/relaying",
+            controller: "RelayingCtrl",
+            controllerAs: "vm"
+        }).
         when("/status", {
             templateUrl: "templates/pages/status",
-            controller: "StatusCtrl"
+            controller: "StatusCtrl",
+            controllerAs: "vm"
         });
 
     // Detail Views

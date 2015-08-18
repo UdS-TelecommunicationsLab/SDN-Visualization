@@ -11,7 +11,7 @@
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  * 
- * Contributor(s): Andreas Schmidt (Saarland University), Michael Karl (Saarland University)
+ * Contributor(s): Andreas Schmidt (Saarland University), Philipp S. Tennigkeit (Saarland University), Michael Karl (Saarland University)
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -33,10 +33,7 @@
         $scope.dataSources = [
             {
                 type: "floodlight",
-                title: "Floodlight (HTTP)"
-            }, {
-                type: "nox",
-                title: "NOX (TCP)"
+                title: "Floodlight"
             }];
 
         var createNewEntry = ($routeParams.id) ? true : false;
@@ -50,7 +47,7 @@
             return d;
         };
 
-        $scope.configuration = {deviceInformation: [], dataSource: {type: "none", connectionString: ""}};
+        $scope.configuration = {deviceInformation: [], dataSource: {type: "none", host: "", ports: {restAPI: "", wsAPI: ""}}};
 
         var onConfigLoaded = function (data) {
             $scope.configuration = data.configuration || {};

@@ -11,7 +11,7 @@
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  * 
- * Contributor(s): Andreas Schmidt (Saarland University), Michael Karl (Saarland University)
+ * Contributor(s): Andreas Schmidt (Saarland University), Philipp S. Tennigkeit (Saarland University), Michael Karl (Saarland University)
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -29,15 +29,15 @@
     "use strict";
     sdnViz.filter("hasIdOrName", function() {
         return function(input, filter) {
-            if (typeof filter == "undefined" || filter == null || filter == "") {
+            if (typeof filter === "undefined" || filter === null || filter === "") {
                 return input;
             } else {
                 var out = [];
                 for (var i = 0; i < input.length; i++) {
                     var filterT = filter.toLowerCase();
-                    if (input[i].id.indexOf(filter) != -1) {
+                    if (input[i].id.indexOf(filter) !== -1) {
                         out.push(input[i]);
-                    } else if (input[i].name && input[i].name.toLowerCase().indexOf(filterT) != -1) {
+                    } else if (input[i].name && input[i].name.toLowerCase().indexOf(filterT) !== -1) {
                         out.push(input[i]);
                     }
                 }

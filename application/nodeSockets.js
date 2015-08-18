@@ -11,7 +11,7 @@
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  * 
- * Contributor(s): Andreas Schmidt (Saarland University), Michael Karl (Saarland University)
+ * Contributor(s): Andreas Schmidt (Saarland University), Philipp S. Tennigkeit (Saarland University), Michael Karl (Saarland University)
  * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -29,8 +29,10 @@
     "use strict";
     var config = require("./ui-config"),
         io = require("socket.io"),
-        msgpack = require('../lib/msgpack-javascript/msgpack.codec.js').msgpack,
-        linkManipulation = require("./ofca/linkManipulation");
+        analyticsApi = require(__dirname + "/analyticsApi"),
+        relaying = require("./relaying/relaying"),
+        logging = require("./logging"),
+        msgpack = require('../lib/msgpack-javascript/msgpack.codec.js').msgpack;
 
     var connection;
     var worker;
@@ -38,33 +40,24 @@
     var handleSaveVizConfiguration = function (message, callback) {
         // TODO: this method needs some kind of validity check for the sent configuration
         config.saveConfiguration(message.configuration);
-        callback({ success: true });
-    };
-
-    var handleSetLinkSpec = function (message, callback) {
-        var srcNode = message.srcNode || "";
-        var dstNode = message.dstNode || "";
-        var user = message.user || "";
-        var iface = "eth" + message.iface;
-        var delay = message.delay || 0;
-        var loss = message.loss || 0;
-
-        var errHandler = function (err) {
-            if (err) {
-                console.log(err);
-                publish("/error", err);
-            }
-        };
-
-        // TODO: readd as soon as security concerns are solved
-        //linkManipulation.manipulateLink(srcNode, user, iface, delay, loss, errHandler);
-        //linkManipulation.manipulateLink(dstNode, user, iface, delay, loss, errHandler);
-        callback({success: true });
+        callback({success: true});
     };
 
     var handleNvmReset = function (message, callback) {
         worker.send({reset: true});
         callback({success: true});
+    };
+
+    var handleAnalyzerRun = function(message, callback) {
+        var configuration = config.getConfiguration();
+        var task = (message && message.task) || 'all';
+        if (configuration && configuration.analytics && configuration.analytics.enabled && configuration.analytics.analyzer) {
+            analyticsApi.getRoute("analyzer", "/run/" + task, function(data) {
+                callback({ success: true, data: data });
+            });
+        } else {
+            callback({ success: false });
+        }
     };
 
     var registerHandles = function () {
@@ -74,8 +67,9 @@
 
         connection.on("connection", function (socket) {
             socket.on("/interact/saveVizConfiguration", handleSaveVizConfiguration);
-            socket.on("/interact/setLinkSpec", handleSetLinkSpec);
             socket.on("/nvm/reset", handleNvmReset);
+            socket.on("/analytics/runAnalyzer", handleAnalyzerRun);
+            relaying.registerSockets(socket);
         });
     };
 
@@ -86,6 +80,8 @@
     var publish = function (channel, message) {
         connection.emit(channel, message);
     };
+
+    nodeSockets.publish = publish;
 
     nodeSockets.publishModelUpdate = function (changes, checksum) {
         publish("/modelUpdate", {diff: msgpack.pack(changes, true), checksum: checksum});
